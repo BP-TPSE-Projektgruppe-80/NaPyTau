@@ -13,9 +13,14 @@ dependencies = [
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[project.optional-dependencies]
-dev = ["pytest"]
-
 [tool.tomlscript]
 run= "uv run napytau/main.py"
 test = "uv run pytest -rA"
+lint = "uv run ruff check"
+lint-fix = "uv run ruff check --fix"
+
+[dependency-groups]
+dev = [
+    "pytest>=7.4.4",
+    "ruff>=0.8.0",
+]
