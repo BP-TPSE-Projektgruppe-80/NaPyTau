@@ -1,3 +1,9 @@
+# NaPyTau
+
+----
+[![CI Action Status](https://github.com/BP-TPSE-Projektgruppe-80/NaPyTau/workflows/ci/badge.svg)](https://github.com/BP-TPSE-Projektgruppe-80/NaPyTau/actions)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
 ## Setup
 
 Make sure you have the following installed:
@@ -18,3 +24,4 @@ To run the project use `uvx tomlscript run`, optionally you can use nodemon for 
 To run test use `uvx tomlscript test`.
 
 To run the linter use `uvx tomlscript lint` or `uvx tomlscript lint --fix` to fix the issues.
+
