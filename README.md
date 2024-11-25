@@ -23,5 +23,5 @@ To run the project use `uvx tomlscript run`, optionally you can use nodemon for 
 
 To run test use `uvx tomlscript test`.
 
-To run the linter use `uvx tomlscript lint` or `uvx tomlscript lint --fix` to fix the issues.
+To run the linter use `uvx tomlscript lint` or `uvx tomlscript lint-fix` to fix the issues.
 
