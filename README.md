@@ -16,7 +16,7 @@ Make sure you have the following installed:
 ## Development
 
 1. Clone the repository
-2. Create a virtual environment with `uv venv --python=$PythonVersion` where `$PythonVersion` is greater than 3.10.
+2. Create a virtual environment with `uv venv --python=$PythonVersion` where `$PythonVersion` is greater than 3.10. Note that there is a bug in Python 3.13 that leads to the core dependency TCL not being installed correctly on Windows.
 3. Run `uv sync`
 
 To run the project use `uvx tomlscript run`, optionally you can use nodemon for hot reloading with the command `nodemon --exec uvx tomlscript run`.
