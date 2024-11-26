@@ -1,5 +1,6 @@
-import numpy.linalg.lstsq
-import numpy.poly1d
+from numpy.linalg import lstsq
+from numpy import poly1d
+from numpy import polyder
 
 
 def get_sum_of_distances(distances: list[float], power: int) -> float:
@@ -42,12 +43,16 @@ def determine_coefficients(doppler_shifted_intensities: list[float],
     a: float = 0
     b: float = 0
     c: float = 0
-    coefficients, residuals, rank, s = numpy.linalg.lstsq(distances_matrix,
-                                                          intensities_matrix,
-                                                          rcond=None)
+    coefficients, residuals, rank, s = lstsq(distances_matrix,
+                                             intensities_matrix,
+                                             rcond=None)
     a, b, c = coefficients
     return a, b, c
 
 
 def get_polynomial(a: float, b: float, c: float) -> poly1d:
     return poly1d([a, b, c])
+
+
+def differentiate_polynomial(polynomial: poly1d) -> poly1d:
+    return polyder(polynomial)
