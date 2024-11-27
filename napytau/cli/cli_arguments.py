@@ -1,6 +1,7 @@
 from napytau.util.coalesce import coalesce
 from argparse import Namespace
 
+
 class CLIArguments:
     def __init__(self, raw_args: Namespace):
         self.headless = coalesce(raw_args.headless, False)
