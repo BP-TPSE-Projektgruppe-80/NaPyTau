@@ -17,8 +17,10 @@ customtkinter.set_default_color_theme(
 )  # Themes: "blue" (standard), "green", "dark-blue"
 
 
-customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
-customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
+# Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_appearance_mode("System")
+# Themes: "blue" (standard), "green", "dark-blue"
+customtkinter.set_default_color_theme("blue")
 
 
 def plot(value, window) -> Canvas:
@@ -83,11 +85,17 @@ class App(customtkinter.CTk):
         menubar.add_cascade(label="View", menu=view_menu)
 
         self.appearance_mode = tk.StringVar(value="system")  # Default: system
-        view_menu.add_radiobutton(label="Light mode", variable=self.appearance_mode, value="light",
+        view_menu.add_radiobutton(label="Light mode",
+                                  variable=self.appearance_mode,
+                                  value="light",
                                   command=self.change_appearance_mode)
-        view_menu.add_radiobutton(label="Dark mode", variable=self.appearance_mode, value="dark",
+        view_menu.add_radiobutton(label="Dark mode",
+                                  variable=self.appearance_mode,
+                                  value="dark",
                                   command=self.change_appearance_mode)
-        view_menu.add_radiobutton(label="System", variable=self.appearance_mode, value="system",
+        view_menu.add_radiobutton(label="System",
+                                  variable=self.appearance_mode,
+                                  value="system",
                                   command=self.change_appearance_mode)
 
         # =======================================
@@ -100,13 +108,19 @@ class App(customtkinter.CTk):
 
         self.number_of_polynomials = tk.StringVar(value="3")  # Default: 3 Polynomials
         for i in range(1, 11):
-            number_of_polys_menu.add_radiobutton(label=str(i), variable=self.number_of_polynomials, value=str(i),
+            number_of_polys_menu.add_radiobutton(label=str(i),
+                                                 variable=self.number_of_polynomials,
+                                                 value=str(i),
                                                  command=self.select_number_of_polynomials)
         poly_menu.add_separator()
         self.polynomial_mode = tk.StringVar(value="Exponential")  # Default: Exponential
-        poly_menu.add_radiobutton(label="Equidistant", variable=self.polynomial_mode, value="Equidistant",
+        poly_menu.add_radiobutton(label="Equidistant",
+                                  variable=self.polynomial_mode,
+                                  value="Equidistant",
                                   command=self.select_polynomial_mode)
-        poly_menu.add_radiobutton(label="Exponential", variable=self.polynomial_mode, value="Exponential",
+        poly_menu.add_radiobutton(label="Exponential",
+                                  variable=self.polynomial_mode,
+                                  value="Exponential",
                                   command=self.select_polynomial_mode)
 
         # =======================================
@@ -116,9 +130,13 @@ class App(customtkinter.CTk):
         menubar.add_cascade(label="Alpha calculation", menu=alpha_calc_menu)
 
         self.alpha_calc_mode = tk.StringVar(value="sum ratio")
-        alpha_calc_menu.add_radiobutton(label="Sum Ratio", variable=self.alpha_calc_mode, value="sum ratio",
+        alpha_calc_menu.add_radiobutton(label="Sum Ratio",
+                                        variable=self.alpha_calc_mode,
+                                        value="sum ratio",
                                         command=self.select_alpha_calc_mode)
-        alpha_calc_menu.add_radiobutton(label="Weighted Mean", variable=self.alpha_calc_mode, value="weighted mean",
+        alpha_calc_menu.add_radiobutton(label="Weighted Mean",
+                                        variable=self.alpha_calc_mode,
+                                        value="weighted mean",
                                         command=self.select_alpha_calc_mode)
 
 
