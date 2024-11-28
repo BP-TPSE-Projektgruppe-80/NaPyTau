@@ -1,4 +1,6 @@
-from typing import Optional
+from typing import Optional, Tuple
+
+from napytau.util.model.value_error_pair import ValueErrorPair
 
 
 class Datapoint:
@@ -8,101 +10,69 @@ class Datapoint:
     All other attributes are optional and can be set later.
     """
 
-    distance: float
-    distance_error: Optional[float]
-    calibration: Optional[float]
-    calibration_error: Optional[float]
-    shifted_intensity: Optional[float]
-    shifted_intensity_error: Optional[float]
-    unshifted_intensity: Optional[float]
-    unshifted_intensity_error: Optional[float]
-    feeding_shifted_intensity: Optional[float]
-    feeding_shifted_intensity_error: Optional[float]
-    feeding_unshifted_intensity: Optional[float]
-    feeding_unshifted_intensity_error: Optional[float]
+    distance: ValueErrorPair[float]
+    calibration: Optional[ValueErrorPair[float]]
+    shifted_intensity: Optional[ValueErrorPair[float]]
+    unshifted_intensity: Optional[ValueErrorPair[float]]
+    feeding_shifted_intensity: Optional[ValueErrorPair[float]]
+    feeding_unshifted_intensity: Optional[ValueErrorPair[float]]
 
     def __init(
         self,
-        distance: float,
-        distance_error: Optional[float] = None,
-        calibration: Optional[float] = None,
-        calibration_error: Optional[float] = None,
-        shifted_intensity: Optional[float] = None,
-        shifted_intensity_error: Optional[float] = None,
-        unshifted_intensity: Optional[float] = None,
-        unshifted_intensity_error: Optional[float] = None,
-        feeding_shifted_intensity: Optional[float] = None,
-        feeding_shifted_intensity_error: Optional[float] = None,
-        feeding_unshifted_intensity: Optional[float] = None,
-        feeding_unshifted_intensity_error: Optional[float] = None,
-    ):
+        distance: ValueErrorPair[float],
+        calibration: Optional[ValueErrorPair[float]] = None,
+        shifted_intensity: Optional[ValueErrorPair[float]] = None,
+        unshifted_intensity: Optional[ValueErrorPair[float]] = None,
+        feeding_shifted_intensity: Optional[ValueErrorPair[float]] = None,
+        feeding_unshifted_intensity: Optional[ValueErrorPair[float]] = None,
+    ) -> None:
         self.distance = distance
-        self.distance_error = distance_error
         self.calibration = calibration
-        self.calibration_error = calibration_error
         self.shifted_intensity = shifted_intensity
-        self.shifted_intensity_error = shifted_intensity_error
         self.unshifted_intensity = unshifted_intensity
-        self.unshifted_intensity_error = unshifted_intensity_error
         self.feeding_shifted_intensity = feeding_shifted_intensity
-        self.feeding_shifted_intensity_error = feeding_shifted_intensity_error
         self.feeding_unshifted_intensity = feeding_unshifted_intensity
-        self.feeding_unshifted_intensity_error = feeding_unshifted_intensity_error
 
-    def get_distance_information(self) -> [Optional[float], Optional[float]]:
-        return self.distance, self.distance_error
+    def get_distance(self) -> ValueErrorPair[float]:
+        return self.distance
 
-    def set_distance_information(self, distance: float, distance_error: float):
+    def set_distance(self, distance: ValueErrorPair[float]) -> None:
         self.distance = distance
-        self.distance_error = distance_error
 
-    def get_calibration_information(self) -> [Optional[float], Optional[float]]:
-        return self.calibration, self.calibration_error
+    def get_calibration(self) -> Optional[ValueErrorPair[float]]:
+        return self.calibration
 
-    def set_calibration_information(self, calibration: float, calibration_error: float):
+    def set_calibration(self, calibration: ValueErrorPair[float]) -> None:
         self.calibration = calibration
-        self.calibration_error = calibration_error
 
-    def get_intensity_information(
+    def get_intensity(
         self,
-    ) -> [Optional[float], Optional[float], Optional[float], Optional[float]]:
+    ) -> Tuple[Optional[ValueErrorPair[float]], Optional[ValueErrorPair[float]]]:
         return (
             self.shifted_intensity,
-            self.shifted_intensity_error,
             self.unshifted_intensity,
-            self.unshifted_intensity_error,
         )
 
-    def set_intensity_information(
+    def set_intensity(
         self,
-        shifted_intensity: float,
-        shifted_intensity_error: float,
-        unshifted_intensity: float,
-        unshifted_intensity_error: float,
-    ):
+        shifted_intensity: ValueErrorPair[float],
+        unshifted_intensity: ValueErrorPair[float],
+    ) -> None:
         self.shifted_intensity = shifted_intensity
-        self.shifted_intensity_error = shifted_intensity_error
         self.unshifted_intensity = unshifted_intensity
-        self.unshifted_intensity_error = unshifted_intensity_error
 
-    def get_feeding_intensity_information(
+    def get_feeding_intensity(
         self,
-    ) -> [Optional[float], Optional[float], Optional[float], Optional[float]]:
+    ) -> Tuple[Optional[ValueErrorPair[float]], Optional[ValueErrorPair[float]]]:
         return (
             self.feeding_shifted_intensity,
-            self.feeding_shifted_intensity_error,
             self.feeding_unshifted_intensity,
-            self.feeding_unshifted_intensity_error,
         )
 
-    def set_feeding_intensity_information(
+    def set_feeding_intensity(
         self,
-        feeding_shifted_intensity: float,
-        feeding_shifted_intensity_error: float,
-        feeding_unshifted_intensity: float,
-        feeding_unshifted_intensity_error: float,
-    ):
+        feeding_shifted_intensity: ValueErrorPair[float],
+        feeding_unshifted_intensity: ValueErrorPair[float],
+    ) -> None:
         self.feeding_shifted_intensity = feeding_shifted_intensity
-        self.feeding_shifted_intensity_error = feeding_shifted_intensity_error
         self.feeding_unshifted_intensity = feeding_unshifted_intensity
-        self.feeding_unshifted_intensity_error = feeding_unshifted_intensity_error
