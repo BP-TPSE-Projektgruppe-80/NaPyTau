@@ -3,6 +3,9 @@ from argparse import Namespace
 
 
 class CLIArguments:
+    headless: bool
+    filename: str
+
     def __init__(self, raw_args: Namespace):
         self.headless = coalesce(raw_args.headless, False)
         self.filename = raw_args.filename

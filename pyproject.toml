@@ -3,7 +3,7 @@ name = "napytau"
 version = "0.1.0"
 description = "A modern reimplementation of napatau"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "customtkinter>=5.2.2",
     "matplotlib>=3.9.2",
@@ -13,15 +13,20 @@ dependencies = [
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+packages = ["napytau"]
+
 [tool.tomlscript]
 run= "uv run napytau/main.py"
 test = "uv run pytest -rA"
 lint = "uv run ruff check --config ruff.toml"
 lint-fix = "uv run ruff check --config ruff.toml --fix"
 format = "uv run ruff format"
+typecheck = "uv run mypy napytau --config-file=mypy.ini"
 
 [dependency-groups]
 dev = [
     "pytest>=7.4.4",
     "ruff>=0.8.0",
+    "mypy>=1.13.0",
 ]

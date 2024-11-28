@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import Canvas
+from tkinter import Widget
 
 import customtkinter
 from matplotlib.figure import Figure
@@ -16,7 +17,7 @@ customtkinter.set_default_color_theme(
 )  # Themes: "blue" (standard), "green", "dark-blue"
 
 
-def plot(value, window) -> Canvas:
+def plot(value: int, window: Widget) -> Canvas:
     # the figure that will contain the plot
     fig = Figure(figsize=(3, 2), dpi=100, facecolor="white", edgecolor="black")
 
@@ -38,7 +39,7 @@ def plot(value, window) -> Canvas:
 
 
 class App(customtkinter.CTk):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         # values
@@ -153,20 +154,20 @@ class App(customtkinter.CTk):
         self.slider_2.configure(command=self.use_slider_value)
         self.label.configure(text="Result: ")
 
-    def change_appearance_mode_event(self, new_appearance_mode: str):
+    def change_appearance_mode_event(self, new_appearance_mode: str) -> None:
         customtkinter.set_appearance_mode(new_appearance_mode)
 
-    def change_scaling_event(self, new_scaling: str):
+    def change_scaling_event(self, new_scaling: str) -> None:
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
 
-    def sidebar_button_event(self):
+    def sidebar_button_event(self) -> None:
         print("sidebar_button click")
 
-    def use_slider_value(self, _value):
+    def use_slider_value(self, _value: int) -> None:
         self.calc()
 
-    def calc(self):
+    def calc(self) -> None:
         entry_value = self.tau.get()
 
         self.label.configure(text=f"Result: {logic(entry_value)}")
@@ -182,6 +183,6 @@ class App(customtkinter.CTk):
         )
 
 
-def init(cli_arguments: CLIArguments):
+def init(cli_arguments: CLIArguments) -> None:
     app = App()
     app.mainloop()
