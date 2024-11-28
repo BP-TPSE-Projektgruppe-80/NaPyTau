@@ -22,7 +22,7 @@ test = "uv run pytest -rA"
 lint = "uv run ruff check --config ruff.toml"
 lint-fix = "uv run ruff check --config ruff.toml --fix"
 format = "uv run ruff format"
-typecheck = "uv run mypy napytau --config-file=mypy.ini --no-site-packages"
+typecheck = "uv run mypy napytau --config-file=mypy.ini"
 
 [dependency-groups]
 dev = [
