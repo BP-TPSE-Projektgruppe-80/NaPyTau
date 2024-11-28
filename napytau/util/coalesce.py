@@ -1,6 +1,5 @@
 from typing import Optional
 
-
 def coalesce[T](*args: Optional[T]) -> T:
     for arg in args:
         if arg is not None:
