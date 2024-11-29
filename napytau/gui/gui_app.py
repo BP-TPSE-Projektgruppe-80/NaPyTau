@@ -204,18 +204,16 @@ class GUIApp(customtkinter.CTk):
         """
         Initializes the datapoint checkboxes.
         """
-        self.frame_datapoint_checkboxes = customtkinter.CTkFrame(
+        self.frame_datapoint_checkboxes = customtkinter.CTkScrollableFrame(
             self,
-            width=300,
-            height=200,
-            corner_radius=10)
+            width=200,
+            height=150)
         self.frame_datapoint_checkboxes.grid(
             row=0,
             column=1,
             padx=10,
             pady=10,
             sticky="nsew")
-        self.frame_datapoint_checkboxes.grid_propagate(False)
 
         # Update data checkboxes to with some data to create them.
         # TODO: Remove dummy points later on.
