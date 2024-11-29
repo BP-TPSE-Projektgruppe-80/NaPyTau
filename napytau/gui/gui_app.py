@@ -27,30 +27,11 @@ customtkinter.set_appearance_mode("System")
 # Themes: "blue" (standard), "green", "dark-blue"
 customtkinter.set_default_color_theme("blue")
 
-
-def plot(value, window) -> Canvas:
-    # the figure that will contain the plot
-    fig = Figure(figsize=(3, 2), dpi=100, facecolor="white", edgecolor="black")
-
-    # list of squares
-    y = [(i - 50) ** value for i in range(101)]
-
-    # adding the subplot
-    plot1 = fig.add_subplot(111)
-
-    # plotting the graph
-    plot1.plot(y)
-
-    # creating the Tkinter canvas
-    # containing the Matplotlib figure
-    canvas = FigureCanvasTkAgg(fig, master=window)
-    canvas.draw()
-
-    return canvas.get_tk_widget()
-
-
 class GUIApp(customtkinter.CTk):
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Constructor for the GUIApp, initializes the GUI.
+        """
         super().__init__()
 
         # Datapoints
@@ -99,7 +80,7 @@ class GUIApp(customtkinter.CTk):
         # Initialize information area
         self._init_information_area()
 
-    def _init_menu_bar(self):
+    def _init_menu_bar(self) -> None:
         """
         Initializes the menu bar with the buttons:
         File, View, Polynomials and Alpha calculation.
@@ -181,7 +162,7 @@ class GUIApp(customtkinter.CTk):
             value="weighted mean",
             command=self.select_alpha_calc_mode)
 
-    def _init_graph(self):
+    def _init_graph(self) -> None:
         """
         Initializes the graph.
         """
@@ -200,7 +181,7 @@ class GUIApp(customtkinter.CTk):
             anchor="center")
         graph_label.pack(expand=True)
 
-    def _init_datapoint_checkboxes(self):
+    def _init_datapoint_checkboxes(self) -> None:
         """
         Initializes the datapoint checkboxes.
         """
@@ -229,7 +210,7 @@ class GUIApp(customtkinter.CTk):
             (9.0, 9.52),
             (10.0, 1.85)])
 
-    def _init_control_area(self):
+    def _init_control_area(self) -> None:
         """
         Initializes the control area.
         """
@@ -280,7 +261,7 @@ class GUIApp(customtkinter.CTk):
         )
         self.label.configure(text="Result: ")
 
-    def _init_information_area(self):
+    def _init_information_area(self) -> None:
         """
         Initializes the information area.
         """
@@ -299,7 +280,7 @@ class GUIApp(customtkinter.CTk):
         )
         self.output_label.pack(fill="both", padx=10, pady=10)
 
-    def open_file(self):
+    def open_file(self) -> None:
         """
         Opens the file explorer and lets the user choose a file to open.
         """
@@ -313,54 +294,51 @@ class GUIApp(customtkinter.CTk):
         if file_path:
             print(f"chosen file: {file_path}")
 
-    def save_file(self):
+    def save_file(self) -> None:
         """
         Saves the file.
         """
         print("save_file")
 
-    def read_setup(self):
+    def read_setup(self) -> None:
         """
         Reads the setup.
         """
         print("read_setup")
 
-    def quit(self):
+    def quit(self) -> None:
         """
         Quits the program.
         """
         print("quit")
         self.destroy()
 
-    def change_appearance_mode_event(self, new_appearance_mode: str):
-        customtkinter.set_appearance_mode(new_appearance_mode)
-
-    def change_appearance_mode(self):
+    def change_appearance_mode(self) -> None:
         """
         Changes the appearance mode to the variable appearance_mode.
         """
         customtkinter.set_appearance_mode(self.appearance_mode.get())
         print("change appearance mode to " + self.appearance_mode.get())
 
-    def select_number_of_polynomials(self):
+    def select_number_of_polynomials(self) -> None:
         """
         Selects the number of polynomials to use.
         """
         print("selected number of polynomials: " + self.number_of_polynomials.get())
 
-    def select_polynomial_mode(self):
+    def select_polynomial_mode(self) -> None:
         """
         Selects the polynomial mode.
         """
         print("select polynomial mode " + self.polynomial_mode.get())
 
-    def select_alpha_calc_mode(self):
+    def select_alpha_calc_mode(self) -> None:
         """
         Selects the alpha calculation mode.
         """
         print("select alpha calc mode " + self.alpha_calc_mode.get())
 
-    def _update_data_checkboxes_fitting(self):
+    def _update_data_checkboxes_fitting(self) -> None:
         """
         Do not call from outside. Updates the checkboxes with data points
         for the fitting.
@@ -387,7 +365,7 @@ class GUIApp(customtkinter.CTk):
                 command=lambda index=i: self._data_checkbox_fitting_event(index))
             checkbox.grid(row=i+1, column=0, padx=10, pady=2, sticky="nsew")
 
-    def _data_checkbox_fitting_event(self, index):
+    def _data_checkbox_fitting_event(self, index: int) -> None:
         """
         Do not call from outside. Is called if a data checkbox
         for the fitting is called.
@@ -401,7 +379,7 @@ class GUIApp(customtkinter.CTk):
         else:
             print("[fitting] checkbox with index " + str(index) + " deactivated.")
 
-    def _update_data_checkboxes_calculation(self):
+    def _update_data_checkboxes_calculation(self) -> None:
         """
         Do not call from outside. Updates the checkboxes with data points for
         the calculation of tau and delta-tau.
@@ -428,7 +406,7 @@ class GUIApp(customtkinter.CTk):
                 command=lambda index=i: self._data_checkbox_calculation_event(index))
             checkbox.grid(row=i + 1, column=1, padx=35, pady=2, sticky="nsew")
 
-    def _data_checkbox_calculation_event(self, index):
+    def _data_checkbox_calculation_event(self, index: int) -> None:
         """
         Do not call from outside. Is called if a data checkbox for the calculation
         of tau and delta-tau is called.
@@ -442,7 +420,7 @@ class GUIApp(customtkinter.CTk):
         else:
             print("[calculation] checkbox with index " + str(index) + " deactivated.")
 
-    def update_data_checkboxes(self, new_datapoints: List[Tuple[float, float]]):
+    def update_data_checkboxes(self, new_datapoints: List[Tuple[float, float]]) -> None:
         """
         Updates the datapoint for the gui and updates both columns of the
         data checkboxes.
@@ -458,22 +436,43 @@ class GUIApp(customtkinter.CTk):
         self._update_data_checkboxes_fitting()
         self._update_data_checkboxes_calculation()
 
-    def change_scaling_event(self, new_scaling: str):
+    def change_scaling_event(self, new_scaling: str) -> None:
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
 
-    def sidebar_button_event(self):
-        print("sidebar_button click")
 
-    def use_slider_value(self, _value):
-        self.calc()
-
-    def calc(self):
+    def calc(self) -> None:
         entry_value = self.tau.get()
 
         self.label.configure(text=f"Result: {logic(entry_value)}")
 
 
-def init(cli_arguments: CLIArguments):
+def init(cli_arguments: CLIArguments) -> None:
     app = GUIApp()
     app.mainloop()
+
+def plot(value: int, window: GUIApp) -> Canvas:
+    """
+    Plot the graph.
+    :param value: The value.
+    :param window: The window.
+    :return: The canvas.
+    """
+    # the figure that will contain the plot
+    fig = Figure(figsize=(3, 2), dpi=100, facecolor="white", edgecolor="black")
+
+    # list of squares
+    y = [(i - 50) ** value for i in range(101)]
+
+    # adding the subplot
+    plot1 = fig.add_subplot(111)
+
+    # plotting the graph
+    plot1.plot(y)
+
+    # creating the Tkinter canvas
+    # containing the Matplotlib figure
+    canvas = FigureCanvasTkAgg(fig, master=window)
+    canvas.draw()
+
+    return canvas.get_tk_widget()

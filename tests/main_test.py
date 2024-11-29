@@ -17,7 +17,7 @@ class MainUnitTest(unittest.TestCase):
         with patch.dict(
             "sys.modules",
             {
-                "gui.ui_mockup": gui_mock,
+                "gui.gui_app": gui_mock,
                 "headless.headless_mockup": headless_mock,
                 "cli.parser": parser_mock,
             },
@@ -38,7 +38,7 @@ class MainUnitTest(unittest.TestCase):
         with patch.dict(
             "sys.modules",
             {
-                "gui.ui_mockup": gui_mock,
+                "gui.gui_app": gui_mock,
                 "headless.headless_mockup": headless_mock,
                 "cli.parser": parser_mock,
             },

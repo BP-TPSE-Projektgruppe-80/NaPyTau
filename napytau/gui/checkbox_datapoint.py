@@ -16,6 +16,9 @@ class CheckboxDataPoint:
         self.coordinates = coordinates
         self.is_checked = is_checked
 
-    def toggle_checkbox(self):
-        """Toggles the boolean value"""
+    def toggle_checkbox(self) -> None:
+        """
+        Toggles the boolean value
+        :return: None
+        """
         self.is_checked = not self.is_checked
