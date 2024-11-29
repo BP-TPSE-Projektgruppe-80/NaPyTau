@@ -23,6 +23,20 @@ jobs:
       - name: Lint everything
         run: uvx tomlscript lint
 
+  run-static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      - name: Install Python
+        run: uv python install
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+      - name: Run static analysis
+        run: uvx tomlscript typecheck
+
   run-tests:
     runs-on: ubuntu-latest
     steps:

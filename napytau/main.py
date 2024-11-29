@@ -3,7 +3,7 @@ from headless.headless_mockup import init as init_headless
 from cli.parser import parse_cli_arguments
 
 
-def main():
+def main() -> None:
     args = parse_cli_arguments()
 
     if args.headless:

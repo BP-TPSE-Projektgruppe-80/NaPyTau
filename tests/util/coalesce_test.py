@@ -7,13 +7,13 @@ class CoalesceUnitTest(unittest.TestCase):
         """Returns the first non-None argument."""
         self.assertEqual(1, coalesce(None, None, None, 1, 2, 3))
 
-    def test_returnsNoneIfAllArgumentsAreNone(self):
-        """Returns None if all arguments are None."""
-        self.assertIsNone(coalesce(None, None, None))
+    def test_raisesAValueErrorIfAllArgumentsAreNone(self):
+        """Raises a ValueError if all arguments are None."""
+        self.assertRaises(ValueError, coalesce, None, None, None)
 
-    def test_returnsNoneIfNoArgumentsAreProvided(self):
+    def test_raisesAValueErrorIfNoArgumentsAreProvided(self):
         """Returns None if no arguments are provided."""
-        self.assertIsNone(coalesce())
+        self.assertRaises(ValueError, coalesce)
 
 
 if __name__ == "__main__":
