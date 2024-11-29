@@ -1,17 +1,38 @@
-from numpy import poly1d
-from polynomials import differentiate_polynomial
-from polynomials import get_polynomial
-from polynomials import determine_coefficients
+from napytau.core.chi import optimize_t_hyp
+from napytau.core.chi import optimize_coefficients
+from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_times
+from numpy import array
 
-def calculate_tau(doppler_shifted_intensities: list[float],
-                  unshifted_intensities: list[float],
-                  distances: list[float], power: int) -> list[float]:
-    tau_list : list[float] = []
-    for i in range(len(distances) - 1):
-        coefficients: list[float] = (
-            list(determine_coefficients(unshifted_intensities, distances)))
-        tau_i = (doppler_shifted_intensities[i] / differentiate_polynomial(
-            get_polynomial(coefficients[0], coefficients[1],
-                           coefficients[2]))(i))
-        tau_list.append(tau_i)
-    return tau_list
+
+def calculate_tau_i(doppler_shifted_intensities: array,
+                    unshifted_intensities: array,
+                    delta_doppler_shifted_intensities: array,
+                    delta_unshifted_intensities: array,
+                    initial_coefficients: array,
+                    times: array,
+                    t_hyp_range: (float, float),
+                    weight_factor: float) -> array:
+    t_opt: float = optimize_t_hyp(doppler_shifted_intensities,
+                                  unshifted_intensities,
+                                  delta_doppler_shifted_intensities,
+                                  delta_unshifted_intensities,
+                                  times,
+                                  t_hyp_range,
+                                  weight_factor,
+                                  initial_coefficients)
+
+    optimized_coefficients: array= (
+        optimize_coefficients(doppler_shifted_intensities,
+                              unshifted_intensities,
+                              delta_doppler_shifted_intensities,
+                              delta_unshifted_intensities,
+                              times,
+                              t_opt,
+                              weight_factor,
+                              initial_coefficients))[0]
+
+    tau_i: array = (doppler_shifted_intensities
+                    / differentiated_polynomial_sum_at_measuring_times(
+                                                        times, optimized_coefficients))
+
+    return tau_i

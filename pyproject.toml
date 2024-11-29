@@ -8,6 +8,7 @@ dependencies = [
     "customtkinter>=5.2.2",
     "matplotlib>=3.9.2",
     "numpy>=2.1.3",
+    "scipy>=1.14.1",
 ]
 
 [build-system]
