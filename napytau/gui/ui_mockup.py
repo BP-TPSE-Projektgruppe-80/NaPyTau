@@ -2,6 +2,7 @@ from typing import List, Tuple
 
 import tkinter as tk
 from tkinter import Canvas
+from tkinter import filedialog
 
 import customtkinter
 from matplotlib.figure import Figure
@@ -58,33 +59,56 @@ class App(customtkinter.CTk):
         self.datapoints_for_calculation: List[CheckboxDataPoint]=[]
 
         # values
-
         self.tau = tk.IntVar()
         self.tau.set(2)
 
         # configure window
         self.title("NaPyTau")
-        #self.geometry(f"{1100}x{580}")
         self.geometry("1366x768")
 
-        self.grid_columnconfigure((0, 1), weight=1)  # Two columns
+        """
+        Configure grid. Current Layout:
+        Three rows, two columns with
+        - Graph from row 0 to 1, column 0
+        - Checkboxes in row 0, column 1
+        - Control area in row 1, column 1
+        - Information area in row 2, column 0 to 1
+        """
         self.grid_rowconfigure((0, 2), weight=1)  # Three rows
+        self.grid_columnconfigure((0, 1), weight=1)  # Two columns
 
         # Weights are adjusted
-        self.grid_columnconfigure(0, weight=8)
-        self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=10)
         self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=2)
+        self.grid_columnconfigure(0, weight=8)
+        self.grid_columnconfigure(1, weight=1)
 
+        # Initialize menu bar
+        self._init_menu_bar()
 
+        # Initialize graph
+        self._init_graph()
+
+        # Initialize Checkboxes with datapoints
+        self._init_datapoint_checkboxes()
+
+        # Initialize control area
+        self._init_control_area()
+
+        # Initialize information area
+        self._init_information_area()
+
+    def _init_menu_bar(self):
+        """
+        Initializes the menu bar with the buttons:
+        File, View, Polynomials and Alpha calculation.
+        """
         # Create menu bar
         menubar = Menu(self)
         self.config(menu=menubar)
 
-        # =======================================
-        #  Create Button "File" in menu bar
-        # =======================================
+        # Create Button "File" in menu bar.
         file_menu = Menu(menubar, tearoff=0)
         menubar.add_cascade(label="File", menu=file_menu)
 
@@ -94,9 +118,7 @@ class App(customtkinter.CTk):
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.quit)
 
-        # =======================================
-        #  Create button "View" in menu bar
-        # =======================================
+        # Create button "View" in menu bar.
         view_menu = Menu(menubar, tearoff=0)
         menubar.add_cascade(label="View", menu=view_menu)
 
@@ -117,9 +139,7 @@ class App(customtkinter.CTk):
             value="system",
             command=self.change_appearance_mode)
 
-        # =======================================
-        #  Create button "Polynomials" in menu bar
-        # =======================================
+        # Create button "Polynomials" in menu bar.
         poly_menu = Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Polynomials", menu=poly_menu)
         number_of_polys_menu = Menu(poly_menu, tearoff=0)
@@ -145,9 +165,7 @@ class App(customtkinter.CTk):
             value="Exponential",
             command=self.select_polynomial_mode)
 
-        # =======================================
-        #  Create button "Alpha calculation" in menu bar
-        # =======================================
+        # Create button "Alpha calculation" in menu bar.
         alpha_calc_menu = Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Alpha calculation", menu=alpha_calc_menu)
 
@@ -163,7 +181,10 @@ class App(customtkinter.CTk):
             value="weighted mean",
             command=self.select_alpha_calc_mode)
 
-        # Left upper corner: Graph
+    def _init_graph(self):
+        """
+        Initializes the graph.
+        """
         self.graph_frame = plot(self.tau.get(), self)
         self.graph_frame.grid(
             row=0,
@@ -179,7 +200,10 @@ class App(customtkinter.CTk):
             anchor="center")
         graph_label.pack(expand=True)
 
-        # Right upper corner: Checkboxes with datapoints
+    def _init_datapoint_checkboxes(self):
+        """
+        Initializes the datapoint checkboxes.
+        """
         self.frame_datapoint_checkboxes = customtkinter.CTkFrame(
             self,
             width=300,
@@ -193,6 +217,7 @@ class App(customtkinter.CTk):
             sticky="nsew")
         self.frame_datapoint_checkboxes.grid_propagate(False)
 
+        # Update data checkboxes to with some data to create them.
         # TODO: Remove dummy points later on.
         self.update_data_checkboxes([
             (1.0, 5.23),
@@ -206,7 +231,10 @@ class App(customtkinter.CTk):
             (9.0, 9.52),
             (10.0, 1.85)])
 
-        # Below checkboxes: Buttons for calculation
+    def _init_control_area(self):
+        """
+        Initializes the control area.
+        """
         self.button_area = customtkinter.CTkFrame(self, corner_radius=10)
         self.button_area.grid(
             row=1,
@@ -234,7 +262,7 @@ class App(customtkinter.CTk):
         # Calculation
         self.entry = customtkinter.CTkEntry(self.button_area, textvariable=self.tau)
         self.entry.grid(
-            row=1, column=0, padx=10, pady=10#, sticky="nsew"
+            row=1, column=0, padx=10, pady=10  # , sticky="nsew"
         )
 
         self.main_button_1 = customtkinter.CTkButton(
@@ -254,8 +282,10 @@ class App(customtkinter.CTk):
         )
         self.label.configure(text="Result: ")
 
-
-        # Bottom: Output field for errors or information of tau and delta-tau
+    def _init_information_area(self):
+        """
+        Initializes the information area.
+        """
         self.output_frame = customtkinter.CTkFrame(self, height=100, corner_radius=10)
         self.output_frame.grid(
             row=2,
@@ -271,12 +301,19 @@ class App(customtkinter.CTk):
         )
         self.output_label.pack(fill="both", padx=10, pady=10)
 
-
     def open_file(self):
         """
-        Opens the file explorer.
+        Opens the file explorer and lets the user choose a file to open.
         """
         print("open_file")
+        file_path = filedialog.askopenfilename(
+            title="Choose file",
+            filetypes = [("ALl files", "*.*"), ("Text files", "*.txt"),
+                         ("Python files", "*.py")]
+        )
+
+        if file_path:
+            print(f"chosen file: {file_path}")
 
     def save_file(self):
         """

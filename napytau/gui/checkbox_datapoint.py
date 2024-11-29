@@ -1,4 +1,4 @@
-class CheckboxDataPoint():
+class CheckboxDataPoint:
     def __init__(self, coordinates: tuple[float, float], is_checked: bool):
         """
         Constructor for the CheckboxDataPoint class.
