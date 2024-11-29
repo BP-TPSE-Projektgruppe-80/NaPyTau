@@ -1,4 +1,4 @@
-from gui.ui_mockup import init as init_gui
+from gui.gui_app import init as init_gui
 from headless.headless_mockup import init as init_headless
 from cli.parser import parse_cli_arguments
 

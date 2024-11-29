@@ -49,7 +49,7 @@ def plot(value, window) -> Canvas:
     return canvas.get_tk_widget()
 
 
-class App(customtkinter.CTk):
+class GUIApp(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
@@ -477,5 +477,5 @@ class App(customtkinter.CTk):
 
 
 def init(cli_arguments: CLIArguments):
-    app = App()
+    app = GUIApp()
     app.mainloop()
