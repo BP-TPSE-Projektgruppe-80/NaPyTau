@@ -15,7 +15,7 @@ class DatapointCollection:
             self.elements[hash(datapoint.distance.value)] = datapoint
 
     def as_dict(self) -> Dict[int, Datapoint]:
-        """Return the collection as a dictionary. Keys are the hash of the distance value."""
+        """Return the collection as a dictionary. Keys are the hash of the distance value."""  # noqa E501
         return self.elements
 
     def filter(self, filter_func: Callable[[Datapoint], bool]) -> DatapointCollection:
@@ -77,7 +77,7 @@ class DatapointCollection:
             map(
                 lambda datapoint: coalesce(datapoint.feeding_shifted_intensity),
                 self.filter(
-                    lambda datapoint: datapoint.shifted_intensity is not None
+                    lambda datapoint: datapoint.feeding_shifted_intensity is not None
                 ).elements.values(),
             )
         )
@@ -87,7 +87,7 @@ class DatapointCollection:
             map(
                 lambda datapoint: coalesce(datapoint.feeding_unshifted_intensity),
                 self.filter(
-                    lambda datapoint: datapoint.shifted_intensity is not None
+                    lambda datapoint: datapoint.feeding_unshifted_intensity is not None
                 ).elements.values(),
             )
         )

@@ -13,3 +13,8 @@ class RelativeVelocity:
 
     def get_velocity(self) -> float:
         return self.velocity
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, RelativeVelocity):
+            return NotImplemented
+        return self.velocity == other.velocity

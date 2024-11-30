@@ -17,7 +17,7 @@ class Datapoint:
     feeding_shifted_intensity: Optional[ValueErrorPair[float]]
     feeding_unshifted_intensity: Optional[ValueErrorPair[float]]
 
-    def __init(
+    def __init__(
         self,
         distance: ValueErrorPair[float],
         calibration: Optional[ValueErrorPair[float]] = None,
