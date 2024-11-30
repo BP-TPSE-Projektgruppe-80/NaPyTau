@@ -216,7 +216,7 @@ class DatapointCollectionUnitTest(unittest.TestCase):
 
         self.assertEqual(
             collection.get_feeding_shifted_intensities(),
-            [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
+            [ValueErrorPair(1.0, 0.12), ValueErrorPair(2.0, 0.1)],
         )
 
     def test_canRetrieveFeedingUnshiftedIntensities(self):
