@@ -8,3 +8,9 @@ class DataSet:
     ):
         self.relative_velocity = relative_velocity
         self.datapoints = datapoints
+
+    def get_relative_velocity(self) -> RelativeVelocity:
+        return self.relative_velocity
+
+    def get_datapoints(self) -> DatapointCollection:
+        return self.datapoints
