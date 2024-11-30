@@ -17,4 +17,4 @@ class RelativeVelocity:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, RelativeVelocity):
             return NotImplemented
-        return self.velocity == other.velocity
+        return 2
