@@ -2,7 +2,7 @@ from napytau.cli.cli_arguments import CLIArguments
 from napytau.ingest.ingest_mockup import ingest_file
 
 
-def init(cli_arguments: CLIArguments):
+def init(cli_arguments: CLIArguments) -> None:
     print("running headless mockup")
     if cli_arguments.has_filename():
         print(

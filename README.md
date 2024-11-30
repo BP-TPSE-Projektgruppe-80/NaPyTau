@@ -25,3 +25,5 @@ To run test use `uvx tomlscript test`.
 
 To run the linter use `uvx tomlscript lint` or `uvx tomlscript lint-fix` to fix the issues.
 
+To statically type check the project use `uvx tomlscript typecheck`.
+

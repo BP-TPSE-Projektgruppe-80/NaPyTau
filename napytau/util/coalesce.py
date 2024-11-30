@@ -1,5 +1,7 @@
-def coalesce(*args):
+from typing import Optional
+
+def coalesce[T](*args: Optional[T]) -> T:
     for arg in args:
         if arg is not None:
             return arg
-    return None
+    raise ValueError("All arguments are None")
