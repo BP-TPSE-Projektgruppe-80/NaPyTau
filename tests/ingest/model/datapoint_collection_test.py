@@ -7,7 +7,7 @@ from napytau.util.model.value_error_pair import ValueErrorPair
 
 class DatapointCollectionUnitTest(unittest.TestCase):
     def test_distinguishesDistancesToAReasonablePrecision(self):
-        """Can distinguish two datapoints based on their distance values to a reasonable precision"""
+        """Can distinguish two datapoints based on their distance values to a reasonable precision""" # noqa E501
         datapoints = [
             Datapoint(
                 distance=ValueErrorPair(17.1381257194, 0.1),
