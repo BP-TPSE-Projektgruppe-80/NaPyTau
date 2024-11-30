@@ -61,8 +61,8 @@ class GUIApp(customtkinter.CTk):
         # Weights are adjusted
         self.grid_rowconfigure(0, weight=10)
         self.grid_rowconfigure(1, weight=1)
-        self.grid_rowconfigure(2, weight=2)
-        self.grid_columnconfigure(0, weight=8)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_columnconfigure(0, weight=10)
         self.grid_columnconfigure(1, weight=1)
 
         # Initialize menu bar
@@ -79,6 +79,8 @@ class GUIApp(customtkinter.CTk):
 
         # Initialize information area
         self._init_information_area()
+
+        self.appearance_mode.trace_add("write", self.update_plot)
 
     def _init_menu_bar(self) -> None:
         """
@@ -166,7 +168,7 @@ class GUIApp(customtkinter.CTk):
         """
         Initializes the graph.
         """
-        self.graph_frame = plot(self.tau.get(), self)
+        self.graph_frame = plot(self.tau.get(), self, self.appearance_mode.get())
         self.graph_frame.grid(
             row=0,
             column=0,
@@ -175,11 +177,7 @@ class GUIApp(customtkinter.CTk):
             pady=10,
             sticky="nsew")
         self.graph_frame.grid_propagate(False)
-        graph_label = customtkinter.CTkLabel(
-            self.graph_frame,
-            text="Graph-Area",
-            anchor="center")
-        graph_label.pack(expand=True)
+
 
     def _init_datapoint_checkboxes(self) -> None:
         """
@@ -188,12 +186,12 @@ class GUIApp(customtkinter.CTk):
         self.frame_datapoint_checkboxes = customtkinter.CTkScrollableFrame(
             self,
             width=200,
-            height=150)
+            height=250)
         self.frame_datapoint_checkboxes.grid(
             row=0,
             column=1,
-            padx=10,
-            pady=10,
+            padx=0,
+            pady=0,
             sticky="nsew")
 
         # Update data checkboxes to with some data to create them.
@@ -446,12 +444,27 @@ class GUIApp(customtkinter.CTk):
 
         self.label.configure(text=f"Result: {logic(entry_value)}")
 
+    def update_plot(self, *args):
+        self.graph_frame = plot(self.tau.get(), self, self.appearance_mode.get())
+        self.graph_frame.grid(
+            row=0,
+            column=0,
+            rowspan=2,
+            padx=10,
+            pady=10,
+            sticky="nsew")
+        self.graph_frame.grid_propagate(False)
+
+
+
 
 def init(cli_arguments: CLIArguments) -> None:
     app = GUIApp()
     app.mainloop()
 
-def plot(value: int, window: GUIApp) -> Canvas:
+def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
+
+    print(appearance)
     """
     Plot the graph.
     :param value: The value.
@@ -461,11 +474,41 @@ def plot(value: int, window: GUIApp) -> Canvas:
     # the figure that will contain the plot
     fig = Figure(figsize=(3, 2), dpi=100, facecolor="white", edgecolor="black")
 
+    #setting color
+
+    #setting color in dependence of appearance mode
+
+    if appearance == "system":
+        main_color = "#151515"
+        secondary_color = "#ffffff"
+        print("Fall1")
+    elif appearance == "light":
+        main_color = "white"
+        secondary_color = "#000000"
+        print("Fall2")
+    else:
+        main_color = "#151515"
+        secondary_color = "#ffffff"
+        print("Fall3")
+
+    fig.patch.set_facecolor(main_color)
+
+
     # list of squares
     y = [(i - 50) ** value for i in range(101)]
 
     # adding the subplot
     plot1 = fig.add_subplot(111)
+
+    #set color of background
+    plot1.set_facecolor(main_color)
+
+    #set color of ticks
+    plot1.tick_params(axis='x', colors=secondary_color)  # Set x-axis tick label color
+    plot1.tick_params(axis='y', colors=secondary_color)
+
+    #add grid style
+    plot1.grid(True, which= 'both', color= secondary_color, linestyle='--', linewidth=0.7)
 
     # plotting the graph
     plot1.plot(y)
@@ -476,3 +519,4 @@ def plot(value: int, window: GUIApp) -> Canvas:
     canvas.draw()
 
     return canvas.get_tk_widget()
+
