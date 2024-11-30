@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       - name: Lint everything
-        run: uvx tomlscript lint
+        run: uv run ruff check --config ruff.toml
 
   run-static-analysis:
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       - name: Run static analysis
-        run: uvx tomlscript typecheck
+        run: uv run mypy napytau --config-file=mypy.ini
 
   run-tests:
     runs-on: ubuntu-latest
@@ -49,4 +49,4 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       - name: Run tests
-        run: uvx tomlscript test
+        run: uv run pytest -rA
