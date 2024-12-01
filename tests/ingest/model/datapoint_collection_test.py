@@ -92,7 +92,7 @@ class DatapointCollectionUnitTest(unittest.TestCase):
         collection = DatapointCollection([datapoint])
 
         self.assertEqual(
-            collection.get_datapoint_by_distance(ValueErrorPair(12.12, 0.1)),
+            collection.get_datapoint_by_distance(12.12),
             datapoint,
         )
 
@@ -107,7 +107,7 @@ class DatapointCollectionUnitTest(unittest.TestCase):
         )
 
         with self.assertRaises(ValueError):
-            collection.get_datapoint_by_distance(ValueErrorPair(12.13, 0.1))
+            collection.get_datapoint_by_distance(12.13)
 
     def test_canRetrieveDistances(self):
         """Can retrieve distances"""
