@@ -1,7 +1,7 @@
 from typing import Optional, List
 
-from napytau.ingest.DatasetFactory.napatau_dataset_factory import NapatauDatasetFactory
-from napytau.ingest.DatasetFactory.raw_napatau_data import RawNapatauData
+from napytau.ingest.dataset_factory.napatau_dataset_factory import NapatauDatasetFactory
+from napytau.ingest.dataset_factory.raw_napatau_data import RawNapatauData
 from napytau.ingest.crawler.file_crawler import FileCrawler
 from napytau.ingest.crawler.napatau_setup_files import NapatauSetupFiles
 from napytau.ingest.model.dataset import DataSet
