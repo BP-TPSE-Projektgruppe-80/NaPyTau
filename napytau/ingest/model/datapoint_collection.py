@@ -24,15 +24,15 @@ class DatapointCollection:
     def add_datapoint(self, datapoint: Datapoint) -> None:
         self.elements[hash(datapoint.distance.value)] = datapoint
 
-    def get_datapoint_by_distance(self, distance: ValueErrorPair[float]) -> Datapoint:
+    def get_datapoint_by_distance(self, distance: float) -> Datapoint:
         """
         Get a datapoint by its distance.
         This function will raise an error if the datapoint is not found.
         """
-        if hash(distance.value) not in self.elements:
-            raise ValueError(f"Datapoint with distance {distance.value} not found.")
+        if hash(distance) not in self.elements:
+            raise ValueError(f'Datapoint with distance: "{distance}" not found.')
 
-        return self.elements[hash(distance.value)]
+        return self.elements[hash(distance)]
 
     def get_distances(self) -> List[ValueErrorPair[float]]:
         return list(
