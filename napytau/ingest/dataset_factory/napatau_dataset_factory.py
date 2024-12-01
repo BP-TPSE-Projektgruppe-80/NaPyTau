@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from napytau.ingest.DatasetFactory.raw_napatau_data import RawNapatauData
+from napytau.ingest.dataset_factory.raw_napatau_data import RawNapatauData
 from napytau.ingest.model.datapoint import Datapoint
 from napytau.ingest.model.datapoint_collection import DatapointCollection
 from napytau.ingest.model.dataset import DataSet
