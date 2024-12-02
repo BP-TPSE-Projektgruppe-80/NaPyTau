@@ -4,10 +4,7 @@ from numpy import array
 from numpy import testing
 from scipy.optimize import OptimizeResult
 
-from napytau.core.chi import chi_squared_fixed_t
-
-
-def set_up_mocks() -> (MagicMock, MagicMock, MagicMock):
+def set_up_mocks() -> (MagicMock, MagicMock):
     polynomials_mock = MagicMock()
     polynomials_mock.polynomial_sum_at_measuring_times = MagicMock()
     polynomials_mock.differentiated_polynomial_sum_at_measuring_times = MagicMock()
@@ -33,7 +30,7 @@ class ChiUnitTests(unittest.TestCase):
                 {
                     "napytau.core.polynomials": polynomials_mock,
                 },
-        ):
+            ):
 
             from napytau.core.chi import chi_squared_fixed_t
 
@@ -543,6 +540,7 @@ class ChiUnitTests(unittest.TestCase):
         ):
 
             from napytau.core.chi import optimize_coefficients
+            from napytau.core.chi import chi_squared_fixed_t
 
             # Mocked input data
             doppler_shifted_intensities: array = array([2, 6])

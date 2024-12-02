@@ -1,7 +1,6 @@
 from napytau.core.polynomials import polynomial_sum_at_measuring_times
 from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_times
 from numpy import sum
-from numpy import array
 from numpy import ndarray
 from numpy import mean
 from numpy import power
@@ -141,9 +140,9 @@ def optimize_t_hyp(
             delta_doppler_shifted_intensities,
             delta_unshifted_intensities,
             time,
+            initial_coefficients,
             t_hyp,
             weight_factor,
-            initial_coefficients,
         )[1]
 
     # minimize chi-squared function over the range of t_hyp
