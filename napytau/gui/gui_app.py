@@ -1,3 +1,4 @@
+from os import system
 from typing import List, Tuple
 
 import tkinter as tk
@@ -5,8 +6,9 @@ from tkinter import Canvas
 from tkinter import filedialog
 
 import customtkinter
+from matplotlib.backend_bases import NavigationToolbar2
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 from napytau.cli.cli_arguments import CLIArguments
 from napytau.core.logic_mockup import logic
@@ -80,7 +82,7 @@ class GUIApp(customtkinter.CTk):
         # Initialize information area
         self._init_information_area()
 
-        self.appearance_mode.trace_add("write", self.update_plot)
+
 
     def _init_menu_bar(self) -> None:
         """
@@ -108,19 +110,19 @@ class GUIApp(customtkinter.CTk):
         self.appearance_mode = tk.StringVar(value="system")  # Default: system
         view_menu.add_radiobutton(
             label="Light mode",
-            variable=self.appearance_mode,
             value="light",
-            command=self.change_appearance_mode)
+            command=self.change_appearance_mode,
+            variable = self.appearance_mode,)
         view_menu.add_radiobutton(
             label="Dark mode",
-            variable=self.appearance_mode,
             value="dark",
-            command=self.change_appearance_mode)
+            command=self.change_appearance_mode,
+            variable=self.appearance_mode)
         view_menu.add_radiobutton(
             label="System",
-            variable=self.appearance_mode,
             value="system",
-            command=self.change_appearance_mode)
+            command=self.change_appearance_mode,
+            variable=self.appearance_mode)
 
         # Create button "Polynomials" in menu bar.
         poly_menu = Menu(menubar, tearoff=0)
@@ -168,7 +170,7 @@ class GUIApp(customtkinter.CTk):
         """
         Initializes the graph.
         """
-        self.graph_frame = plot(self.tau.get(), self, self.appearance_mode.get())
+        self.graph_frame = plot(self.tau.get(), self, customtkinter.get_appearance_mode())
         self.graph_frame.grid(
             row=0,
             column=0,
@@ -177,6 +179,7 @@ class GUIApp(customtkinter.CTk):
             pady=10,
             sticky="nsew")
         self.graph_frame.grid_propagate(False)
+
 
 
     def _init_datapoint_checkboxes(self) -> None:
@@ -316,7 +319,13 @@ class GUIApp(customtkinter.CTk):
         Changes the appearance mode to the variable appearance_mode.
         """
         customtkinter.set_appearance_mode(self.appearance_mode.get())
-        print("change appearance mode to " + self.appearance_mode.get())
+
+        print("appearance_mode now: " + self.appearance_mode.get())
+
+        print("change appearance mode to " + customtkinter.get_appearance_mode())
+
+        self.update_appearance()
+
 
     def select_number_of_polynomials(self) -> None:
         """
@@ -444,8 +453,16 @@ class GUIApp(customtkinter.CTk):
 
         self.label.configure(text=f"Result: {logic(entry_value)}")
 
+    #Add function which updates appearance of App on mode change
+    def update_appearance(self):
+        # Wait for the appearance mode to fully update
+        self.after(5, self.update_plot)
+
+        #Leaving space for future development
+
+    #Function for interactivity with the graph
     def update_plot(self, *args):
-        self.graph_frame = plot(self.tau.get(), self, self.appearance_mode.get())
+        self.graph_frame = plot(self.tau.get(), self, customtkinter.get_appearance_mode())
         self.graph_frame.grid(
             row=0,
             column=0,
@@ -464,7 +481,6 @@ def init(cli_arguments: CLIArguments) -> None:
 
 def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
 
-    print(appearance)
     """
     Plot the graph.
     :param value: The value.
@@ -478,21 +494,16 @@ def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
 
     #setting color in dependence of appearance mode
 
-    if appearance == "system":
-        main_color = "#151515"
-        secondary_color = "#ffffff"
-        print("Fall1")
-    elif appearance == "light":
+    if appearance == "Light":
         main_color = "white"
         secondary_color = "#000000"
-        print("Fall2")
+        print("Switched to Light")
     else:
         main_color = "#151515"
         secondary_color = "#ffffff"
-        print("Fall3")
+        print("Switched to Dark")
 
     fig.patch.set_facecolor(main_color)
-
 
     # list of squares
     y = [(i - 50) ** value for i in range(101)]
@@ -519,4 +530,5 @@ def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
     canvas.draw()
 
     return canvas.get_tk_widget()
+
 
