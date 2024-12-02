@@ -16,6 +16,7 @@ class NapatauSetupFiles:
         fit_file: str,
         calibration_file: str,
     ):
+        """Use the static constructor method instead"""
         self.distances_file = distances_file
         self.velocity_file = velocity_file
         self.fit_file = fit_file
@@ -23,17 +24,14 @@ class NapatauSetupFiles:
 
     @staticmethod
     def create_from_file_names(file_names: List[str]) -> NapatauSetupFiles:
-        distances_file = next(file for file in file_names if "distances.dat" in file)
-        velocity_file = next(file for file in file_names if "v_c" in file)
-        fit_file = next(file for file in file_names if "fit" in file)
-        calibration_file = next(file for file in file_names if "norm.fac" in file)
-
-        if (
-            not distances_file
-            or not velocity_file
-            or not fit_file
-            or not calibration_file
-        ):
+        try:
+            distances_file = next(
+                file for file in file_names if "distances.dat" in file
+            )
+            velocity_file = next(file for file in file_names if "v_c" in file)
+            fit_file = next(file for file in file_names if "fit" in file)
+            calibration_file = next(file for file in file_names if "norm.fac" in file)
+        except StopIteration:
             raise ValueError(
                 "Could not find all necessary files in the provided list of file names."
             )
