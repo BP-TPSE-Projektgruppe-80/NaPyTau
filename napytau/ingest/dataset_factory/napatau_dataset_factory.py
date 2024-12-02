@@ -14,7 +14,7 @@ class NapatauDatasetFactory:
         return DataSet(
             NapatauDatasetFactory.parse_velocity(raw_dataset.velocity_rows),
             NapatauDatasetFactory.parse_datapoints(
-                raw_dataset.distances_rows,
+                raw_dataset.distance_rows,
                 raw_dataset.calibration_rows,
                 raw_dataset.fit_rows,
             ),
@@ -35,12 +35,12 @@ class NapatauDatasetFactory:
 
     @staticmethod
     def parse_datapoints(
-        distances_rows: List[str],
+        distance_rows: List[str],
         calibration_rows: List[str],
         fit_rows: List[str],
     ) -> DatapointCollection:
         datapoints = DatapointCollection([])
-        for distance_row in distances_rows:
+        for distance_row in distance_rows:
             distance = NapatauDatasetFactory.parse_distance_row(distance_row)
             datapoints.add_datapoint(Datapoint(distance))
         for calibration_row in calibration_rows:
