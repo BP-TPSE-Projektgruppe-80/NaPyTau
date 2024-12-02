@@ -23,7 +23,7 @@ def ingest_napatau_format_from_files(
     read from this path instead of the directory.
     """
 
-    file_crawler = configure_file_crawler(fit_file_path)
+    file_crawler = _configure_file_crawler(fit_file_path)
 
     setup_file_bundles: List[NapatauSetupFiles] = file_crawler.crawl(directory_path)
 
@@ -42,7 +42,7 @@ def ingest_napatau_format_from_files(
     )
 
 
-def configure_file_crawler(fit_file_path: Optional[str]) -> FileCrawler:
+def _configure_file_crawler(fit_file_path: Optional[str]) -> FileCrawler:
     if fit_file_path:
         file_crawler = FileCrawler(
             ["v_c", "distances.dat", "norm.fac"],

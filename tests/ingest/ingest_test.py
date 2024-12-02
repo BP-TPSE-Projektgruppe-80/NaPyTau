@@ -1,0 +1,292 @@
+import unittest
+from unittest.mock import MagicMock, patch
+
+from napytau.ingest.crawler.napatau_setup_files import NapatauSetupFiles
+
+
+def set_up_mocks() -> (
+    MagicMock,
+    MagicMock,
+    MagicMock,
+    MagicMock,
+    MagicMock,
+    MagicMock,
+):
+    file_crawler_module_mock = MagicMock()
+    file_crawler_mock = MagicMock()
+    file_crawler_mock.crawl = MagicMock()
+    file_crawler_module_mock.FileCrawler = file_crawler_mock
+    file_crawler_module_mock.FileCrawler.return_value = (
+        file_crawler_module_mock.FileCrawler
+    )
+    raw_napatau_data_module_mock = MagicMock()
+    raw_napatau_data_mock = MagicMock()
+    raw_napatau_data_module_mock.RawNapatauData = raw_napatau_data_mock
+    napatau_setup_files_module_mock = MagicMock()
+    napatau_setup_files_mock = MagicMock()
+    napatau_setup_files_module_mock.NapatauSetupFiles = napatau_setup_files_mock
+    dataset_module_mock = MagicMock()
+    dataset_mock = MagicMock()
+    dataset_module_mock.DataSet = dataset_mock
+    file_reader_module_mock = MagicMock()
+    file_reader_mock = MagicMock()
+    file_reader_module_mock.FileReader = file_reader_mock
+    read_rows_mock = MagicMock()
+    file_reader_mock.read_rows = read_rows_mock
+    return (
+        file_crawler_module_mock,
+        raw_napatau_data_module_mock,
+        napatau_setup_files_module_mock,
+        dataset_module_mock,
+        file_reader_module_mock,
+    )
+
+
+class IngestUnitTest(unittest.TestCase):
+    def test_instantiatesTheFileCrawlerWithAFitPatternIfNoFitFileIsProvided(self):
+        """Instantiates the file crawler with a fit pattern if no fit file is provided."""  # noqa E501
+        (
+            file_crawler_module_mock,
+            raw_napatau_data_module_mock,
+            napatau_setup_files_module_mock,
+            dataset_module_mock,
+            file_reader_module_mock,
+        ) = set_up_mocks()
+        with patch.dict(
+            "sys.modules",
+            {
+                "napytau.ingest.dataset_factory.napatau_dataset_factory": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.dataset_factory.raw_napatau_data": raw_napatau_data_module_mock,  # noqa E501
+                "napytau.ingest.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
+                "napytau.ingest.crawler.napatau_setup_files": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.model.dataset": dataset_module_mock,  # noqa E501
+                "napytau.ingest.reader.file_reader": file_reader_module_mock,  # noqa E501
+            },
+        ):
+            from napytau.ingest.ingest import ingest_napatau_format_from_files
+
+            ingest_napatau_format_from_files("test_directory")
+            self.assertEqual(
+                file_crawler_module_mock.FileCrawler.mock_calls[0].args[0],
+                ["v_c", "distances.dat", "norm.fac", ".*.fit"],
+            )
+            file_crawler_module_mock.FileCrawler.mock_calls[0].args[1](["test"])
+            self.assertEqual(
+                napatau_setup_files_module_mock.NapatauSetupFiles.create_from_file_names.mock_calls[
+                    0
+                ].args[0],
+                ["test"],
+            )
+
+    def test_instantiatesTheFileCrawlerWithoutAFitPatternIfAFitFileIsProvided(self):
+        """Instantiates the file crawler without a fit pattern if a fit file is provided."""  # noqa E501
+        (
+            file_crawler_module_mock,
+            raw_napatau_data_module_mock,
+            napatau_setup_files_module_mock,
+            dataset_module_mock,
+            file_reader_module_mock,
+        ) = set_up_mocks()
+        with patch.dict(
+            "sys.modules",
+            {
+                "napytau.ingest.dataset_factory.napatau_dataset_factory": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.dataset_factory.raw_napatau_data": raw_napatau_data_module_mock,  # noqa E501
+                "napytau.ingest.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
+                "napytau.ingest.crawler.napatau_setup_files": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.model.dataset": dataset_module_mock,  # noqa E501
+                "napytau.ingest.reader.file_reader": file_reader_module_mock,  # noqa E501
+            },
+        ):
+            from napytau.ingest.ingest import ingest_napatau_format_from_files
+
+            ingest_napatau_format_from_files("test_directory", "test.fit")
+            self.assertEqual(
+                file_crawler_module_mock.FileCrawler.mock_calls[0].args[0],
+                ["v_c", "distances.dat", "norm.fac"],
+            )
+            file_crawler_module_mock.FileCrawler.mock_calls[0].args[1](["test"])
+            self.assertEqual(
+                napatau_setup_files_module_mock.NapatauSetupFiles.create_from_file_names.mock_calls[
+                    0
+                ].args[0],
+                ["test", "test.fit"],
+            )
+
+    @staticmethod
+    def test_callsTheCrawlersCrawlMethodWithTheProvidedDirectoryPath():
+        """Calls the crawler's crawl method with the provided directory path."""
+        (
+            file_crawler_module_mock,
+            raw_napatau_data_module_mock,
+            napatau_setup_files_module_mock,
+            dataset_module_mock,
+            file_reader_module_mock,
+        ) = set_up_mocks()
+        with patch.dict(
+            "sys.modules",
+            {
+                "napytau.ingest.dataset_factory.napatau_dataset_factory": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.dataset_factory.raw_napatau_data": raw_napatau_data_module_mock,  # noqa E501
+                "napytau.ingest.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
+                "napytau.ingest.crawler.napatau_setup_files": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.model.dataset": dataset_module_mock,  # noqa E501
+                "napytau.ingest.reader.file_reader": file_reader_module_mock,  # noqa E501
+            },
+        ):
+            from napytau.ingest.ingest import ingest_napatau_format_from_files
+
+            ingest_napatau_format_from_files("test_directory")
+            file_crawler_module_mock.FileCrawler.mock_calls[0].crawl("test_directory")
+
+    def test_readsEveryFileReturnedByTheFileCrawler(self):
+        """Reads every file returned by the file crawler."""
+        (
+            file_crawler_module_mock,
+            raw_napatau_data_module_mock,
+            napatau_setup_files_module_mock,
+            dataset_module_mock,
+            file_reader_module_mock,
+        ) = set_up_mocks()
+        file_crawler_module_mock.FileCrawler.return_value = (
+            file_crawler_module_mock.FileCrawler
+        )
+        file_crawler_module_mock.FileCrawler.crawl.return_value = [
+            NapatauSetupFiles(
+                "test_distances.dat",
+                "test_v_c",
+                "test_fit",
+                "test_norm.fac",
+            )
+        ]
+
+        with patch.dict(
+            "sys.modules",
+            {
+                "napytau.ingest.dataset_factory.napatau_dataset_factory": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.dataset_factory.raw_napatau_data": raw_napatau_data_module_mock,  # noqa E501
+                "napytau.ingest.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
+                "napytau.ingest.crawler.napatau_setup_files": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.model.dataset": dataset_module_mock,  # noqa E501
+                "napytau.ingest.reader.file_reader": file_reader_module_mock,  # noqa E501
+            },
+        ):
+            from napytau.ingest.ingest import ingest_napatau_format_from_files
+
+            ingest_napatau_format_from_files("test_directory")
+            self.assertEqual(
+                file_reader_module_mock.FileReader.read_rows.mock_calls[0].args[0],
+                "test_v_c",
+            )
+            self.assertEqual(
+                file_reader_module_mock.FileReader.read_rows.mock_calls[1].args[0],
+                "test_distances.dat",
+            )
+            self.assertEqual(
+                file_reader_module_mock.FileReader.read_rows.mock_calls[2].args[0],
+                "test_fit",
+            )
+            self.assertEqual(
+                file_reader_module_mock.FileReader.read_rows.mock_calls[3].args[0],
+                "test_norm.fac",
+            )
+
+    @staticmethod
+    def test_instantiatesTheRawNapatauDataWithTheRowsReadByTheFileReader():
+        """Instantiates the raw napatau data with the rows read by the file reader."""
+        (
+            file_crawler_module_mock,
+            raw_napatau_data_module_mock,
+            napatau_setup_files_module_mock,
+            dataset_module_mock,
+            file_reader_module_mock,
+        ) = set_up_mocks()
+        file_crawler_module_mock.FileCrawler.return_value = (
+            file_crawler_module_mock.FileCrawler
+        )
+        file_crawler_module_mock.FileCrawler.crawl.return_value = [
+            NapatauSetupFiles(
+                "test_distances.dat",
+                "test_v_c",
+                "test_fit",
+                "test_norm.fac",
+            )
+        ]
+        file_reader_module_mock.FileReader.read_rows.side_effect = [
+            ["v_c_row"],
+            ["distances.dat_row"],
+            ["fit_row"],
+            ["calibration_row"],
+        ]
+        with patch.dict(
+            "sys.modules",
+            {
+                "napytau.ingest.dataset_factory.napatau_dataset_factory": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.dataset_factory.raw_napatau_data": raw_napatau_data_module_mock,  # noqa E501
+                "napytau.ingest.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
+                "napytau.ingest.crawler.napatau_setup_files": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.model.dataset": dataset_module_mock,  # noqa E501
+                "napytau.ingest.reader.file_reader": file_reader_module_mock,  # noqa E501
+            },
+        ):
+            from napytau.ingest.ingest import ingest_napatau_format_from_files
+
+            ingest_napatau_format_from_files("test_directory")
+            raw_napatau_data_module_mock.RawNapatauData.mock_calls[
+                0
+            ].assert_called_with(
+                ["v_c_row"],
+                ["distances.dat_row"],
+                ["fit_row"],
+                ["calibration_row"],
+            )
+
+    @staticmethod
+    def test_callsTheNapatauDatasetFactoryWithTheRawNapatauData():
+        """Calls the napatau dataset factory with the raw napatau data."""
+        (
+            file_crawler_module_mock,
+            raw_napatau_data_module_mock,
+            napatau_setup_files_module_mock,
+            dataset_module_mock,
+            file_reader_module_mock,
+        ) = set_up_mocks()
+        file_crawler_module_mock.FileCrawler.return_value = (
+            file_crawler_module_mock.FileCrawler
+        )
+        file_crawler_module_mock.FileCrawler.crawl.return_value = [
+            NapatauSetupFiles(
+                "test_distances.dat",
+                "test_v_c",
+                "test_fit",
+                "test_norm.fac",
+            )
+        ]
+        file_reader_module_mock.FileReader.read_rows.side_effect = [
+            ["v_c_row"],
+            ["distances.dat_row"],
+            ["fit_row"],
+            ["calibration_row"],
+        ]
+        raw_napatau_data_module_mock.RawNapatauData.return_value = "raw_napatau_data"
+        with patch.dict(
+            "sys.modules",
+            {
+                "napytau.ingest.dataset_factory.napatau_dataset_factory": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.dataset_factory.raw_napatau_data": raw_napatau_data_module_mock,  # noqa E501
+                "napytau.ingest.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
+                "napytau.ingest.crawler.napatau_setup_files": napatau_setup_files_module_mock,  # noqa E501
+                "napytau.ingest.model.dataset": dataset_module_mock,  # noqa E501
+                "napytau.ingest.reader.file_reader": file_reader_module_mock,  # noqa E501
+            },
+        ):
+            from napytau.ingest.ingest import ingest_napatau_format_from_files
+
+            ingest_napatau_format_from_files("test_directory")
+            napatau_setup_files_module_mock.NapatauDatasetFactory.create_dataset.assert_called_with(
+                "raw_napatau_data",
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()

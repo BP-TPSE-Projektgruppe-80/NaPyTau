@@ -38,7 +38,7 @@ class FileCrawler[T](Crawler[str, T]):
         crawled_files = []
 
         directory_tree = walk(directory_path)
-        for root_path, directories, files in directory_tree:
+        for root_path, _, files in directory_tree:
             crawled_files_in_directory = []
             for file in files:
                 if any(

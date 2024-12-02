@@ -90,7 +90,7 @@ class NapatauDatasetFactory:
         split_row = calibration_row.split(" ")
         if len(split_row) < 3:
             raise ValueError(
-                f"Expected at least 2 values in calibration row, but got {len(split_row)}"  # noqa E501
+                f"Expected at least 3 values in calibration row, but got {len(split_row)}"  # noqa E501
             )
 
         distance_index = float(split_row[0])
