@@ -1,3 +1,4 @@
+
 from os import system
 from typing import List, Tuple
 
@@ -118,11 +119,7 @@ class GUIApp(customtkinter.CTk):
             value="dark",
             command=self.change_appearance_mode,
             variable=self.appearance_mode)
-        view_menu.add_radiobutton(
-            label="System",
-            value="system",
-            command=self.change_appearance_mode,
-            variable=self.appearance_mode)
+
 
         # Create button "Polynomials" in menu bar.
         poly_menu = Menu(menubar, tearoff=0)
@@ -320,9 +317,8 @@ class GUIApp(customtkinter.CTk):
         """
         customtkinter.set_appearance_mode(self.appearance_mode.get())
 
-        print("appearance_mode now: " + self.appearance_mode.get())
 
-        print("change appearance mode to " + customtkinter.get_appearance_mode())
+
 
         self.update_appearance()
 
@@ -456,7 +452,7 @@ class GUIApp(customtkinter.CTk):
     #Add function which updates appearance of App on mode change
     def update_appearance(self):
         # Wait for the appearance mode to fully update
-        self.after(5, self.update_plot)
+        self.update_plot()
 
         #Leaving space for future development
 
@@ -497,11 +493,9 @@ def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
     if appearance == "Light":
         main_color = "white"
         secondary_color = "#000000"
-        print("Switched to Light")
     else:
         main_color = "#151515"
         secondary_color = "#ffffff"
-        print("Switched to Dark")
 
     fig.patch.set_facecolor(main_color)
 
@@ -519,7 +513,7 @@ def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
     plot1.tick_params(axis='y', colors=secondary_color)
 
     #add grid style
-    plot1.grid(True, which= 'both', color= secondary_color, linestyle='--', linewidth=0.7)
+    plot1.grid(True, which= 'both', color= secondary_color, linestyle='--', linewidth=0.3)
 
     # plotting the graph
     plot1.plot(y)
@@ -530,5 +524,4 @@ def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
     canvas.draw()
 
     return canvas.get_tk_widget()
-
 
