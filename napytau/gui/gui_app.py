@@ -12,7 +12,7 @@ from napytau.cli.cli_arguments import CLIArguments
 from napytau.core.logic_mockup import logic
 from tkinter import Menu
 
-from napytau.gui.checkbox_datapoint import CheckboxDataPoint
+from napytau.gui.model.checkbox_datapoint import CheckboxDataPoint
 
 customtkinter.set_appearance_mode(
     "System"
@@ -31,6 +31,7 @@ class GUIApp(customtkinter.CTk):
     def __init__(self) -> None:
         """
         Constructor for the GUIApp, initializes the GUI.
+        This is the logical entry point into the GUI.
         """
         super().__init__()
 
