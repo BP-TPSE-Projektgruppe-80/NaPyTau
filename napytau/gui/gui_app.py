@@ -1,5 +1,3 @@
-
-from os import system
 from typing import List, Tuple
 
 import tkinter as tk
@@ -7,9 +5,8 @@ from tkinter import Canvas
 from tkinter import filedialog
 
 import customtkinter
-from matplotlib.backend_bases import NavigationToolbar2
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from napytau.cli.cli_arguments import CLIArguments
 from napytau.core.logic_mockup import logic
@@ -30,6 +27,7 @@ customtkinter.set_appearance_mode("System")
 # Themes: "blue" (standard), "green", "dark-blue"
 customtkinter.set_default_color_theme("blue")
 
+
 class GUIApp(customtkinter.CTk):
     def __init__(self) -> None:
         """
@@ -38,9 +36,9 @@ class GUIApp(customtkinter.CTk):
         super().__init__()
 
         # Datapoints
-        self.datapoints: List[Tuple[float, float]]=[]
-        self.datapoints_for_fitting: List[CheckboxDataPoint]=[]
-        self.datapoints_for_calculation: List[CheckboxDataPoint]=[]
+        self.datapoints: List[Tuple[float, float]] = []
+        self.datapoints_for_fitting: List[CheckboxDataPoint] = []
+        self.datapoints_for_calculation: List[CheckboxDataPoint] = []
 
         # values
         self.tau = tk.IntVar()
@@ -70,9 +68,7 @@ class GUIApp(customtkinter.CTk):
 
         # Initialize menu bar
         self._init_menu_bar()
-
-        # Initialize graph
-        self._init_graph()
+        self.graph_frame: Canvas = self._init_graph()
 
         # Initialize Checkboxes with datapoints
         self._init_datapoint_checkboxes()
@@ -82,8 +78,6 @@ class GUIApp(customtkinter.CTk):
 
         # Initialize information area
         self._init_information_area()
-
-
 
     def _init_menu_bar(self) -> None:
         """
@@ -113,13 +107,14 @@ class GUIApp(customtkinter.CTk):
             label="Light mode",
             value="light",
             command=self.change_appearance_mode,
-            variable = self.appearance_mode,)
+            variable=self.appearance_mode,
+        )
         view_menu.add_radiobutton(
             label="Dark mode",
             value="dark",
             command=self.change_appearance_mode,
-            variable=self.appearance_mode)
-
+            variable=self.appearance_mode,
+        )
 
         # Create button "Polynomials" in menu bar.
         poly_menu = Menu(menubar, tearoff=0)
@@ -133,19 +128,22 @@ class GUIApp(customtkinter.CTk):
                 label=str(i),
                 variable=self.number_of_polynomials,
                 value=str(i),
-                command=self.select_number_of_polynomials)
+                command=self.select_number_of_polynomials,
+            )
         poly_menu.add_separator()
         self.polynomial_mode = tk.StringVar(value="Exponential")  # Default: Exponential
         poly_menu.add_radiobutton(
             label="Equidistant",
             variable=self.polynomial_mode,
             value="Equidistant",
-            command=self.select_polynomial_mode)
+            command=self.select_polynomial_mode,
+        )
         poly_menu.add_radiobutton(
             label="Exponential",
             variable=self.polynomial_mode,
             value="Exponential",
-            command=self.select_polynomial_mode)
+            command=self.select_polynomial_mode,
+        )
 
         # Create button "Alpha calculation" in menu bar.
         alpha_calc_menu = Menu(menubar, tearoff=0)
@@ -156,57 +154,52 @@ class GUIApp(customtkinter.CTk):
             label="Sum Ratio",
             variable=self.alpha_calc_mode,
             value="sum ratio",
-            command=self.select_alpha_calc_mode)
+            command=self.select_alpha_calc_mode,
+        )
         alpha_calc_menu.add_radiobutton(
             label="Weighted Mean",
             variable=self.alpha_calc_mode,
             value="weighted mean",
-            command=self.select_alpha_calc_mode)
+            command=self.select_alpha_calc_mode,
+        )
 
-    def _init_graph(self) -> None:
+    def _init_graph(self) -> Canvas:
         """
         Initializes the graph.
         """
-        self.graph_frame = plot(self.tau.get(), self, customtkinter.get_appearance_mode())
-        self.graph_frame.grid(
-            row=0,
-            column=0,
-            rowspan=2,
-            padx=10,
-            pady=10,
-            sticky="nsew")
-        self.graph_frame.grid_propagate(False)
+        graph_frame = plot(self.tau.get(), self, customtkinter.get_appearance_mode())
+        graph_frame.grid(row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew")
+        graph_frame.grid_propagate(False)
 
-
+        return graph_frame
 
     def _init_datapoint_checkboxes(self) -> None:
         """
         Initializes the datapoint checkboxes.
         """
         self.frame_datapoint_checkboxes = customtkinter.CTkScrollableFrame(
-            self,
-            width=200,
-            height=250)
+            self, width=200, height=250
+        )
         self.frame_datapoint_checkboxes.grid(
-            row=0,
-            column=1,
-            padx=0,
-            pady=0,
-            sticky="nsew")
+            row=0, column=1, padx=0, pady=0, sticky="nsew"
+        )
 
         # Update data checkboxes to with some data to create them.
         # TODO: Remove dummy points later on.
-        self.update_data_checkboxes([
-            (1.0, 5.23),
-            (2.0, 7.1),
-            (3.0, 0.44),
-            (4.0, 12.76),
-            (5.0, 5.0),
-            (6.0, 4.93),
-            (7.0, 2.7),
-            (8.0, 7.1),
-            (9.0, 9.52),
-            (10.0, 1.85)])
+        self.update_data_checkboxes(
+            [
+                (1.0, 5.23),
+                (2.0, 7.1),
+                (3.0, 0.44),
+                (4.0, 12.76),
+                (5.0, 5.0),
+                (6.0, 4.93),
+                (7.0, 2.7),
+                (8.0, 7.1),
+                (9.0, 9.52),
+                (10.0, 1.85),
+            ]
+        )
 
     def _init_control_area(self) -> None:
         """
@@ -214,12 +207,8 @@ class GUIApp(customtkinter.CTk):
         """
         self.button_area = customtkinter.CTkFrame(self, corner_radius=10)
         self.button_area.grid(
-            row=1,
-            column=1,
-            columnspan=2,
-            padx=10,
-            pady=10,
-            sticky="nsew")
+            row=1, column=1, columnspan=2, padx=10, pady=10, sticky="nsew"
+        )
         self.button_area.grid_rowconfigure((0, 1), weight=1)
         self.button_area.grid_propagate(True)
 
@@ -239,7 +228,10 @@ class GUIApp(customtkinter.CTk):
         # Calculation
         self.entry = customtkinter.CTkEntry(self.button_area, textvariable=self.tau)
         self.entry.grid(
-            row=1, column=0, padx=10, pady=10  # , sticky="nsew"
+            row=1,
+            column=0,
+            padx=10,
+            pady=10,  # , sticky="nsew"
         )
 
         self.main_button_1 = customtkinter.CTkButton(
@@ -250,13 +242,9 @@ class GUIApp(customtkinter.CTk):
             text_color=("gray10", "#DCE4EE"),
             command=self.calc,
         )
-        self.main_button_1.grid(
-            row=1, column=1, padx=10, pady=10, sticky="nsew"
-        )
+        self.main_button_1.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
         self.label = customtkinter.CTkLabel(self.button_area, width=200)
-        self.label.grid(
-            row=2, column=0, columnspan=1, padx=10, pady=10, sticky="nsew"
-        )
+        self.label.grid(row=2, column=0, columnspan=1, padx=10, pady=10, sticky="nsew")
         self.label.configure(text="Result: ")
 
     def _init_information_area(self) -> None:
@@ -265,12 +253,8 @@ class GUIApp(customtkinter.CTk):
         """
         self.output_frame = customtkinter.CTkFrame(self, height=100, corner_radius=10)
         self.output_frame.grid(
-            row=2,
-            column=0,
-            columnspan=2,
-            padx=10,
-            pady=10,
-            sticky="nsew")
+            row=2, column=0, columnspan=2, padx=10, pady=10, sticky="nsew"
+        )
         self.output_frame.grid_propagate(False)
 
         self.output_label = customtkinter.CTkLabel(
@@ -285,8 +269,11 @@ class GUIApp(customtkinter.CTk):
         print("open_file")
         file_path = filedialog.askopenfilename(
             title="Choose file",
-            filetypes = [("ALl files", "*.*"), ("Text files", "*.txt"),
-                         ("Python files", "*.py")]
+            filetypes=[
+                ("ALl files", "*.*"),
+                ("Text files", "*.txt"),
+                ("Python files", "*.py"),
+            ],
         )
 
         if file_path:
@@ -317,11 +304,7 @@ class GUIApp(customtkinter.CTk):
         """
         customtkinter.set_appearance_mode(self.appearance_mode.get())
 
-
-
-
-        self.update_appearance()
-
+        self.update_plot()
 
     def select_number_of_polynomials(self) -> None:
         """
@@ -348,13 +331,14 @@ class GUIApp(customtkinter.CTk):
         """
         # Clear all checkboxes for the fitting
         for widget in self.frame_datapoint_checkboxes.winfo_children():
-            if widget.grid_info().get("column") == 0: # Column 0 for fitting
+            if widget.grid_info().get("column") == 0:  # Column 0 for fitting
                 widget.grid_forget()
 
         header_label = customtkinter.CTkLabel(
             self.frame_datapoint_checkboxes,
             text="Datapoints for fitting",
-            font=("Arial", 16))
+            font=("Arial", 16),
+        )
         header_label.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         # Update all checkboxes for the fitting
@@ -365,8 +349,9 @@ class GUIApp(customtkinter.CTk):
                 self.frame_datapoint_checkboxes,
                 text=f"({x} | {y})",
                 variable=customtkinter.IntVar(value=1),
-                command=lambda index=i: self._data_checkbox_fitting_event(index))
-            checkbox.grid(row=i+1, column=0, padx=10, pady=2, sticky="nsew")
+                command=lambda index=i: self._data_checkbox_fitting_event(index),
+            )
+            checkbox.grid(row=i + 1, column=0, padx=10, pady=2, sticky="nsew")
 
     def _data_checkbox_fitting_event(self, index: int) -> None:
         """
@@ -375,8 +360,9 @@ class GUIApp(customtkinter.CTk):
         Toggles the intern boolean value of the datapoint.
         :param index: Index of the pressed data checkbox.
         """
-        self.datapoints_for_fitting[index].is_checked =\
-            not self.datapoints_for_fitting[index].is_checked
+        self.datapoints_for_fitting[index].is_checked = not self.datapoints_for_fitting[
+            index
+        ].is_checked
         if self.datapoints_for_fitting[index].is_checked:
             print("[fitting] checkbox with index " + str(index) + " activated.")
         else:
@@ -395,7 +381,8 @@ class GUIApp(customtkinter.CTk):
         header_label = customtkinter.CTkLabel(
             self.frame_datapoint_checkboxes,
             text="Datapoints for tau calculation",
-            font=("Arial", 16))
+            font=("Arial", 16),
+        )
         header_label.grid(row=0, column=1, padx=30, pady=5, sticky="nsew")
 
         # Update all checkboxes for the calculation
@@ -406,7 +393,8 @@ class GUIApp(customtkinter.CTk):
                 self.frame_datapoint_checkboxes,
                 text=f"({x} | {y})",
                 variable=customtkinter.IntVar(value=1),
-                command=lambda index=i: self._data_checkbox_calculation_event(index))
+                command=lambda index=i: self._data_checkbox_calculation_event(index),
+            )
             checkbox.grid(row=i + 1, column=1, padx=35, pady=2, sticky="nsew")
 
     def _data_checkbox_calculation_event(self, index: int) -> None:
@@ -416,8 +404,9 @@ class GUIApp(customtkinter.CTk):
         Toggles the intern boolean value of the datapoint.
         :param index: Index of the pressed data checkbox.
         """
-        self.datapoints_for_calculation[index].is_checked = \
-            not self.datapoints_for_calculation[index].is_checked
+        self.datapoints_for_calculation[
+            index
+        ].is_checked = not self.datapoints_for_calculation[index].is_checked
         if self.datapoints_for_calculation[index].is_checked:
             print("[calculation] checkbox with index " + str(index) + " activated.")
         else:
@@ -443,40 +432,27 @@ class GUIApp(customtkinter.CTk):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
 
-
     def calc(self) -> None:
         entry_value = self.tau.get()
 
         self.label.configure(text=f"Result: {logic(entry_value)}")
 
-    #Add function which updates appearance of App on mode change
-    def update_appearance(self):
-        # Wait for the appearance mode to fully update
-        self.update_plot()
-
-        #Leaving space for future development
-
-    #Function for interactivity with the graph
-    def update_plot(self, *args):
-        self.graph_frame = plot(self.tau.get(), self, customtkinter.get_appearance_mode())
+    def update_plot(self) -> None:
+        self.graph_frame = plot(
+            self.tau.get(), self, customtkinter.get_appearance_mode()
+        )
         self.graph_frame.grid(
-            row=0,
-            column=0,
-            rowspan=2,
-            padx=10,
-            pady=10,
-            sticky="nsew")
+            row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew"
+        )
         self.graph_frame.grid_propagate(False)
-
-
 
 
 def init(cli_arguments: CLIArguments) -> None:
     app = GUIApp()
     app.mainloop()
 
-def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
 
+def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
     """
     Plot the graph.
     :param value: The value.
@@ -486,9 +462,9 @@ def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
     # the figure that will contain the plot
     fig = Figure(figsize=(3, 2), dpi=100, facecolor="white", edgecolor="black")
 
-    #setting color
+    # setting color
 
-    #setting color in dependence of appearance mode
+    # setting color in dependence of appearance mode
 
     if appearance == "Light":
         main_color = "white"
@@ -505,15 +481,15 @@ def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
     # adding the subplot
     plot1 = fig.add_subplot(111)
 
-    #set color of background
+    # set color of background
     plot1.set_facecolor(main_color)
 
-    #set color of ticks
-    plot1.tick_params(axis='x', colors=secondary_color)  # Set x-axis tick label color
-    plot1.tick_params(axis='y', colors=secondary_color)
+    # set color of ticks
+    plot1.tick_params(axis="x", colors=secondary_color)  # Set x-axis tick label color
+    plot1.tick_params(axis="y", colors=secondary_color)
 
-    #add grid style
-    plot1.grid(True, which= 'both', color= secondary_color, linestyle='--', linewidth=0.3)
+    # add grid style
+    plot1.grid(True, which="both", color=secondary_color, linestyle="--", linewidth=0.3)
 
     # plotting the graph
     plot1.plot(y)
@@ -524,4 +500,3 @@ def plot(value: int, window: GUIApp, appearance: str) -> Canvas:
     canvas.draw()
 
     return canvas.get_tk_widget()
-
