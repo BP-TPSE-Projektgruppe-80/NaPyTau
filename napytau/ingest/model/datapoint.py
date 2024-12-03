@@ -39,15 +39,19 @@ class Datapoint:
     def set_distance(self, distance: ValueErrorPair[float]) -> None:
         self.distance = distance
 
-    def get_calibration(self) -> Optional[ValueErrorPair[float]]:
+    def get_calibration(self) -> ValueErrorPair[float]:
+        if self.calibration is None:
+            raise ValueError("Calibration was accessed before initialization.")
+
         return self.calibration
 
     def set_calibration(self, calibration: ValueErrorPair[float]) -> None:
         self.calibration = calibration
 
-    def get_intensity(
-        self,
-    ) -> Tuple[Optional[ValueErrorPair[float]], Optional[ValueErrorPair[float]]]:
+    def get_intensity(self) -> Tuple[ValueErrorPair[float], ValueErrorPair[float]]:
+        if self.shifted_intensity is None or self.unshifted_intensity is None:
+            raise ValueError("Intensity was accessed before initialization.")
+
         return (
             self.shifted_intensity,
             self.unshifted_intensity,
