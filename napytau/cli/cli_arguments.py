@@ -1,23 +1,29 @@
+from typing import Optional
+
 from napytau.util.coalesce import coalesce
 from argparse import Namespace
 
 
 class CLIArguments:
     headless: bool
-    filename: str
+    dataset_format: str
+    setup_files_directory: Optional[str]
+    fit_file_path: Optional[str]
 
     def __init__(self, raw_args: Namespace):
         self.headless = coalesce(raw_args.headless, False)
-        self.filename = raw_args.filename
-
-    def __str__(self) -> str:
-        return f"CLIArguments(headless={self.headless}, filename={self.filename})"
+        self.dataset_format = raw_args.dataset_format
+        self.setup_files_directory = raw_args.setup_files_directory
+        self.fit_file_path = raw_args.fit_file
 
     def is_headless(self) -> bool:
         return self.headless
 
-    def has_filename(self) -> bool:
-        return self.filename is not None
+    def get_dataset_format(self) -> str:
+        return self.dataset_format
 
-    def get_filename(self) -> str:
-        return self.filename
+    def get_setup_files_directory_path(self) -> Optional[str]:
+        return self.setup_files_directory
+
+    def get_fit_file_path(self) -> Optional[str]:
+        return self.fit_file_path
