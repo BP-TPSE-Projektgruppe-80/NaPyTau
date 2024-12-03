@@ -7,6 +7,10 @@ from napytau.ingest.crawler.napatau_setup_files import NapatauSetupFiles
 from napytau.ingest.model.dataset import DataSet
 from napytau.ingest.reader.file_reader import FileReader
 
+INGEST_FORMAT_NAPATAU = "napatau"
+
+INGEST_FORMATS = [INGEST_FORMAT_NAPATAU]
+
 
 def ingest_napatau_format_from_files(
     directory_path: str, fit_file_path: Optional[str] = None
