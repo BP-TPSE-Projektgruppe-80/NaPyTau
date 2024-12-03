@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, Iterator
 
 from napytau.ingest.model.datapoint import Datapoint
 from napytau.util.coalesce import coalesce
@@ -13,6 +13,15 @@ class DatapointCollection:
         self.elements = {}
         for datapoint in raw_datapoints:
             self.elements[hash(datapoint.distance.value)] = datapoint
+
+    def __len__(self) -> int:
+        return len(self.elements)
+
+    def __iter__(self) -> Iterator[Datapoint]:
+        return iter(self.elements.values())
+
+    def __getitem__(self, key: int) -> Datapoint:
+        return list(self.elements.values())[key]
 
     def as_dict(self) -> Dict[int, Datapoint]:
         """Return the collection as a dictionary. Keys are the hash of the distance value."""  # noqa E501
