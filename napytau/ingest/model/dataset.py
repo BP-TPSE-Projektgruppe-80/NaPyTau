@@ -11,6 +11,9 @@ class DataSet:
     A dataset represents the entirety of the data collected from a single observation.
     """
 
+    relative_velocity: RelativeVelocity
+    datapoints: DatapointCollection
+
     def get_relative_velocity(self) -> RelativeVelocity:
         return self.relative_velocity
 
