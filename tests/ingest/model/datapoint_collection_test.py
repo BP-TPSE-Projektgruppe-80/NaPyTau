@@ -6,6 +6,53 @@ from napytau.util.model.value_error_pair import ValueErrorPair
 
 
 class DatapointCollectionUnitTest(unittest.TestCase):
+    def test_canDetermineItsLength(self):
+        """Can determine its length"""
+        collection = DatapointCollection(
+            [
+                Datapoint(
+                    distance=ValueErrorPair(12.12, 0.1),
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.13, 0.1),
+                ),
+            ]
+        )
+
+        self.assertEqual(len(collection), 2)
+
+    def test_canBeIteratedOver(self):
+        """Can be iterated over"""
+        collection = DatapointCollection(
+            [
+                Datapoint(
+                    distance=ValueErrorPair(12.12, 0.1),
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.13, 0.1),
+                ),
+            ]
+        )
+
+        for datapoint in collection:
+            self.assertIsInstance(datapoint, Datapoint)
+
+    def test_canBeIndexed(self):
+        """Can be indexed"""
+        collection = DatapointCollection(
+            [
+                Datapoint(
+                    distance=ValueErrorPair(12.12, 0.1),
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.13, 0.1),
+                ),
+            ]
+        )
+
+        self.assertIsInstance(collection[0], Datapoint)
+        self.assertEqual(collection[0].distance.value, 12.12)
+
     def test_distinguishesDistancesToAReasonablePrecision(self):
         """Can distinguish two datapoints based on their distance values to a reasonable precision"""  # noqa E501
         datapoints = [

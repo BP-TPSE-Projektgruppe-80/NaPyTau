@@ -17,5 +17,5 @@ class DatapointUnitTest(unittest.TestCase):
             datapoint.get_intensity()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
