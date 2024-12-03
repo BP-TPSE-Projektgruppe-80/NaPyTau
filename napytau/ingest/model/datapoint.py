@@ -1,37 +1,27 @@
+from dataclasses import dataclass
 from typing import Optional, Tuple
 
 from napytau.util.model.value_error_pair import ValueErrorPair
 
 
+@dataclass
 class Datapoint:
     """
     A class to represent a single datapoint in a dataset.
     Distance acts as a key, identifying the datapoint, therefore it is required.
     All other attributes are optional and can be set later.
+
+    As this class sits at the core of the entire system, it is important to take care
+    when modifying it. Any changes to this class will have a ripple effect on the entire
+    system.
     """
 
     distance: ValueErrorPair[float]
-    calibration: Optional[ValueErrorPair[float]]
-    shifted_intensity: Optional[ValueErrorPair[float]]
-    unshifted_intensity: Optional[ValueErrorPair[float]]
-    feeding_shifted_intensity: Optional[ValueErrorPair[float]]
-    feeding_unshifted_intensity: Optional[ValueErrorPair[float]]
-
-    def __init__(
-        self,
-        distance: ValueErrorPair[float],
-        calibration: Optional[ValueErrorPair[float]] = None,
-        shifted_intensity: Optional[ValueErrorPair[float]] = None,
-        unshifted_intensity: Optional[ValueErrorPair[float]] = None,
-        feeding_shifted_intensity: Optional[ValueErrorPair[float]] = None,
-        feeding_unshifted_intensity: Optional[ValueErrorPair[float]] = None,
-    ) -> None:
-        self.distance = distance
-        self.calibration = calibration
-        self.shifted_intensity = shifted_intensity
-        self.unshifted_intensity = unshifted_intensity
-        self.feeding_shifted_intensity = feeding_shifted_intensity
-        self.feeding_unshifted_intensity = feeding_unshifted_intensity
+    calibration: Optional[ValueErrorPair[float]] = None
+    shifted_intensity: Optional[ValueErrorPair[float]] = None
+    unshifted_intensity: Optional[ValueErrorPair[float]] = None
+    feeding_shifted_intensity: Optional[ValueErrorPair[float]] = None
+    feeding_unshifted_intensity: Optional[ValueErrorPair[float]] = None
 
     def get_distance(self) -> ValueErrorPair[float]:
         return self.distance
