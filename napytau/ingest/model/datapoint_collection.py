@@ -7,6 +7,15 @@ from napytau.util.model.value_error_pair import ValueErrorPair
 
 
 class DatapointCollection:
+    """
+    A class to represent a collection of datapoints.
+    It provides convenience methods to filter, add, and retrieve datapoints.
+    Internally, it uses a dictionary to store the datapoints. The key is the hash
+    of the distance value of a given datapoint.
+
+    This class can be iterated over, and it provides a way to access the elements
+    """
+
     elements: Dict[int, Datapoint]
 
     def __init__(self, raw_datapoints: List[Datapoint]):
