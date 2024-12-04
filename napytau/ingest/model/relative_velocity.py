@@ -1,4 +1,9 @@
 class RelativeVelocity:
+    """
+    Represents the relative velocity of an object. The velocity is a float between 0
+    and 1, where 1 is the speed of light.
+    """
+
     velocity: float
 
     def __init__(self, raw_velocity: float):
