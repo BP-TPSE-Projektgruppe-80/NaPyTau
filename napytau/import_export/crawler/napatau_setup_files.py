@@ -1,20 +1,23 @@
 from __future__ import annotations
 
+from pathlib import PurePath
 from typing import List
+
+from napytau.import_export.import_export_error import ImportExportError
 
 
 class NapatauSetupFiles:
-    distances_file: str
-    velocity_file: str
-    fit_file: str
-    calibration_file: str
+    distances_file: PurePath
+    velocity_file: PurePath
+    fit_file: PurePath
+    calibration_file: PurePath
 
     def __init__(
         self,
-        distances_file: str,
-        velocity_file: str,
-        fit_file: str,
-        calibration_file: str,
+        distances_file: PurePath,
+        velocity_file: PurePath,
+        fit_file: PurePath,
+        calibration_file: PurePath,
     ):
         """Use the static constructor method instead"""
         self.distances_file = distances_file
@@ -23,17 +26,41 @@ class NapatauSetupFiles:
         self.calibration_file = calibration_file
 
     @staticmethod
-    def create_from_file_names(file_names: List[str]) -> NapatauSetupFiles:
+    def create_from_file_names(file_paths: List[PurePath]) -> NapatauSetupFiles:
+        distances_file: PurePath
+        velocity_file: PurePath
+        fit_file: PurePath
+        calibration_file: PurePath
+        missing_files = []
+
         try:
             distances_file = next(
-                file for file in file_names if "distances.dat" in file
+                file for file in file_paths if "distances.dat" in file.name
             )
-            velocity_file = next(file for file in file_names if "v_c" in file)
-            fit_file = next(file for file in file_names if "fit" in file)
-            calibration_file = next(file for file in file_names if "norm.fac" in file)
         except StopIteration:
-            raise ValueError(
-                "Could not find all necessary files in the provided list of file names."
+            missing_files.append("distances.dat")
+
+        try:
+            velocity_file = next(file for file in file_paths if "v_c" in file.name)
+        except StopIteration:
+            missing_files.append("v_c")
+
+        try:
+            fit_file = next(file for file in file_paths if "fit" in file.name)
+        except StopIteration:
+            missing_files.append("fit")
+
+        try:
+            calibration_file = next(
+                file for file in file_paths if "norm.fac" in file.name
+            )
+        except StopIteration:
+            missing_files.append("norm.fac")
+
+        if len(missing_files) > 0:
+            raise ImportExportError(
+                f"Could not find all necessary files in the provided list of file names"
+                f". Missing files: {missing_files}"
             )
 
         return NapatauSetupFiles(

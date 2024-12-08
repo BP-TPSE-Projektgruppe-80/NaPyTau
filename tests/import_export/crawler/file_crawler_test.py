@@ -1,4 +1,6 @@
 import unittest
+from pathlib import PurePath
+from re import compile
 from unittest.mock import MagicMock, patch
 
 
@@ -48,7 +50,7 @@ class FileCrawlerUnitTest(unittest.TestCase):
 
             file_crawler = FileCrawler([], lambda x: x)
             with self.assertRaises(ValueError):
-                file_crawler.crawl("not_a_directory")
+                file_crawler.crawl(PurePath("not_a_directory"))
 
     def test_returnsEmptyArrayIfProvidedDirectoryEmpty(self):
         """Returns an empty array if the provided directory is empty"""
@@ -68,7 +70,7 @@ class FileCrawlerUnitTest(unittest.TestCase):
             from napytau.import_export.crawler.file_crawler import FileCrawler
 
             file_crawler = FileCrawler([], lambda x: x)
-            self.assertEqual(file_crawler.crawl("some/directory"), [])
+            self.assertEqual(file_crawler.crawl(PurePath("some/directory")), [])
 
     def test_doesNotAddFilesIfNoFilesMatchThePattern(self):
         """Does not add files if no files match the pattern"""
@@ -93,8 +95,10 @@ class FileCrawlerUnitTest(unittest.TestCase):
         ):
             from napytau.import_export.crawler.file_crawler import FileCrawler
 
-            file_crawler = FileCrawler(["pattern1", "pattern2"], lambda x: x)
-            self.assertEqual(file_crawler.crawl("some/directory"), [])
+            file_crawler = FileCrawler(
+                [compile("pattern1"), compile("pattern2")], lambda x: x
+            )
+            self.assertEqual(file_crawler.crawl(PurePath("some/directory")), [])
 
     def test_addsFilesIfFilesMatchThePatternAndMapsThemWithTheProvidedFactory(self):
         """Adds files if files match the pattern and maps them with the provided factory"""  # noqa: E501
@@ -122,9 +126,15 @@ class FileCrawlerUnitTest(unittest.TestCase):
             factory_mock = MagicMock()
             factory_mock.return_value = ["root/file2"]
 
-            file_crawler = FileCrawler(["pattern1", "pattern2"], factory_mock)
-            self.assertEqual(file_crawler.crawl("some/directory"), [["root/file2"]])
-            self.assertEqual(factory_mock.mock_calls[0].args, (["root/file2"],))
+            file_crawler = FileCrawler(
+                [compile("pattern1"), compile("pattern2")], factory_mock
+            )
+            self.assertEqual(
+                file_crawler.crawl(PurePath("some/directory")), [["root/file2"]]
+            )
+            self.assertEqual(
+                factory_mock.mock_calls[0].args, ([PurePath("root/file2")],)
+            )
 
 
 if __name__ == "__main__":

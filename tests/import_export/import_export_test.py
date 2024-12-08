@@ -1,12 +1,11 @@
 import unittest
+from pathlib import PurePath
 from unittest.mock import MagicMock, patch
 
 from napytau.import_export.crawler.napatau_setup_files import NapatauSetupFiles
 
 
 def set_up_mocks() -> (
-    MagicMock,
-    MagicMock,
     MagicMock,
     MagicMock,
     MagicMock,
@@ -27,10 +26,14 @@ def set_up_mocks() -> (
     file_reader_module_mock.FileReader = file_reader_mock
     read_rows_mock = MagicMock()
     file_reader_mock.read_rows = read_rows_mock
+    regex_module_mock = MagicMock()
+    compile_regex_mock = MagicMock()
+    regex_module_mock.compile = compile_regex_mock
     return (
         napatau_dataset_factory_module_mock,
         file_crawler_module_mock,
         file_reader_module_mock,
+        regex_module_mock,
     )
 
 
@@ -41,20 +44,23 @@ class IngestUnitTest(unittest.TestCase):
             napatau_dataset_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
+            regex_module_mock,
         ) = set_up_mocks()
+        regex_module_mock.compile = lambda x: x
         with patch.dict(
             "sys.modules",
             {
                 "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
+                "re": regex_module_mock,
             },
         ):
             from napytau.import_export.import_export import (
-                ingest_napatau_format_from_files,
+                import_napatau_format_from_files,
             )
 
-            ingest_napatau_format_from_files("test_directory")
+            import_napatau_format_from_files(PurePath("test_directory"))
             self.assertEqual(
                 file_crawler_module_mock.FileCrawler.mock_calls[0].args[0],
                 ["v_c", "distances.dat", "norm.fac", ".*.fit"],
@@ -66,20 +72,25 @@ class IngestUnitTest(unittest.TestCase):
             napatau_dataset_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
+            regex_module_mock,
         ) = set_up_mocks()
+        regex_module_mock.compile = lambda x: x
         with patch.dict(
             "sys.modules",
             {
                 "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
+                "re": regex_module_mock,
             },
         ):
             from napytau.import_export.import_export import (
-                ingest_napatau_format_from_files,
+                import_napatau_format_from_files,
             )
 
-            ingest_napatau_format_from_files("test_directory", "test.fit")
+            import_napatau_format_from_files(
+                PurePath("test_directory"), PurePath("test.fit")
+            )
             self.assertEqual(
                 file_crawler_module_mock.FileCrawler.mock_calls[0].args[0],
                 ["v_c", "distances.dat", "norm.fac"],
@@ -92,6 +103,7 @@ class IngestUnitTest(unittest.TestCase):
             napatau_dataset_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
+            regex_module_mock,
         ) = set_up_mocks()
         with patch.dict(
             "sys.modules",
@@ -99,13 +111,14 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
+                "re": regex_module_mock,
             },
         ):
             from napytau.import_export.import_export import (
-                ingest_napatau_format_from_files,
+                import_napatau_format_from_files,
             )
 
-            ingest_napatau_format_from_files("test_directory")
+            import_napatau_format_from_files("test_directory")
             file_crawler_module_mock.FileCrawler.mock_calls[0].crawl("test_directory")
 
     def test_readsEveryFileReturnedByTheFileCrawler(self):
@@ -114,6 +127,7 @@ class IngestUnitTest(unittest.TestCase):
             napatau_dataset_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
+            regex_module_mock,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
@@ -133,13 +147,14 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
+                "re": regex_module_mock,
             },
         ):
             from napytau.import_export.import_export import (
-                ingest_napatau_format_from_files,
+                import_napatau_format_from_files,
             )
 
-            ingest_napatau_format_from_files("test_directory")
+            import_napatau_format_from_files("test_directory")
             self.assertEqual(
                 file_reader_module_mock.FileReader.read_rows.mock_calls[0].args[0],
                 "test_v_c",
@@ -165,6 +180,7 @@ class IngestUnitTest(unittest.TestCase):
             napatau_dataset_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
+            regex_module_mock,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
@@ -190,13 +206,14 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
+                "re": regex_module_mock,
             },
         ):
             from napytau.import_export.import_export import (
-                ingest_napatau_format_from_files,
+                import_napatau_format_from_files,
             )
 
-            ingest_napatau_format_from_files("test_directory")
+            import_napatau_format_from_files("test_directory")
             self.assertEqual(
                 napatau_dataset_factory_module_mock.NapatauDatasetFactory.create_dataset.mock_calls[
                     0
@@ -238,6 +255,7 @@ class IngestUnitTest(unittest.TestCase):
             napatau_dataset_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
+            regex_module_mock,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
@@ -263,13 +281,14 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
+                "re": regex_module_mock,
             },
         ):
             from napytau.import_export.import_export import (
-                ingest_napatau_format_from_files,
+                import_napatau_format_from_files,
             )
 
-            ingest_napatau_format_from_files("test_directory", "test.fit")
+            import_napatau_format_from_files("test_directory", "test.fit")
             self.assertEqual(
                 napatau_dataset_factory_module_mock.NapatauDatasetFactory.create_dataset.mock_calls[
                     0

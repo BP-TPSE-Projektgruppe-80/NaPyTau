@@ -19,38 +19,86 @@ class NapatauDatasetFactoryUnitTest(unittest.TestCase):
                 )
             )
 
-    def test_raisesAnExceptionIfAnInvalidDistanceRowIsProvided(self):
-        """Raises an exception if an invalid distance row is provided"""
+    def test_raisesAnExceptionIfADistanceRowWithTooFewValuesIsProvided(self):
+        """Raises an exception if a distance row with too few values is provided"""
         with self.assertRaises(ValueError):
             NapatauDatasetFactory.create_dataset(
                 RawNapatauData(
                     ["1"],
-                    ["invalid"],
+                    ["1"],
                     ["1 1 1 1 1"],
                     ["1 1 1"],
                 )
             )
 
-    def test_raisesAnExceptionIfAnInvalidCalibrationRowIsProvided(self):
-        """Raises an exception if an invalid calibration row is provided"""
+    def test_raisesAnExceptionIfADistanceRowWithTooManyValuesIsProvided(self):
+        """Raises an exception if a distance row with too many values is provided"""
+        with self.assertRaises(ValueError):
+            NapatauDatasetFactory.create_dataset(
+                RawNapatauData(
+                    ["1"],
+                    ["1 1 1 1"],
+                    ["1 1 1 1 1"],
+                    ["1 1 1"],
+                )
+            )
+
+    def test_raisesAnExceptionIfACalibrationRowWithTooFewValuesIsProvided(self):
+        """Raises an exception if a calibration row with too few values is provided"""
         with self.assertRaises(ValueError):
             NapatauDatasetFactory.create_dataset(
                 RawNapatauData(
                     ["1"],
                     ["1 1 1"],
                     ["1 1 1 1 1"],
-                    ["invalid"],
+                    ["1 1"],
                 )
             )
 
-    def test_raisesAnExceptionIfAnInvalidFitRowIsProvided(self):
-        """Raises an exception if an invalid fit row is provided"""
+    def test_raisesAnExceptionIfACalibrationRowWithTooManyValuesIsProvided(self):
+        """Raises an exception if a calibration row with too many values is provided"""
         with self.assertRaises(ValueError):
             NapatauDatasetFactory.create_dataset(
                 RawNapatauData(
                     ["1"],
                     ["1 1 1"],
-                    ["invalid"],
+                    ["1 1 1 1 1"],
+                    ["1 1 1 1"],
+                )
+            )
+
+    def test_raisesAnExceptionIfAFitRowWithTooFewValuesIsProvided(self):
+        """Raises an exception if a fit row with too few values is provided"""
+        with self.assertRaises(ValueError):
+            NapatauDatasetFactory.create_dataset(
+                RawNapatauData(
+                    ["1"],
+                    ["1 1 1"],
+                    ["1 1 1 1 1"],
+                    ["1 1"],
+                )
+            )
+
+    def test_raisesAnExceptionIfAFitRowWithTooManyValuesForASetOfBasicIntensitiesButTooManyForASetOfBasicAndShiftedIntensitiesIsProvided(self): # noqa: E501
+        """Raises an exception if a fit row with too many values for a set of basic intensities but too many for a set of basic and shifted intensities is provided""" # noqa: E501
+        with self.assertRaises(ValueError):
+            NapatauDatasetFactory.create_dataset(
+                RawNapatauData(
+                    ["1"],
+                    ["1 1 1"],
+                    ["1 1 1 1 1 1 1 1"],
+                    ["1 1 1"],
+                )
+            )
+
+    def test_raisesAnExceptionIfAFitRowWithTooManyValuesIsProvided(self):
+        """Raises an exception if a fit row with too many values is provided"""
+        with self.assertRaises(ValueError):
+            NapatauDatasetFactory.create_dataset(
+                RawNapatauData(
+                    ["1"],
+                    ["1 1 1"],
+                    ["1 1 1 1 1 1 1 1 1 1"],
                     ["1 1 1"],
                 )
             )
