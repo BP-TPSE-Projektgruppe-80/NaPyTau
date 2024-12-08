@@ -106,15 +106,6 @@ class App(customtkinter.CTk):
         # Initialize the control panel
         self.control_panel = ControlPanel(self)
 
-        """
-        # Define menu bar callback functions
-        logger_callbacks = {
-            "log_info": self.log_info,
-            "log_error": self.log_error,
-            "log_success": self.log_success
-        }
-        """
-
         # Initialize the logger
         self.logger = Logger(self)
 
@@ -161,6 +152,7 @@ class App(customtkinter.CTk):
         Changes the appearance mode to the variable appearance_mode.
         """
         customtkinter.set_appearance_mode(self.menu_bar.appearance_mode.get())
+        self.logger.change_appearance_mode(self.menu_bar.appearance_mode.get())
 
         self.graph.update_plot()
 
