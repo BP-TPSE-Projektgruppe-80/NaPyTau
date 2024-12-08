@@ -28,7 +28,7 @@ class NapatauDatasetFactory:
 
         if len(filtered_velocities) != 1:
             raise ValueError(
-                "Expected one velocity row, but got {len(filtered_velocities)}"
+                f"Expected one velocity row, but got {len(filtered_velocities)}"
             )
 
         return RelativeVelocity(float(filtered_velocities[0]))
@@ -77,6 +77,11 @@ class NapatauDatasetFactory:
                 f"Expected at least 3 values in distance row, but got {len(split_row)}"
             )
 
+        if len(split_row) > 3:
+            raise ValueError(
+                f"Expected at most 3 values in distance row, but got {len(split_row)}"
+            )
+
         # The first value (at index 0) is a label, however since we index by distance we can ignore it # noqa E501
         distance = float(split_row[1])
         distance_error = float(split_row[2])
@@ -91,6 +96,11 @@ class NapatauDatasetFactory:
         if len(split_row) < 3:
             raise ValueError(
                 f"Expected at least 3 values in calibration row, but got {len(split_row)}"  # noqa E501
+            )
+
+        if len(split_row) > 3:
+            raise ValueError(
+                f"Expected at most 3 values in calibration row, but got {len(split_row)}"  # noqa E501
             )
 
         distance_index = float(split_row[0])
@@ -128,6 +138,16 @@ class NapatauDatasetFactory:
                 ValueErrorPair(unshifted_intensity, unshifted_intensity_error),
                 None,
                 None,
+            )
+
+        if len(split_row) < 9:
+            raise ValueError(
+                f"Expected at least 9 values in fit row, but got {len(split_row)}"
+            )
+
+        if len(split_row) > 9:
+            raise ValueError(
+                f"Expected at most 9 values in fit row, but got {len(split_row)}"
             )
 
         feeding_shifted_intensity = float(split_row[5])
