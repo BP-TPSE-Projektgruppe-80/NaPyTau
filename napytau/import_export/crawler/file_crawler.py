@@ -3,7 +3,7 @@ from os.path import isdir
 from typing import List, Callable
 from re import match as regex_match
 
-from napytau.ingest.crawler.crawler import Crawler
+from napytau.import_export.crawler.crawler import Crawler
 
 
 class FileCrawler[T](Crawler[str, T]):

@@ -1,7 +1,7 @@
 from os.path import isfile
 from typing import List
 
-from napytau.ingest.reader.reader import Reader
+from napytau.import_export.reader.reader import Reader
 
 
 class FileReader(Reader[str]):

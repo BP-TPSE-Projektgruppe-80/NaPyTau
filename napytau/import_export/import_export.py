@@ -1,11 +1,11 @@
 from typing import Optional, List
 
-from napytau.ingest.dataset_factory.napatau_dataset_factory import NapatauDatasetFactory
-from napytau.ingest.dataset_factory.raw_napatau_data import RawNapatauData
-from napytau.ingest.crawler.file_crawler import FileCrawler
-from napytau.ingest.crawler.napatau_setup_files import NapatauSetupFiles
-from napytau.ingest.model.dataset import DataSet
-from napytau.ingest.reader.file_reader import FileReader
+from napytau.import_export.dataset_factory.napatau_dataset_factory import NapatauDatasetFactory
+from napytau.import_export.dataset_factory.raw_napatau_data import RawNapatauData
+from napytau.import_export.crawler.file_crawler import FileCrawler
+from napytau.import_export.crawler.napatau_setup_files import NapatauSetupFiles
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.reader.file_reader import FileReader
 
 
 def ingest_napatau_format_from_files(

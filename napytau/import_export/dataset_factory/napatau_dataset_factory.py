@@ -1,10 +1,10 @@
 from typing import List, Optional, Tuple
 
-from napytau.ingest.dataset_factory.raw_napatau_data import RawNapatauData
-from napytau.ingest.model.datapoint import Datapoint
-from napytau.ingest.model.datapoint_collection import DatapointCollection
-from napytau.ingest.model.dataset import DataSet
-from napytau.ingest.model.relative_velocity import RelativeVelocity
+from napytau.import_export.dataset_factory.raw_napatau_data import RawNapatauData
+from napytau.import_export.model.datapoint import Datapoint
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 from napytau.util.model.value_error_pair import ValueErrorPair
 
 
