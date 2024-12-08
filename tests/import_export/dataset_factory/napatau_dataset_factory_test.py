@@ -79,8 +79,10 @@ class NapatauDatasetFactoryUnitTest(unittest.TestCase):
                 )
             )
 
-    def test_raisesAnExceptionIfAFitRowWithTooManyValuesForASetOfBasicIntensitiesButTooManyForASetOfBasicAndShiftedIntensitiesIsProvided(self): # noqa: E501
-        """Raises an exception if a fit row with too many values for a set of basic intensities but too many for a set of basic and shifted intensities is provided""" # noqa: E501
+    def test_raisesAnExceptionIfAFitRowWithTooManyValuesForASetOfBasicIntensitiesButTooManyForASetOfBasicAndShiftedIntensitiesIsProvided(  # noqa: E501
+        self,
+    ):
+        """Raises an exception if a fit row with too many values for a set of basic intensities but too many for a set of basic and shifted intensities is provided"""  # noqa: E501
         with self.assertRaises(ValueError):
             NapatauDatasetFactory.create_dataset(
                 RawNapatauData(
@@ -114,7 +116,8 @@ class NapatauDatasetFactoryUnitTest(unittest.TestCase):
             )
         )
 
-        self.assertEqual(dataset.relative_velocity.get_velocity(), 1)
+        self.assertEqual(dataset.relative_velocity.value.get_velocity(), 1)
+        self.assertEqual(dataset.relative_velocity.error.get_velocity(), 0)
         self.assertEqual(len(dataset.datapoints.as_dict()), 1)
         self.assertEqual(
             dataset.datapoints.get_datapoint_by_distance(1).distance.value, 1
@@ -152,7 +155,8 @@ class NapatauDatasetFactoryUnitTest(unittest.TestCase):
             )
         )
 
-        self.assertEqual(dataset.relative_velocity.get_velocity(), 1)
+        self.assertEqual(dataset.relative_velocity.value.get_velocity(), 1)
+        self.assertEqual(dataset.relative_velocity.error.get_velocity(), 0)
         self.assertEqual(len(dataset.datapoints.as_dict()), 1)
         self.assertEqual(
             dataset.datapoints.get_datapoint_by_distance(1).distance.value, 1
@@ -202,6 +206,21 @@ class NapatauDatasetFactoryUnitTest(unittest.TestCase):
             ).feeding_unshifted_intensity.error,
             1,
         )
+
+    def test_createsADatasetFromValidDataWithAVelocityErrorGiven(self):
+        """Creates a dataset from valid data with a velocity error given"""
+        dataset = NapatauDatasetFactory.create_dataset(
+            RawNapatauData(
+                ["1 1"],
+                ["1 1 1"],
+                ["1 1 1 1 1"],
+                ["1 1 1"],
+            )
+        )
+
+        self.assertEqual(dataset.relative_velocity.value.get_velocity(), 1)
+        self.assertEqual(dataset.relative_velocity.error.get_velocity(), 1)
+        self.assertEqual(len(dataset.datapoints.as_dict()), 1)
 
 
 if __name__ == "__main__":
