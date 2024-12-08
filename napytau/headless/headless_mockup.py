@@ -13,11 +13,11 @@ def init(cli_arguments: CLIArguments) -> None:
     if cli_arguments.get_dataset_format() == IMPORT_FORMAT_NAPATAU:
         setup_files_directory_path = cli_arguments.get_setup_files_directory_path()
 
-        fit_fie_path = cli_arguments.get_fit_file_path()
+        fit_file_path = cli_arguments.get_fit_file_path()
 
         datasets: List[DataSet] = import_napatau_format_from_files(
             PurePath(setup_files_directory_path),
-            PurePath(fit_fie_path) if fit_fie_path else None,
+            PurePath(fit_file_path) if fit_file_path else None,
         )
 
         for dataset in datasets:
