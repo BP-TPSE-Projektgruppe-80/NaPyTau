@@ -19,6 +19,7 @@ customtkinter.set_appearance_mode("System")
 # Themes: "blue" (standard), "green", "dark-blue"
 customtkinter.set_default_color_theme("blue")
 
+
 class App(customtkinter.CTk):
     def __init__(self) -> None:
         """
@@ -67,7 +68,7 @@ class App(customtkinter.CTk):
             "change_appearance_mode": self.change_appearance_mode,
             "select_number_of_polynomials": self.select_number_of_polynomials,
             "select_polynomial_mode": self.select_polynomial_mode,
-            "select_alpha_calc_mode": self.select_alpha_calc_mode
+            "select_alpha_calc_mode": self.select_alpha_calc_mode,
         }
 
         # Initialize the menu bar
@@ -150,8 +151,10 @@ class App(customtkinter.CTk):
         """
         Selects the number of polynomials to use.
         """
-        print("selected number of polynomials: "
-              + self.menu_bar.number_of_polynomials.get())
+        print(
+            "selected number of polynomials: "
+            + self.menu_bar.number_of_polynomials.get()
+        )
 
     def select_polynomial_mode(self) -> None:
         """

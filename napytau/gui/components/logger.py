@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
+
 class Logger(customtkinter.CTkFrame):
     def __init__(self, parent: "App") -> None:
         """
@@ -18,5 +19,6 @@ class Logger(customtkinter.CTkFrame):
 
         # Label to display messages
         self.output_label = customtkinter.CTkLabel(
-            self, text="Error messages etc. will be shown here", anchor="w")
+            self, text="Error messages etc. will be shown here", anchor="w"
+        )
         self.output_label.pack(fill="both", padx=10, pady=10)

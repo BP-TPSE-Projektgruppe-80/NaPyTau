@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
+
 class CheckboxPanel:
     def __init__(self, parent: "App") -> None:
         """
@@ -54,8 +55,9 @@ class CheckboxPanel:
         Toggles the intern boolean value of the datapoint.
         :param index: Index of the pressed data checkbox.
         """
-        self.parent.datapoints_for_fitting[index].is_checked = \
-            not self.parent.datapoints_for_fitting[index].is_checked
+        self.parent.datapoints_for_fitting[
+            index
+        ].is_checked = not self.parent.datapoints_for_fitting[index].is_checked
         if self.parent.datapoints_for_fitting[index].is_checked:
             print("[fitting] checkbox with index " + str(index) + " activated.")
         else:

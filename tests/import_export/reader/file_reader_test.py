@@ -15,7 +15,7 @@ class FileReaderUnitTest(unittest.TestCase):
         path_mock, isfile_mock = set_up_mocks()
         isfile_mock.return_value = False
         with patch.dict("sys.modules", {"os.path": path_mock}):
-            from napytau.ingest.reader.file_reader import FileReader
+            from napytau.import_export.reader.file_reader import FileReader
 
             with self.assertRaises(FileNotFoundError):
                 FileReader.read_rows("test.txt")
@@ -25,7 +25,7 @@ class FileReaderUnitTest(unittest.TestCase):
         path_mock, isfile_mock = set_up_mocks()
         isfile_mock.return_value = True
         with patch.dict("sys.modules", {"os.path": path_mock}):
-            from napytau.ingest.reader.file_reader import FileReader
+            from napytau.import_export.reader.file_reader import FileReader
 
             with patch("builtins.open", MagicMock()) as open_mock:
                 open_mock.return_value.__enter__.return_value.readlines.return_value = [

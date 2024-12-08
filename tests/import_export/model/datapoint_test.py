@@ -1,5 +1,5 @@
 import unittest
-from napytau.ingest.model.datapoint import Datapoint
+from napytau.import_export.model.datapoint import Datapoint
 from napytau.util.model.value_error_pair import ValueErrorPair
 
 

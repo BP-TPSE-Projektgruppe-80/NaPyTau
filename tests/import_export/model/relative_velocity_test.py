@@ -1,6 +1,6 @@
 import unittest
 
-from napytau.ingest.model.relative_velocity import RelativeVelocity
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 
 
 class RelativeVelocityUnitTest(unittest.TestCase):

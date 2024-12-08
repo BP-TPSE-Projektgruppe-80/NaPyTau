@@ -1,19 +1,23 @@
+from pathlib import PurePath
+from re import compile as compile_regex
 from typing import Optional, List
 
-from napytau.ingest.dataset_factory.napatau_dataset_factory import NapatauDatasetFactory
-from napytau.ingest.dataset_factory.raw_napatau_data import RawNapatauData
-from napytau.ingest.crawler.file_crawler import FileCrawler
-from napytau.ingest.crawler.napatau_setup_files import NapatauSetupFiles
-from napytau.ingest.model.dataset import DataSet
-from napytau.ingest.reader.file_reader import FileReader
+from napytau.import_export.dataset_factory.napatau_dataset_factory import (
+    NapatauDatasetFactory,
+)
+from napytau.import_export.dataset_factory.raw_napatau_data import RawNapatauData
+from napytau.import_export.crawler.file_crawler import FileCrawler
+from napytau.import_export.crawler.napatau_setup_files import NapatauSetupFiles
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.reader.file_reader import FileReader
 
 INGEST_FORMAT_NAPATAU = "napatau"
 
 INGEST_FORMATS = [INGEST_FORMAT_NAPATAU]
 
 
-def ingest_napatau_format_from_files(
-    directory_path: str, fit_file_path: Optional[str] = None
+def import_napatau_format_from_files(
+    directory_path: PurePath, fit_file_path: Optional[PurePath] = None
 ) -> List[DataSet]:
     """
     Ingests a dataset from the Napatau format. The directory path will be
@@ -46,10 +50,14 @@ def ingest_napatau_format_from_files(
     )
 
 
-def _configure_file_crawler(fit_file_path: Optional[str]) -> FileCrawler:
+def _configure_file_crawler(fit_file_path: Optional[PurePath]) -> FileCrawler:
     if fit_file_path:
         file_crawler = FileCrawler(
-            ["v_c", "distances.dat", "norm.fac"],
+            [
+                compile_regex("v_c"),
+                compile_regex("distances.dat"),
+                compile_regex("norm.fac"),
+            ],
             lambda files: NapatauSetupFiles.create_from_file_names(
                 files + [fit_file_path]
             ),
@@ -57,7 +65,12 @@ def _configure_file_crawler(fit_file_path: Optional[str]) -> FileCrawler:
 
     else:
         file_crawler = FileCrawler(
-            ["v_c", "distances.dat", "norm.fac", ".*.fit"],
+            [
+                compile_regex("v_c"),
+                compile_regex("distances.dat"),
+                compile_regex("norm.fac"),
+                compile_regex(".*.fit"),
+            ],
             lambda files: NapatauSetupFiles.create_from_file_names(files),
         )
     return file_crawler

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from napytau.ingest.model.datapoint_collection import DatapointCollection
-from napytau.ingest.model.relative_velocity import RelativeVelocity
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 
 
 @dataclass
