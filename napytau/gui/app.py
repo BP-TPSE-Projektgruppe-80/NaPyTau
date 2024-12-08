@@ -99,6 +99,15 @@ class App(customtkinter.CTk):
         # Initialize the control panel
         self.control_panel = ControlPanel(self)
 
+        """
+        # Define menu bar callback functions
+        logger_callbacks = {
+            "log_info": self.log_info,
+            "log_error": self.log_error,
+            "log_success": self.log_success
+        }
+        """
+
         # Initialize the logger
         self.logger = Logger(self)
 
@@ -118,12 +127,14 @@ class App(customtkinter.CTk):
 
         if file_path:
             print(f"chosen file: {file_path}")
+            self.logger.log_info(f"chosen file: {file_path}")
 
     def save_file(self) -> None:
         """
         Saves the file.
         """
         print("save_file")
+        self.logger.log_success("Saved file")
 
     def read_setup(self) -> None:
         """
@@ -158,12 +169,18 @@ class App(customtkinter.CTk):
         Selects the polynomial mode.
         """
         print("select polynomial mode " + self.menu_bar.polynomial_mode.get())
+        self.logger.log_error("Polynomials set to "
+                              + self.menu_bar.polynomial_mode.get()
+                              + " but not implemented yet!")
 
     def select_alpha_calc_mode(self) -> None:
         """
         Selects the alpha calculation mode.
         """
         print("select alpha calc mode " + self.menu_bar.alpha_calc_mode.get())
+        self.logger.log_error("Alpha calculation set to "
+                              + self.menu_bar.alpha_calc_mode.get()
+                              + " but not implemented yet!")
 
     def update_data_checkboxes(self, new_datapoints: List[Tuple[float, float]]) -> None:
         """
