@@ -1,6 +1,8 @@
 from typing import Optional, List
 
-from napytau.import_export.dataset_factory.napatau_dataset_factory import NapatauDatasetFactory
+from napytau.import_export.dataset_factory.napatau_dataset_factory import (
+    NapatauDatasetFactory,
+)
 from napytau.import_export.dataset_factory.raw_napatau_data import RawNapatauData
 from napytau.import_export.crawler.file_crawler import FileCrawler
 from napytau.import_export.crawler.napatau_setup_files import NapatauSetupFiles

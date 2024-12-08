@@ -50,7 +50,9 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
             },
         ):
-            from napytau.import_export.import_export import ingest_napatau_format_from_files
+            from napytau.import_export.import_export import (
+                ingest_napatau_format_from_files,
+            )
 
             ingest_napatau_format_from_files("test_directory")
             self.assertEqual(
@@ -73,7 +75,9 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
             },
         ):
-            from napytau.import_export.import_export import ingest_napatau_format_from_files
+            from napytau.import_export.import_export import (
+                ingest_napatau_format_from_files,
+            )
 
             ingest_napatau_format_from_files("test_directory", "test.fit")
             self.assertEqual(
@@ -97,7 +101,9 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
             },
         ):
-            from napytau.import_export.import_export import ingest_napatau_format_from_files
+            from napytau.import_export.import_export import (
+                ingest_napatau_format_from_files,
+            )
 
             ingest_napatau_format_from_files("test_directory")
             file_crawler_module_mock.FileCrawler.mock_calls[0].crawl("test_directory")
@@ -129,7 +135,9 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
             },
         ):
-            from napytau.import_export.import_export import ingest_napatau_format_from_files
+            from napytau.import_export.import_export import (
+                ingest_napatau_format_from_files,
+            )
 
             ingest_napatau_format_from_files("test_directory")
             self.assertEqual(
@@ -184,7 +192,9 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
             },
         ):
-            from napytau.import_export.import_export import ingest_napatau_format_from_files
+            from napytau.import_export.import_export import (
+                ingest_napatau_format_from_files,
+            )
 
             ingest_napatau_format_from_files("test_directory")
             self.assertEqual(
@@ -255,7 +265,9 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
             },
         ):
-            from napytau.import_export.import_export import ingest_napatau_format_from_files
+            from napytau.import_export.import_export import (
+                ingest_napatau_format_from_files,
+            )
 
             ingest_napatau_format_from_files("test_directory", "test.fit")
             self.assertEqual(
