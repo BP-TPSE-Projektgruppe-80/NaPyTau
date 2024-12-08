@@ -11,13 +11,15 @@ class Logger(customtkinter.CTkFrame):
         Initializes the logger frame.
         :param parent: Parent widget to host the logger.
         """
-        super().__init__(parent, height=50, corner_radius=10)
+        super().__init__(parent, height=10, corner_radius=10)
         self.parent = parent
+
+        self.grid(row=2, column=0, columnspan=1, padx=(10, 10), pady=(10, 10),
+                  sticky="ew")
         self.grid_propagate(False)
-        self.grid(row=2, column=0, columnspan=1, padx=10, pady=10, sticky="nsew")
 
         # Create a scrollable frame for the log messages
-        self.scrollable_frame = customtkinter.CTkScrollableFrame(self)
+        self.scrollable_frame = customtkinter.CTkScrollableFrame(self, height=40)
         self.scrollable_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
     def log_info(self, message: str) -> None:

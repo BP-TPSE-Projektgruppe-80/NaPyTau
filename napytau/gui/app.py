@@ -38,25 +38,32 @@ class App(customtkinter.CTk):
 
         # configure window
         self.title("NaPyTau")
-        self.geometry("1366x768")
+        width = 1366
+        height = 768
+        self.geometry(f"{width}x{height}")
 
         """
         Configure grid. Current Layout:
         Three rows, two columns with
         - Graph from row 0 to 1, column 0
-        - Checkboxes in row 0, column 1
-        - Control area in row 1, column 1
-        - Information area in row 2, column 0 to 1
+        - Checkbox panel in row 0, column 1
+        - Control panel from row 1 to 2, column 1
+        - Logger in row 2, column 0
         """
-        self.grid_rowconfigure((0, 2), weight=1)  # Three rows
-        self.grid_columnconfigure((0, 1), weight=1)  # Two columns
+        # Row ratio: 3/8, 3/8, 1/4
+        total_height = 8  # 3+3+2 = 8 parts
+        self.grid_rowconfigure(0, weight=3, minsize=3 * height // total_height)
+        # Reduce graph height by 30 to asure all components and their
+        # separators are inside the window.
+        self.grid_rowconfigure(1, weight=3, minsize=3 * height // total_height -30)
+        self.grid_rowconfigure(2, weight=2, minsize=2 * height // total_height)
 
-        # Weights are adjusted
-        self.grid_rowconfigure(0, weight=10)
-        self.grid_rowconfigure(1, weight=1)
-        self.grid_rowconfigure(2, weight=1)
-        self.grid_columnconfigure(0, weight=10)
-        self.grid_columnconfigure(1, weight=1)
+        # column ratio: 2/3, 1/3
+        total_width = 3  # 2+1 = 3 parts
+        # Reduce graph width by 30 to asure all components and their
+        # separators are inside the window.
+        self.grid_columnconfigure(0, weight=2, minsize=2 * width // total_width -30)
+        self.grid_columnconfigure(1, weight=1, minsize=1 * width // total_width)
 
         # Define menu bar callback functions
         menu_bar_callbacks = {
