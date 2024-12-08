@@ -1,21 +1,22 @@
+from pathlib import PurePath
 from typing import List
 
 from napytau.cli.cli_arguments import CLIArguments
-from napytau.ingest.ingest import (
-    INGEST_FORMAT_NAPATAU,
-    ingest_napatau_format_from_files,
+from napytau.import_export.import_export import (
+    IMPORT_FORMAT_NAPATAU,
+    import_napatau_format_from_files,
 )
-from napytau.ingest.model.dataset import DataSet
+from napytau.import_export.model.dataset import DataSet
 
 
 def init(cli_arguments: CLIArguments) -> None:
-    if cli_arguments.get_dataset_format() == INGEST_FORMAT_NAPATAU:
+    if cli_arguments.get_dataset_format() == IMPORT_FORMAT_NAPATAU:
         setup_files_directory_path = cli_arguments.get_setup_files_directory_path()
         if setup_files_directory_path is None:
             raise ValueError("No setup files directory provided")
 
-        datasets: List[DataSet] = ingest_napatau_format_from_files(
-            setup_files_directory_path,
+        datasets: List[DataSet] = import_napatau_format_from_files(
+            PurePath(setup_files_directory_path),
             cli_arguments.get_fit_file_path(),
         )
 

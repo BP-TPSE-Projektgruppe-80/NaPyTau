@@ -1,6 +1,6 @@
 import argparse
 from napytau.cli.cli_arguments import CLIArguments
-from napytau.ingest.ingest import INGEST_FORMATS
+from napytau.import_export.import_export import IMPORT_FORMATS, IMPORT_FORMAT_NAPATAU
 
 
 def parse_cli_arguments() -> CLIArguments:
@@ -11,10 +11,10 @@ def parse_cli_arguments() -> CLIArguments:
     parser.add_argument(
         "--dataset_format",
         type=str,
-        default="napatau",
-        const="napatau",
+        default=IMPORT_FORMAT_NAPATAU,
+        const=IMPORT_FORMAT_NAPATAU,
         nargs="?",
-        choices=INGEST_FORMATS,
+        choices=IMPORT_FORMATS,
         help="Format of the dataset to ingest",
     )
     parser.add_argument(

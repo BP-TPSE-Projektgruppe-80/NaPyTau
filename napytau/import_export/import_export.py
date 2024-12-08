@@ -13,9 +13,9 @@ from napytau.import_export.factory.napatau.raw_napatau_setup_data import \
 from napytau.import_export.model.dataset import DataSet
 from napytau.import_export.reader.file_reader import FileReader
 
-INGEST_FORMAT_NAPATAU = "napatau"
+IMPORT_FORMAT_NAPATAU = "napatau"
 
-INGEST_FORMATS = [INGEST_FORMAT_NAPATAU]
+IMPORT_FORMATS = [IMPORT_FORMAT_NAPATAU]
 
 def import_napatau_format_from_files(
     directory_path: PurePath, fit_file_path: Optional[PurePath] = None
