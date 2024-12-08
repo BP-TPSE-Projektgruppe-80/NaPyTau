@@ -1,6 +1,6 @@
 import unittest
 
-from napytau.ingest.crawler.napatau_setup_files import NapatauSetupFiles
+from napytau.import_export.crawler.napatau_setup_files import NapatauSetupFiles
 
 
 class NapatauSetupFilesUnitTest(unittest.TestCase):

@@ -1,7 +1,7 @@
 import unittest
 
-from napytau.ingest.dataset_factory.napatau_dataset_factory import NapatauDatasetFactory
-from napytau.ingest.dataset_factory.raw_napatau_data import RawNapatauData
+from napytau.import_export.dataset_factory.napatau_dataset_factory import NapatauDatasetFactory
+from napytau.import_export.dataset_factory.raw_napatau_data import RawNapatauData
 
 
 class NapatauDatasetFactoryUnitTest(unittest.TestCase):

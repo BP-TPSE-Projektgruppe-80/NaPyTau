@@ -44,7 +44,7 @@ class FileCrawlerUnitTest(unittest.TestCase):
                 "os.path": path_mock,
             },
         ):
-            from napytau.ingest.crawler.file_crawler import FileCrawler
+            from napytau.import_export.crawler.file_crawler import FileCrawler
 
             file_crawler = FileCrawler([], lambda x: x)
             with self.assertRaises(ValueError):
@@ -65,7 +65,7 @@ class FileCrawlerUnitTest(unittest.TestCase):
                 "os.path": path_mock,
             },
         ):
-            from napytau.ingest.crawler.file_crawler import FileCrawler
+            from napytau.import_export.crawler.file_crawler import FileCrawler
 
             file_crawler = FileCrawler([], lambda x: x)
             self.assertEqual(file_crawler.crawl("some/directory"), [])
@@ -91,7 +91,7 @@ class FileCrawlerUnitTest(unittest.TestCase):
                 "os.path": path_mock,
             },
         ):
-            from napytau.ingest.crawler.file_crawler import FileCrawler
+            from napytau.import_export.crawler.file_crawler import FileCrawler
 
             file_crawler = FileCrawler(["pattern1", "pattern2"], lambda x: x)
             self.assertEqual(file_crawler.crawl("some/directory"), [])
@@ -117,7 +117,7 @@ class FileCrawlerUnitTest(unittest.TestCase):
                 "os.path": path_mock,
             },
         ):
-            from napytau.ingest.crawler.file_crawler import FileCrawler
+            from napytau.import_export.crawler.file_crawler import FileCrawler
 
             factory_mock = MagicMock()
             factory_mock.return_value = ["root/file2"]
