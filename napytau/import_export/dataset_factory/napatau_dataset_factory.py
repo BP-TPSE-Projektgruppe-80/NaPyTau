@@ -21,7 +21,7 @@ class NapatauDatasetFactory:
         )
 
     @staticmethod
-    def parse_velocity(velocity_rows: List[str]) -> RelativeVelocity:
+    def parse_velocity(velocity_rows: List[str]) -> ValueErrorPair[RelativeVelocity]:
         filtered_velocities = list(
             filter(lambda x: not x.startswith("#"), velocity_rows)
         )
@@ -31,7 +31,26 @@ class NapatauDatasetFactory:
                 f"Expected one velocity row, but got {len(filtered_velocities)}"
             )
 
-        return RelativeVelocity(float(filtered_velocities[0]))
+        split_velocity_row = filtered_velocities[0].split(" ")
+
+        if len(split_velocity_row) < 1:
+            raise ValueError(
+                f"Expected at least 1 value in velocity row, but got {len(split_velocity_row)}"  # noqa E501
+            )
+
+        if len(split_velocity_row) > 2:
+            raise ValueError(
+                f"Expected at most 1 value in velocity row, but got {len(split_velocity_row)}"  # noqa E501
+            )
+
+        velocity = float(split_velocity_row[0])
+        velocity_error = (
+            float(split_velocity_row[1]) if len(split_velocity_row) == 2 else 0.0
+        )
+
+        return ValueErrorPair(
+            RelativeVelocity(velocity), RelativeVelocity(velocity_error)
+        )
 
     @staticmethod
     def parse_datapoints(
