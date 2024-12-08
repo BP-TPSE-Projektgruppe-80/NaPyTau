@@ -11,6 +11,10 @@ from napytau.import_export.crawler.napatau_setup_files import NapatauSetupFiles
 from napytau.import_export.model.dataset import DataSet
 from napytau.import_export.reader.file_reader import FileReader
 
+IMPORT_FORMAT_NAPATAU = "napatau"
+
+IMPORT_FORMATS = [IMPORT_FORMAT_NAPATAU]
+
 
 def import_napatau_format_from_files(
     directory_path: PurePath, fit_file_path: Optional[PurePath] = None

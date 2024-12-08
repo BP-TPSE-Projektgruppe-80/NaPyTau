@@ -79,8 +79,10 @@ class NapatauDatasetFactoryUnitTest(unittest.TestCase):
                 )
             )
 
-    def test_raisesAnExceptionIfAFitRowWithTooManyValuesForASetOfBasicIntensitiesButTooManyForASetOfBasicAndShiftedIntensitiesIsProvided(self): # noqa: E501
-        """Raises an exception if a fit row with too many values for a set of basic intensities but too many for a set of basic and shifted intensities is provided""" # noqa: E501
+    def test_raisesAnExceptionIfAFitRowWithTooManyValuesForASetOfBasicIntensitiesButTooManyForASetOfBasicAndShiftedIntensitiesIsProvided(  # noqa: E501
+        self,
+    ):
+        """Raises an exception if a fit row with too many values for a set of basic intensities but too many for a set of basic and shifted intensities is provided"""  # noqa: E501
         with self.assertRaises(ValueError):
             NapatauDatasetFactory.create_dataset(
                 RawNapatauData(
