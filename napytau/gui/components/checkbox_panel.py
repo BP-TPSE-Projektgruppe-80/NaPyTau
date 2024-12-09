@@ -73,7 +73,7 @@ class CheckboxPanel:
 
         header_label = customtkinter.CTkLabel(
             self.frame_datapoint_checkboxes,
-            text="Datapoints for tau calculation",
+            text="tau calculation",
             font=("Arial", 16),
         )
         header_label.grid(row=0, column=1, padx=30, pady=5, sticky="nsew")
