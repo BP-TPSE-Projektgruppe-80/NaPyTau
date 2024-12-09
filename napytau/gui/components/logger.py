@@ -26,8 +26,12 @@ class Logger(customtkinter.CTkFrame):
         # Set initial text colors
         if customtkinter.get_appearance_mode() == "Light":
             self.info_color = "black"
+            self.error_color = "#ba1500"
+            self.success_color = "#388f00" # Tweak
         else:
             self.info_color = "white"
+            self.error_color = "#ff3a21" # Tweak
+            self.success_color = "#48ba00"
 
         # Store labels in a deque with a max length of 50
         self.labels: deque = deque(maxlen=50)
@@ -44,14 +48,14 @@ class Logger(customtkinter.CTkFrame):
         Appends an error message to the logger in red.
         :param message: The error message to log.
         """
-        self._log_message("[ERROR] " + message, color="red")
+        self._log_message("[ERROR] " + message, color=self.error_color)
 
     def log_success(self, message: str) -> None:
         """
         Appends a success message to the logger.
         :param message: The message to log.
         """
-        self._log_message("[SUCCESS] " + message, color="green")
+        self._log_message("[SUCCESS] " + message, color=self.success_color)
 
     def _log_message(self, message: str, color: str) -> None:
         """
@@ -94,7 +98,17 @@ class Logger(customtkinter.CTkFrame):
 
         # Update the text color for each label based on the appearance mode
         for label in self.labels:
-            if label.cget("text").startswith("[INFO]"):
+            if label.cget("text").startswith("[ERROR]"):
+                if appearance_mode == "dark":
+                    label.configure(text_color="#ff3a21")
+                else:
+                    label.configure(text_color="#ba1500")
+            elif label.cget("text").startswith("[SUCCESS]"):
+                if appearance_mode == "dark":
+                    label.configure(text_color="#48ba00")
+                else:
+                    label.configure(text_color="#388f00")
+            else:
                 if appearance_mode == "dark":
                     label.configure(text_color="white")
                 else:
