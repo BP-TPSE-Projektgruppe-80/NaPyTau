@@ -2,12 +2,6 @@ import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
 
-
-
-
-
-
-
 def set_up_mocks() -> (MagicMock, MagicMock, MagicMock):
     polynomial_module_mock = MagicMock()
     polynomial_module_mock.polynomial_sum_at_measuring_times = MagicMock()
@@ -24,7 +18,7 @@ class DeltaChiUnitTests(unittest.TestCase):
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.zeros((3, 2))
-        polynomial_module_mock.side_effect = [6, 3, 2, 1]
+        polynomial_module_mock.polynomial_sum_at_measuring_times.side_effect = [6, 3, 2, 1]
 
         with patch.dict(
                 "sys.modules",
@@ -41,11 +35,6 @@ class DeltaChiUnitTests(unittest.TestCase):
             jacobian_matrix = np.array([[3e8,1e8],
                                [3e8,1e8],
                                [3e8,1e8]])
-
-
-
-
-
 
             np.testing.assert_array_equal(calculate_jacobian_matrix(times, coefficients),jacobian_matrix)
 
