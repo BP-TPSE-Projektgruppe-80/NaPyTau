@@ -1,7 +1,7 @@
 from napytau.core.polynomials import polynomial_sum_at_measuring_times
 from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_times
 from numpy import sum
-from numpy import array
+from numpy import ndarray
 from numpy import mean
 from numpy import power
 from scipy.optimize import minimize
@@ -10,12 +10,12 @@ from scipy.optimize import OptimizeResult
 
 # Chi^2 Funktion für festes t-hyp
 def chi_squared_fixed_t(
-    doppler_shifted_intensities: array,
-    unshifted_intensities: array,
-    delta_doppler_shifted_intensities: array,
-    delta_unshifted_intensities: array,
-    coefficients: array,
-    times: array,
+    doppler_shifted_intensities: ndarray,
+    unshifted_intensities: ndarray,
+    delta_doppler_shifted_intensities: ndarray,
+    delta_unshifted_intensities: ndarray,
+    coefficients: ndarray,
+    times: ndarray,
     t_hyp: float,
     weight_factor: float,
 ) -> float:
@@ -37,13 +37,13 @@ def chi_squared_fixed_t(
     """
 
     # Compute the difference between Doppler-shifted intensities and polynomial model
-    shifted_intensity_difference: array = (
+    shifted_intensity_difference: ndarray = (
         doppler_shifted_intensities
         - polynomial_sum_at_measuring_times(times, coefficients)
     ) / delta_doppler_shifted_intensities
 
     # Compute the difference between unshifted intensities and scaled derivative of the polynomial model
-    unshifted_intensity_difference: array = (
+    unshifted_intensity_difference: ndarray = (
         unshifted_intensities
         - (
             t_hyp
@@ -60,15 +60,15 @@ def chi_squared_fixed_t(
 
 
 def optimize_coefficients(
-    doppler_shifted_intensities: array,
-    unshifted_intensities: array,
-    delta_doppler_shifted_intensities: array,
-    delta_unshifted_intensities: array,
-    initial_coefficients: array,
-    times: array,
+    doppler_shifted_intensities: ndarray,
+    unshifted_intensities: ndarray,
+    delta_doppler_shifted_intensities: ndarray,
+    delta_unshifted_intensities: ndarray,
+    initial_coefficients: ndarray,
+    times: ndarray,
     t_hyp: float,
     weight_factor: float,
-) -> (array, float):
+) -> (ndarray, float):
     """
     Optimizes the polynomial coefficients to minimize the chi-squared function.
 
@@ -85,7 +85,7 @@ def optimize_coefficients(
     Returns:
         tuple: Optimized coefficients (array) and minimized chi-squared value (float).
         """
-    result: array = minimize(
+    result: OptimizeResult = minimize(
         lambda coefficients: chi_squared_fixed_t(
             doppler_shifted_intensities,
             unshifted_intensities,
@@ -105,12 +105,12 @@ def optimize_coefficients(
 
 
 def optimize_t_hyp(
-    doppler_shifted_intensities: array,
-    unshifted_intensities: array,
-    delta_doppler_shifted_intensities: array,
-    delta_unshifted_intensities: array,
-    initial_coefficients: array,
-    time: array,
+    doppler_shifted_intensities: ndarray,
+    unshifted_intensities: ndarray,
+    delta_doppler_shifted_intensities: ndarray,
+    delta_unshifted_intensities: ndarray,
+    initial_coefficients: ndarray,
+    time: ndarray,
     t_hyp_range: (float, float),
     weight_factor: float,
 ) -> float:
@@ -140,9 +140,9 @@ def optimize_t_hyp(
             delta_doppler_shifted_intensities,
             delta_unshifted_intensities,
             time,
+            initial_coefficients,
             t_hyp,
             weight_factor,
-            initial_coefficients,
         )[1]
 
     # minimize chi-squared function over the range of t_hyp

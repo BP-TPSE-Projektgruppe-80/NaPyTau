@@ -2,19 +2,21 @@ import unittest
 from unittest.mock import MagicMock, patch
 from numpy import array
 from numpy import testing
-
+from scipy.optimize import OptimizeResult
 
 def set_up_mocks() -> (MagicMock, MagicMock):
-    core_module_mock = MagicMock()
     polynomials_mock = MagicMock()
     polynomials_mock.polynomial_sum_at_measuring_times = MagicMock()
     polynomials_mock.differentiated_polynomial_sum_at_measuring_times = MagicMock()
-    return core_module_mock, polynomials_mock
+
+    scipy_optimize_module_mock = MagicMock()
+    scipy_optimize_module_mock.minimize = MagicMock()
+    return polynomials_mock, scipy_optimize_module_mock
 
 
 class ChiUnitTests(unittest.TestCase):
-    def test_CalculationForValidData(self):
-        core_module_mock, polynomials_mock = set_up_mocks()
+    def test_ChiCalculationForValidData(self):
+        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_times\
@@ -28,7 +30,7 @@ class ChiUnitTests(unittest.TestCase):
                 {
                     "napytau.core.polynomials": polynomials_mock,
                 },
-        ):
+            ):
 
             from napytau.core.chi import chi_squared_fixed_t
 
@@ -98,8 +100,8 @@ class ChiUnitTests(unittest.TestCase):
             )
 
 
-    def test_CalculationForEmptyDataArrays(self):
-        core_module_mock, polynomials_mock = set_up_mocks()
+    def test_ChiCalculationForEmptyDataArrays(self):
+        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_times\
@@ -183,8 +185,8 @@ class ChiUnitTests(unittest.TestCase):
             )
 
 
-    def test_CalculationForSingleDatapoint(self):
-        core_module_mock, polynomials_mock = set_up_mocks()
+    def test_ChiCalculationForSingleDatapoint(self):
+        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_times\
@@ -268,8 +270,8 @@ class ChiUnitTests(unittest.TestCase):
             )
 
 
-    def test_CalculationForDenominatorZero(self):
-        core_module_mock, polynomials_mock = set_up_mocks()
+    def test_ChiCalculationForDenominatorZero(self):
+        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_times\
@@ -353,8 +355,8 @@ class ChiUnitTests(unittest.TestCase):
             )
 
 
-    def test_CalculationForNegativeValues(self):
-        core_module_mock, polynomials_mock = set_up_mocks()
+    def test_ChiCalculationForNegativeValues(self):
+        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_times\
@@ -438,8 +440,8 @@ class ChiUnitTests(unittest.TestCase):
             )
 
 
-    def test_CalculationForWeightFactorZero(self):
-        core_module_mock, polynomials_mock = set_up_mocks()
+    def test_ChiCalculationForWeightFactorZero(self):
+        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_times\
@@ -520,4 +522,78 @@ class ChiUnitTests(unittest.TestCase):
                 polynomials_mock.differentiated_polynomial_sum_at_measuring_times
                 .mock_calls[0].args[1],
                 (array([5, 4, 3, 2, 1])),
+            )
+
+
+    def test_coefficientOptimization(self):
+        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
+
+        # Mocked return value of called function
+        scipy_optimize_module_mock.minimize.return_value = OptimizeResult(x = [1, 3, 2], fun = 0.0)
+
+
+        with patch.dict(
+                "sys.modules",
+                {
+                    "scipy.optimize": scipy_optimize_module_mock,
+                },
+        ):
+
+            from napytau.core.chi import optimize_coefficients
+            from napytau.core.chi import chi_squared_fixed_t
+
+            # Mocked input data
+            doppler_shifted_intensities: array = array([2, 6])
+            unshifted_intensities: array = array([6, 10])
+            delta_doppler_shifted_intensities: array = array([1, 1])
+            delta_unshifted_intensities: array = array([1, 1])
+            initial_coefficients: array = array([1, 1, 1])
+            times: array = array([0, 1])
+            t_hyp: float = 2.0
+            weight_factor: float = 0.0
+
+            # Expected result
+            expected_chi: float = 0.0
+            expected_coefficients: array = array([1, 3, 2])
+
+
+            actual_coefficients: array
+            actual_chi: float
+            actual_coefficients, actual_chi = optimize_coefficients(
+                                                doppler_shifted_intensities,
+                                                unshifted_intensities,
+                                                delta_doppler_shifted_intensities,
+                                                delta_unshifted_intensities,
+                                                initial_coefficients,
+                                                times,
+                                                t_hyp,
+                                                weight_factor)
+
+            self.assertEqual(actual_chi, expected_chi)
+            testing.assert_array_equal(actual_coefficients, expected_coefficients)
+
+
+            self.assertEqual(
+                len(scipy_optimize_module_mock.minimize.mock_calls), 1
+            )
+
+            self.assertEqual(scipy_optimize_module_mock.minimize.mock_calls[0].args[0],
+                             lambda coefficients:
+                             chi_squared_fixed_t(doppler_shifted_intensities,
+                                                 unshifted_intensities,
+                                                 delta_doppler_shifted_intensities,
+                                                 delta_unshifted_intensities,
+                                                 coefficients,
+                                                 times,
+                                                 t_hyp,
+                                                 weight_factor))
+
+            testing.assert_array_equal(
+                scipy_optimize_module_mock.minimize.mock_calls[0].args[1],
+                array([1, 1, 1]),
+            )
+
+            self.assertEqual(
+                scipy_optimize_module_mock.minimize.mock_calls[0].args[2],
+                "L-BFGS-B",
             )
