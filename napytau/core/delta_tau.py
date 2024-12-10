@@ -8,13 +8,13 @@ from numpy import power
 from numpy import linalg
 
 
-def calculate_jacobian_matrix(times: array, coefficients: array) -> ndarray:
+def calculate_jacobian_matrix(times: ndarray, coefficients: ndarray) -> ndarray:
     """
     calculated the jacobian matrix for a set of polynomial coefficients taking different times into account.
     Adds Disturbances to each coefficient to calculate partial derivatives, safes them in jacobian matrix
     Args:
-        times (array): Array of time points.
-        coefficients (array): Array of polynomial coefficients.
+        times (ndarray): Array of time points.
+        coefficients (ndarray): Array of polynomial coefficients.
 
     Returns:
         ndarray: The computed Jacobian matrix with shape (len(times), len(coefficients)).
@@ -26,14 +26,14 @@ def calculate_jacobian_matrix(times: array, coefficients: array) -> ndarray:
 
     # Loop over each coefficient and calculate the partial derivative
     for i in range(len(coefficients)):
-        perturbed_coefficients: array = array(coefficients, dtype=float)
+        perturbed_coefficients: ndarray = array(coefficients, dtype=float)
         perturbed_coefficients[i] += epsilon #slightly disturb the current coefficient
 
         # Compute the disturbed and original polynomial values at the given times
-        perturbed_function: array = polynomial_sum_at_measuring_times(
+        perturbed_function: ndarray = polynomial_sum_at_measuring_times(
             times, perturbed_coefficients
         )
-        original_function: array = polynomial_sum_at_measuring_times(
+        original_function: ndarray = polynomial_sum_at_measuring_times(
             times, coefficients
         )
 
@@ -44,15 +44,15 @@ def calculate_jacobian_matrix(times: array, coefficients: array) -> ndarray:
 
 
 def calculate_covariance_matrix(
-    delta_shifted_intensities: array, times: array, coefficients: array
+    delta_shifted_intensities: ndarray, times: ndarray, coefficients: ndarray
 ) -> ndarray:
     """
     Computes the covariance matrix for the polynomial coefficients using the jacobian matrix and
     a weight matrix derived from the shifted intensities' errors.
     Args:
-        delta_shifted_intensities (array): Errors in the shifted intensities.
-        times (array): Array of time points.
-        coefficients (array): Array of polynomial coefficients.
+        delta_shifted_intensities (ndarray): Errors in the shifted intensities.
+        times (ndarray): Array of time points.
+        coefficients (ndarray): Array of polynomial coefficients.
 
     Returns:
         ndarray: The computed covariance matrix for the polynomial coefficients.
@@ -73,31 +73,31 @@ def calculate_covariance_matrix(
     return covariance_matrix
 
 
-def calculate_gaussian_error_propagation_terms(
-    unshifted_intensities: array,
-    delta_shifted_intensities: array,
-    delta_unshifted_intensities: array,
-    times: array,
-    coefficients: array,
+def calculate_error_propagation_terms(
+    unshifted_intensities: ndarray,
+    delta_shifted_intensities: ndarray,
+    delta_unshifted_intensities: ndarray,
+    times: ndarray,
+    coefficients: ndarray,
     taufactor: float,
-    ) -> array:
+    ) -> ndarray:
     """
     creates the gaussian error propagation term for the polynomial coefficients.
     combining direct errors, polynomial uncertainties, and mixed covariance terms.
     Args:
-        unshifted_intensities (array): Unshifted intensity values.
-        delta_shifted_intensities (array): Errors in the shifted intensities.
-        delta_unshifted_intensities (array): Errors in the unshifted intensities.
-        times (array): Array of time points.
-        coefficients (array): Array of polynomial coefficients.
+        unshifted_intensities (ndarray): Unshifted intensity values.
+        delta_shifted_intensities (ndarray): Errors in the shifted intensities.
+        delta_unshifted_intensities (ndarray): Errors in the unshifted intensities.
+        times (ndarray): Array of time points.
+        coefficients (ndarray): Array of polynomial coefficients.
         taufactor (float): Scaling factor related to the Doppler-shift model.
 
     Returns:
-        array: The combined Gaussian error propagation terms for each time point.
+        ndarray: The combined Gaussian error propagation terms for each time point.
     """
 
     # First summand: Contribution from unshifted intensity errors
-    first_summand: array = power(delta_unshifted_intensities, 2) / power(
+    first_summand: ndarray = power(delta_unshifted_intensities, 2) / power(
         differentiated_polynomial_sum_at_measuring_times(
             times,
             coefficients,
@@ -106,7 +106,7 @@ def calculate_gaussian_error_propagation_terms(
     )
 
     # Initialize the polynomial uncertainty term for second term
-    delta_p_j_i_squared: array = zeros(len(times))
+    delta_p_j_i_squared: ndarray = zeros(len(times))
     covariance_matrix: ndarray = calculate_covariance_matrix(
         delta_shifted_intensities, times, coefficients
     )
@@ -114,13 +114,14 @@ def calculate_gaussian_error_propagation_terms(
     # Calculate the polynomial uncertainty contributions
     for k in range(len(coefficients)):
         for l in range(len(coefficients)):  # noqa E741
-            delta_p_j_i_squared = sum(
-                delta_p_j_i_squared,
-                power(times, k) * power(times, l) * covariance_matrix[k, l],
-            )
+            delta_p_j_i_squared = (delta_p_j_i_squared
+                                   + power(times, k)
+                                   * power(times, l)
+                                   * covariance_matrix[k, l])
+
 
     # Second summand: Contribution from polynomial uncertainties
-    second_summand: array = (
+    second_summand: ndarray = (
         power(unshifted_intensities, 2)
         / power(
             differentiated_polynomial_sum_at_measuring_times(
@@ -132,7 +133,7 @@ def calculate_gaussian_error_propagation_terms(
     ) * power(delta_p_j_i_squared, 2)
 
     # Third summand: Mixed covariance contribution
-    third_summand: array = \
+    third_summand: ndarray = \
         ((unshifted_intensities * taufactor * delta_p_j_i_squared)
          / power(differentiated_polynomial_sum_at_measuring_times(
                     times,

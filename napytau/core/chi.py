@@ -23,12 +23,12 @@ def chi_squared_fixed_t(
     Computes the chi-squared value for a given hypothesis t_hyp
 
     Args:
-        doppler_shifted_intensities (array): Array of Doppler-shifted intensity measurements
-        unshifted_intensities (array): Array of unshifted intensity measurements
-        delta_doppler_shifted_intensities (array): Uncertainties in Doppler-shifted intensities
-        delta_unshifted_intensities (array): Uncertainties in unshifted intensities
-        coefficients (array): Polynomial coefficients for fitting
-        times (array): Array of time points
+        doppler_shifted_intensities (ndarray): Array of Doppler-shifted intensity measurements
+        unshifted_intensities (ndarray): Array of unshifted intensity measurements
+        delta_doppler_shifted_intensities (ndarray): Uncertainties in Doppler-shifted intensities
+        delta_unshifted_intensities (ndarray): Uncertainties in unshifted intensities
+        coefficients (ndarray): Polynomial coefficients for fitting
+        times (ndarray): Array of time points
         t_hyp (float): Hypothesis value for the scaling factor
         weight_factor (float): Weighting factor for unshifted intensities
 
@@ -73,17 +73,17 @@ def optimize_coefficients(
     Optimizes the polynomial coefficients to minimize the chi-squared function.
 
     Args:
-        doppler_shifted_intensities (array): Array of Doppler-shifted intensity measurements
-        unshifted_intensities (array): Array of unshifted intensity measurements
-        delta_doppler_shifted_intensities (array): Uncertainties in Doppler-shifted intensities
-        delta_unshifted_intensities (array): Uncertainties in unshifted intensities
-        initial_coefficients (array): Initial guess for the polynomial coefficients
-        times (array): Array of time points
+        doppler_shifted_intensities (ndarray): Array of Doppler-shifted intensity measurements
+        unshifted_intensities (ndarray): Array of unshifted intensity measurements
+        delta_doppler_shifted_intensities (ndarray): Uncertainties in Doppler-shifted intensities
+        delta_unshifted_intensities (ndarray): Uncertainties in unshifted intensities
+        initial_coefficients (ndarray): Initial guess for the polynomial coefficients
+        times (ndarray): Array of time points
         t_hyp (float): Hypothesis value for the scaling factor
         weight_factor (float): Weighting factor for unshifted intensities
 
     Returns:
-        tuple: Optimized coefficients (array) and minimized chi-squared value (float).
+        tuple: Optimized coefficients (ndarray) and minimized chi-squared value (float).
         """
     result: OptimizeResult = minimize(
         lambda coefficients: chi_squared_fixed_t(
@@ -118,12 +118,12 @@ def optimize_t_hyp(
     Optimizes the hypothesis value t_hyp to minimize the chi-squared function.
 
     Parameters:
-        doppler_shifted_intensities (array): Array of Doppler-shifted intensity measurements
-        unshifted_intensities (array): Array of unshifted intensity measurements
-        delta_doppler_shifted_intensities (array): Uncertainties in Doppler-shifted intensities
-        delta_unshifted_intensities (array): Uncertainties in unshifted intensities
-        initial_coefficients (array): Initial guess for the polynomial coefficients
-        time (array): Array of time points
+        doppler_shifted_intensities (ndarray): Array of Doppler-shifted intensity measurements
+        unshifted_intensities (ndarray): Array of unshifted intensity measurements
+        delta_doppler_shifted_intensities (ndarray): Uncertainties in Doppler-shifted intensities
+        delta_unshifted_intensities (ndarray): Uncertainties in unshifted intensities
+        initial_coefficients (ndarray): Initial guess for the polynomial coefficients
+        time (ndarray): Array of time points
         t_hyp_range (tuple): Range for t_hyp optimization (min, max)
         weight_factor (float): Weighting factor for unshifted intensities
 
@@ -132,9 +132,8 @@ def optimize_t_hyp(
     """
 
     # defines a function for chi-squared computation with fixed t_hyp
-    def chi_squared_t_hyp(t_hyp: float) -> float:
-        # return the minimized chi-squared value for the current t_hyp
-        return optimize_coefficients(
+    # return the minimized chi-squared value for the current t_hyp
+    chi_squared_t_hyp = lambda t_hyp: optimize_coefficients(
             doppler_shifted_intensities,
             unshifted_intensities,
             delta_doppler_shifted_intensities,
@@ -148,8 +147,8 @@ def optimize_t_hyp(
     # minimize chi-squared function over the range of t_hyp
     result: OptimizeResult = minimize(
         chi_squared_t_hyp,
-        x0=mean(t_hyp_range), # Initial guess for t_hyp
-        bounds=[(t_hyp_range[0], t_hyp_range[1])], # Boundaries for optimization
+        x0 = mean(t_hyp_range), # Initial guess for t_hyp
+        bounds = [(t_hyp_range[0], t_hyp_range[1])], # Boundaries for optimization
     )
 
     # Return optimized t_hyp value
