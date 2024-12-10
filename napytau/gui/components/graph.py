@@ -18,11 +18,12 @@ class Graph:
         """
         self.parent = parent
         self.graph_frame = self.plot(
-            self.parent.tau.get(), customtkinter.get_appearance_mode())
+            self.parent.tau.get(), customtkinter.get_appearance_mode()
+        )
         self.graph_frame.grid(
-            row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew")
+            row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew"
+        )
         self.graph_frame.grid_propagate(False)
-
 
     def update_plot(self) -> None:
         """
@@ -79,7 +80,8 @@ class Graph:
 
         # add grid style
         plot1.grid(
-            True, which="both", color=secondary_color, linestyle="--", linewidth=0.3)
+            True, which="both", color=secondary_color, linestyle="--", linewidth=0.3
+        )
 
         # plotting the datapoints with appropriate markers
         for index in range(len(y_data)):
