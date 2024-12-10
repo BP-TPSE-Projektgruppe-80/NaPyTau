@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
+
 class MenuBar:
-    def __init__(self, parent: "App", callbacks:  dict) -> None:
+    def __init__(self, parent: "App", callbacks: dict) -> None:
         """
         Initializes the menu bar and its items.
         :param parent: Parent widget to host the checkbox panel.
@@ -50,17 +51,20 @@ class MenuBar:
             label="Light mode",
             variable=self.appearance_mode,
             value="light",
-            command=self.callbacks["change_appearance_mode"])
+            command=self.callbacks["change_appearance_mode"],
+        )
         view_menu.add_radiobutton(
             label="Dark mode",
             variable=self.appearance_mode,
             value="dark",
-            command=self.callbacks["change_appearance_mode"])
+            command=self.callbacks["change_appearance_mode"],
+        )
         view_menu.add_radiobutton(
             label="System",
             variable=self.appearance_mode,
             value="system",
-            command=self.callbacks["change_appearance_mode"])
+            command=self.callbacks["change_appearance_mode"],
+        )
 
     def _init_poly_menu(self) -> None:
         """
@@ -78,7 +82,8 @@ class MenuBar:
                 label=str(i),
                 variable=self.number_of_polynomials,
                 value=str(i),
-                command=self.callbacks["select_number_of_polynomials"])
+                command=self.callbacks["select_number_of_polynomials"],
+            )
         poly_menu.add_separator()
 
         self.polynomial_mode = tk.StringVar(value="Exponential")  # Default: Exponential
@@ -86,12 +91,14 @@ class MenuBar:
             label="Equidistant",
             variable=self.polynomial_mode,
             value="Equidistant",
-            command=self.callbacks["select_polynomial_mode"])
+            command=self.callbacks["select_polynomial_mode"],
+        )
         poly_menu.add_radiobutton(
             label="Exponential",
             variable=self.polynomial_mode,
             value="Exponential",
-            command=self.callbacks["select_polynomial_mode"])
+            command=self.callbacks["select_polynomial_mode"],
+        )
 
     def _init_alpha_calc_menu(self) -> None:
         """
@@ -105,9 +112,11 @@ class MenuBar:
             label="Sum Ratio",
             variable=self.alpha_calc_mode,
             value="sum ratio",
-            command=self.callbacks["select_alpha_calc_mode"])
+            command=self.callbacks["select_alpha_calc_mode"],
+        )
         alpha_calc_menu.add_radiobutton(
             label="Weighted Mean",
             variable=self.alpha_calc_mode,
             value="weighted mean",
-            command=self.callbacks["select_alpha_calc_mode"])
+            command=self.callbacks["select_alpha_calc_mode"],
+        )

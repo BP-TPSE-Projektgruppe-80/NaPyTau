@@ -10,7 +10,7 @@ def parse_cli_arguments() -> CLIArguments:
     parser.add_argument(
         "--filename",
         type=str,
-        help="File to ingest (only for mockup, not used in real application)",
+        help="File to import (only for mockup, not used in real application)",
     )
 
     return CLIArguments(parser.parse_args())
