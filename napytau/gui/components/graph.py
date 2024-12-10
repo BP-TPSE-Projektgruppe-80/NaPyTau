@@ -10,6 +10,7 @@ import numpy as np
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
+
 class Graph:
     def __init__(self, parent: "App") -> None:
         """
@@ -45,11 +46,10 @@ class Graph:
         :return: The canvas.
         """
 
-        #Placeholder datapoints:
+        # Placeholder datapoints:
         y_data = [2, 4, 5, 7, 8, 9, 11, 15]
         distances = [1, 2, 3, 4, 5, 6, 7, 8]
         x_data = [0, 1, 2, 3, 4, 5, 6, 7]
-
 
         # the figure that will contain the plot
         fig = Figure(figsize=(3, 2), dpi=100, facecolor="white", edgecolor="black")
@@ -58,15 +58,13 @@ class Graph:
         if appearance == "Light":
             main_color = "white"
             secondary_color = "#000000"
-            main_marker_color = 'g'
+            main_marker_color = "g"
         else:
             main_color = "#151515"
             secondary_color = "#ffffff"
             main_marker_color = "#2eff2a"
 
         fig.patch.set_facecolor(main_color)
-
-
 
         # adding the subplot
         plot1 = fig.add_subplot(111)
@@ -92,22 +90,24 @@ class Graph:
                 x_data[index],
                 y_data[index],
                 marker=marker,
-                linestyle='None',
+                linestyle="None",
                 markersize=size,
                 label=f"Point {index + 1}",
-                color= main_marker_color
+                color=main_marker_color,
             )
 
-        #plotting fitting curve of datapoints
+        # plotting fitting curve of datapoints
 
-        coeffs = np.polyfit(x_data, y_data, 10)  #Calculating coefficients
+        coeffs = np.polyfit(x_data, y_data, 10)  # Calculating coefficients
 
-        poly = np.poly1d(coeffs)  #Creating polynomial with given coefficients
+        poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
 
         x_fit = np.linspace(min(x_data), max(x_data), 100)
         y_fit = poly(x_fit)
 
-        plot1.plot(x_fit, y_fit, color='red', linestyle="--", linewidth='0.6')  #plotting
+        plot1.plot(
+            x_fit, y_fit, color="red", linestyle="--", linewidth="0.6"
+        )  # plotting
 
         # creating the Tkinter canvas
         # containing the Matplotlib figure
@@ -117,17 +117,16 @@ class Graph:
         return canvas.get_tk_widget()
 
 
-
 # Generate custom marker function
-def generate_marker(distance: float):
-    #Instructions for creating marker design
+def generate_marker(distance: float) -> Path:
+    # Instructions for creating marker design
     codes = [
         Path.MOVETO,
         Path.LINETO,
         Path.MOVETO,
         Path.LINETO,
         Path.MOVETO,
-        Path.LINETO
+        Path.LINETO,
     ]
 
     y_coord = distance / 2
@@ -137,6 +136,7 @@ def generate_marker(distance: float):
         (0, -y_coord),
         (0, y_coord),
         (-0.5, y_coord),
-        (0.5, y_coord)
+        (0.5, y_coord),
     ]
+
     return Path(verts, codes)
