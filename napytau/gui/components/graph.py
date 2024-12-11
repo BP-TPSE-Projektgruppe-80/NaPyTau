@@ -107,7 +107,7 @@ class Graph:
 
         plot1.plot(
             x_fit, y_fit, color="red", linestyle="--", linewidth="0.6"
-        )  # plotting
+        ) 
 
         # creating the Tkinter canvas
         # containing the Matplotlib figure
