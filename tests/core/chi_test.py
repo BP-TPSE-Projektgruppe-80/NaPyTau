@@ -13,10 +13,11 @@ def set_up_mocks() -> (MagicMock, MagicMock):
 
     scipy_optimize_module_mock = MagicMock()
     scipy_optimize_module_mock.minimize = MagicMock()
+
     return polynomials_mock, scipy_optimize_module_mock
 
 
-class ChiUnitTests(unittest.TestCase):
+class ChiUnitTest(unittest.TestCase):
     def test_ChiCalculationForValidData(self):
         polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
@@ -636,7 +637,7 @@ class ChiUnitTests(unittest.TestCase):
 
             self.assertTrue(
                 callable(scipy_optimize_module_mock.minimize.mock_calls[0].args[0]),
-                """The first argument to minimize should be a callable (objective function)"""
+                """The first argument to minimize should be a callable function"""
             )
 
             self.assertEqual(

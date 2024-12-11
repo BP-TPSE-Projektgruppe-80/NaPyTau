@@ -6,6 +6,7 @@ from numpy import mean
 from numpy import power
 from scipy.optimize import minimize
 from scipy.optimize import OptimizeResult
+from typing import Tuple
 
 
 # Chi^2 Funktion für festes t-hyp
@@ -23,14 +24,22 @@ def chi_squared_fixed_t(
     Computes the chi-squared value for a given hypothesis t_hyp
 
     Args:
-        doppler_shifted_intensities (ndarray): Array of Doppler-shifted intensity measurements
-        unshifted_intensities (ndarray): Array of unshifted intensity measurements
-        delta_doppler_shifted_intensities (ndarray): Uncertainties in Doppler-shifted intensities
-        delta_unshifted_intensities (ndarray): Uncertainties in unshifted intensities
-        coefficients (ndarray): Polynomial coefficients for fitting
-        times (ndarray): Array of time points
-        t_hyp (float): Hypothesis value for the scaling factor
-        weight_factor (float): Weighting factor for unshifted intensities
+        doppler_shifted_intensities (ndarray):
+        Array of Doppler-shifted intensity measurements
+        unshifted_intensities (ndarray):
+        Array of unshifted intensity measurements
+        delta_doppler_shifted_intensities (ndarray):
+        Uncertainties in Doppler-shifted intensities
+        delta_unshifted_intensities (ndarray):
+        Uncertainties in unshifted intensities
+        coefficients (ndarray):
+        Polynomial coefficients for fitting
+        times (ndarray):
+        Array of time points
+        t_hyp (float):
+        Hypothesis value for the scaling factor
+        weight_factor (float):
+        Weighting factor for unshifted intensities
 
     Returns:
         float: The chi-squared value for the given inputs.
@@ -42,7 +51,8 @@ def chi_squared_fixed_t(
         - polynomial_sum_at_measuring_times(times, coefficients)
     ) / delta_doppler_shifted_intensities
 
-    # Compute the difference between unshifted intensities and scaled derivative of the polynomial model
+    # Compute the difference between unshifted intensities and
+    # scaled derivative of the polynomial model
     unshifted_intensity_difference: ndarray = (
         unshifted_intensities
         - (
@@ -52,11 +62,11 @@ def chi_squared_fixed_t(
     ) / delta_unshifted_intensities
 
     # combine the weighted sum of squared differences
-    return sum(
+    result: float = sum(
         (power(shifted_intensity_difference, 2))
         + (weight_factor * (power(unshifted_intensity_difference, 2)))
     )
-
+    return result
 
 
 def optimize_coefficients(
@@ -68,19 +78,27 @@ def optimize_coefficients(
     times: ndarray,
     t_hyp: float,
     weight_factor: float,
-) -> (ndarray, float):
+) -> Tuple[ndarray, float]:
     """
     Optimizes the polynomial coefficients to minimize the chi-squared function.
 
     Args:
-        doppler_shifted_intensities (ndarray): Array of Doppler-shifted intensity measurements
-        unshifted_intensities (ndarray): Array of unshifted intensity measurements
-        delta_doppler_shifted_intensities (ndarray): Uncertainties in Doppler-shifted intensities
-        delta_unshifted_intensities (ndarray): Uncertainties in unshifted intensities
-        initial_coefficients (ndarray): Initial guess for the polynomial coefficients
-        times (ndarray): Array of time points
-        t_hyp (float): Hypothesis value for the scaling factor
-        weight_factor (float): Weighting factor for unshifted intensities
+        doppler_shifted_intensities (ndarray):
+        Array of Doppler-shifted intensity measurements
+        unshifted_intensities (ndarray):
+        Array of unshifted intensity measurements
+        delta_doppler_shifted_intensities (ndarray):
+        Uncertainties in Doppler-shifted intensities
+        delta_unshifted_intensities (ndarray):
+        Uncertainties in unshifted intensities
+        initial_coefficients (ndarray):
+        Initial guess for the polynomial coefficients
+        times (ndarray):
+        Array of time points
+        t_hyp (float):
+        Hypothesis value for the scaling factor
+        weight_factor (float):
+        Weighting factor for unshifted intensities
 
     Returns:
         tuple: Optimized coefficients (ndarray) and minimized chi-squared value (float).
@@ -111,21 +129,29 @@ def optimize_t_hyp(
     delta_unshifted_intensities: ndarray,
     initial_coefficients: ndarray,
     time: ndarray,
-    t_hyp_range: (float, float),
+    t_hyp_range: Tuple[float, float],
     weight_factor: float,
 ) -> float:
     """
     Optimizes the hypothesis value t_hyp to minimize the chi-squared function.
 
     Parameters:
-        doppler_shifted_intensities (ndarray): Array of Doppler-shifted intensity measurements
-        unshifted_intensities (ndarray): Array of unshifted intensity measurements
-        delta_doppler_shifted_intensities (ndarray): Uncertainties in Doppler-shifted intensities
-        delta_unshifted_intensities (ndarray): Uncertainties in unshifted intensities
-        initial_coefficients (ndarray): Initial guess for the polynomial coefficients
-        time (ndarray): Array of time points
-        t_hyp_range (tuple): Range for t_hyp optimization (min, max)
-        weight_factor (float): Weighting factor for unshifted intensities
+        doppler_shifted_intensities (ndarray):
+        Array of Doppler-shifted intensity measurements
+        unshifted_intensities (ndarray):
+        Array of unshifted intensity measurements
+        delta_doppler_shifted_intensities (ndarray):
+        Uncertainties in Doppler-shifted intensities
+        delta_unshifted_intensities (ndarray):
+        Uncertainties in unshifted intensities
+        initial_coefficients (ndarray):
+        Initial guess for the polynomial coefficients
+        time (ndarray):
+        Array of time points
+        t_hyp_range (tuple):
+        Range for t_hyp optimization (min, max)
+        weight_factor (float):
+        Weighting factor for unshifted intensities
 
     Returns:
         float: Optimized t_hyp value.
@@ -152,4 +178,5 @@ def optimize_t_hyp(
     )
 
     # Return optimized t_hyp value
-    return result.x
+    optimized_t_hyp: float = result.x
+    return optimized_t_hyp

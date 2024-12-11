@@ -18,7 +18,8 @@ class DeltaChiUnitTests(unittest.TestCase):
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.zeros((3, 2))
-        polynomial_module_mock.polynomial_sum_at_measuring_times.side_effect = [6, 3, 2, 1]
+        polynomial_module_mock.polynomial_sum_at_measuring_times.side_effect = \
+            [6, 3, 2, 1]
 
         with patch.dict(
                 "sys.modules",
@@ -36,7 +37,9 @@ class DeltaChiUnitTests(unittest.TestCase):
                                [3e8,1e8],
                                [3e8,1e8]])
 
-            np.testing.assert_array_equal(calculate_jacobian_matrix(times, coefficients),jacobian_matrix)
+            np.testing.assert_array_equal(calculate_jacobian_matrix(times,
+                                                                    coefficients),
+                                          jacobian_matrix)
 
 
 if __name__ == '__main__':

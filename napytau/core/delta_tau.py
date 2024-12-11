@@ -10,17 +10,21 @@ from numpy import linalg
 
 def calculate_jacobian_matrix(times: ndarray, coefficients: ndarray) -> ndarray:
     """
-    calculated the jacobian matrix for a set of polynomial coefficients taking different times into account.
-    Adds Disturbances to each coefficient to calculate partial derivatives, safes them in jacobian matrix
+    calculated the jacobian matrix for a set of polynomial coefficients taking
+    different times into account.
+    Adds Disturbances to each coefficient to calculate partial derivatives,
+    safes them in jacobian matrix
     Args:
         times (ndarray): Array of time points.
         coefficients (ndarray): Array of polynomial coefficients.
 
     Returns:
-        ndarray: The computed Jacobian matrix with shape (len(times), len(coefficients)).
+        ndarray:
+        The computed Jacobian matrix with shape (len(times), len(coefficients)).
     """
 
-    jacobian_matrix: ndarray = zeros((len(times), len(coefficients))) #initializes the jacobian matrix
+    # initializes the jacobian matrix
+    jacobian_matrix: ndarray = zeros((len(times), len(coefficients)))
 
     epsilon: float = 1e-8 #small disturbance value
 
@@ -37,7 +41,8 @@ def calculate_jacobian_matrix(times: ndarray, coefficients: ndarray) -> ndarray:
             times, coefficients
         )
 
-        # Calculate the partial derivative coefficients and store it in the Jacobian matrix
+        # Calculate the partial derivative coefficients and store it in the
+        # Jacobian matrix
         jacobian_matrix[:, i] = (perturbed_function - original_function) / epsilon
 
     return jacobian_matrix
@@ -47,8 +52,8 @@ def calculate_covariance_matrix(
     delta_shifted_intensities: ndarray, times: ndarray, coefficients: ndarray
 ) -> ndarray:
     """
-    Computes the covariance matrix for the polynomial coefficients using the jacobian matrix and
-    a weight matrix derived from the shifted intensities' errors.
+    Computes the covariance matrix for the polynomial coefficients using the
+    jacobian matrix and a weight matrix derived from the shifted intensities' errors.
     Args:
         delta_shifted_intensities (ndarray): Errors in the shifted intensities.
         times (ndarray): Array of time points.
@@ -140,4 +145,5 @@ def calculate_error_propagation_terms(
                     coefficients), 3))
 
     # Return the sum of all three contribution
-    return first_summand + second_summand + third_summand
+    result: ndarray = first_summand + second_summand + third_summand
+    return result

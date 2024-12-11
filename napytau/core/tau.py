@@ -2,6 +2,7 @@ from napytau.core.chi import optimize_t_hyp
 from napytau.core.chi import optimize_coefficients
 from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_times
 from numpy import ndarray
+from typing import Tuple
 
 
 def calculate_tau_i(
@@ -11,21 +12,30 @@ def calculate_tau_i(
     delta_unshifted_intensities: ndarray,
     initial_coefficients: ndarray,
     times: ndarray,
-    t_hyp_range: (float, float),
+    t_hyp_range: Tuple[float, float],
     weight_factor: float,
 ) -> ndarray:
     """
-       Calculates the decay times (tau_i) based on the provided intensities and time points.
+       Calculates the decay times (tau_i) based on the provided
+       intensities and time points.
 
        Args:
-           doppler_shifted_intensities (ndarray): Array of Doppler-shifted intensity measurements
-           unshifted_intensities (ndarray): Array of unshifted intensity measurements
-           delta_doppler_shifted_intensities (ndarray): Uncertainties in Doppler-shifted intensities
-           delta_unshifted_intensities (ndarray): Uncertainties in unshifted intensities
-           initial_coefficients (ndarray): Initial guess for the polynomial coefficients
-           times (ndarray): Array of time points corresponding to measurements
-           t_hyp_range (tuple): Range for hypothesis optimization (min, max)
-           weight_factor (float): Weighting factor for unshifted intensities
+           doppler_shifted_intensities (ndarray):
+           Array of Doppler-shifted intensity measurements
+           unshifted_intensities (ndarray):
+           Array of unshifted intensity measurements
+           delta_doppler_shifted_intensities (ndarray):
+           Uncertainties in Doppler-shifted intensities
+           delta_unshifted_intensities (ndarray):
+           Uncertainties in unshifted intensities
+           initial_coefficients (ndarray):
+           Initial guess for the polynomial coefficients
+           times (ndarray):
+           Array of time points corresponding to measurements
+           t_hyp_range (tuple):
+           Range for hypothesis optimization (min, max)
+           weight_factor (float):
+           Weighting factor for unshifted intensities
 
        Returns:
            ndarray: Calculated decay times for each time point.
@@ -37,10 +47,10 @@ def calculate_tau_i(
         unshifted_intensities,
         delta_doppler_shifted_intensities,
         delta_unshifted_intensities,
+        initial_coefficients,
         times,
         t_hyp_range,
         weight_factor,
-        initial_coefficients,
     )
 
     # optimize the polynomial coefficients with the optimized t_hyp
@@ -50,10 +60,10 @@ def calculate_tau_i(
             unshifted_intensities,
             delta_doppler_shifted_intensities,
             delta_unshifted_intensities,
+            initial_coefficients,
             times,
             t_opt,
             weight_factor,
-            initial_coefficients,
         )
     )[0]
 
