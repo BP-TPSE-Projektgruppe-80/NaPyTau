@@ -117,7 +117,8 @@ class Graph:
         return canvas.get_tk_widget()
 
 
-# Generate custom marker function
+def generate_path(distance: float) -> Path:
+"""Create a path to describe how an error marker should be drawn around a data point"""
 def generate_marker(distance: float) -> Path:
     codes = [
         Path.MOVETO,
