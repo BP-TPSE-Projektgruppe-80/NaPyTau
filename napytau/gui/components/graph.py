@@ -8,7 +8,7 @@ import customtkinter
 from typing import TYPE_CHECKING
 import numpy as np
 
-from napytau.gui.components.color import Color
+from napytau.gui.model.color import Color
 
 
 
