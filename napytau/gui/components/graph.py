@@ -60,7 +60,7 @@ class Graph:
         x_data = [0, 1, 2, 3, 4, 5, 6, 7]
 
         # the figure that will contain the plot
-        fig = Figure(figsize=(3, 2), dpi=100, facecolor="white", edgecolor="black")
+        fig = Figure(figsize=(3, 2), dpi=100, facecolor=Color.WHITE, edgecolor=Color.BLACK)
 
         # adding the subplot
         Axes_1 = fig.add_subplot(111)
