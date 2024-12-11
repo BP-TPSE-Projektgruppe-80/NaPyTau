@@ -119,7 +119,6 @@ class Graph:
 
 # Generate custom marker function
 def generate_marker(distance: float) -> Path:
-    # Instructions for creating marker design
     codes = [
         Path.MOVETO,
         Path.LINETO,
