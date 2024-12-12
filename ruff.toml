@@ -50,6 +50,10 @@ unfixable = []
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
+[lint.per-file-ignores]
+# Disable line length check in test files, to encourage longer, more descriptive test names.
+"tests/*" = ["E501"]
+
 [format]
 # Like Black, use double quotes for strings.
 quote-style = "double"

@@ -16,6 +16,12 @@ class DatapointUnitTest(unittest.TestCase):
         with self.assertRaises(Exception):
             datapoint.get_intensity()
 
+    def test_raisesAnExceptionIfTauIsAccessedBeforeInitialization(self):
+        """Raise an exception if tau is accessed before initialization."""
+        datapoint = Datapoint(ValueErrorPair(1.0, 0.1))
+        with self.assertRaises(Exception):
+            datapoint.get_tau()
+
 
 if __name__ == "__main__":
     unittest.main()

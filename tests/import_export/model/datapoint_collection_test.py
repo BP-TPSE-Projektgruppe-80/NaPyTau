@@ -289,6 +289,53 @@ class DatapointCollectionUnitTest(unittest.TestCase):
             [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
         )
 
+    def test_canRetrieveTaus(self):
+        """Can retrieve taus"""
+        collection = DatapointCollection(
+            [
+                Datapoint(
+                    distance=ValueErrorPair(12.12, 0.1),
+                    tau=ValueErrorPair(1.0, 0.1),
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.13, 0.1),
+                    tau=ValueErrorPair(2.0, 0.1),
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.14, 0.1),
+                ),
+            ]
+        )
+
+        self.assertEqual(
+            collection.get_taus(),
+            [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
+        )
+
+    def test_canRetrieveActiveDatapoints(self):
+        """Can retrieve active datapoints"""
+        collection = DatapointCollection(
+            [
+                Datapoint(
+                    distance=ValueErrorPair(12.12, 0.1),
+                    active=True,
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.13, 0.1),
+                    active=False,
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.14, 0.1),
+                    active=True,
+                ),
+            ]
+        )
+
+        self.assertEqual(
+            list(collection.get_active_datapoints().as_dict().values()),
+            [collection.elements[hash(12.12)], collection.elements[hash(12.14)]],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
