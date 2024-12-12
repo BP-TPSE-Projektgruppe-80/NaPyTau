@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
+
 class ControlPanel(customtkinter.CTkFrame):
     def __init__(self, parent: "App"):
         """

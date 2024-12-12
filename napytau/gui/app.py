@@ -74,7 +74,7 @@ class App(customtkinter.CTk):
             "change_appearance_mode": self.change_appearance_mode,
             "select_number_of_polynomials": self.select_number_of_polynomials,
             "select_polynomial_mode": self.select_polynomial_mode,
-            "select_alpha_calc_mode": self.select_alpha_calc_mode
+            "select_alpha_calc_mode": self.select_alpha_calc_mode,
         }
 
         # Initialize the menu bar
@@ -125,14 +125,12 @@ class App(customtkinter.CTk):
 
         if file_path:
             print(f"chosen file: {file_path}")
-            self.logger.log_info(f"chosen file: {file_path}")
 
     def save_file(self) -> None:
         """
         Saves the file.
         """
         print("save_file")
-        self.logger.log_success("Saved file")
 
     def read_setup(self) -> None:
         """
