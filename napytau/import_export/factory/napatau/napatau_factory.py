@@ -197,11 +197,11 @@ class NapatauFactory:
             datapoint_count = len(dataset.datapoints)
             tau_row = raw_setup_data.napsetup_rows[0]
             datapoint_active_rows = raw_setup_data.napsetup_rows[
-                1 : (datapoint_count + 1)
+                1 : datapoint_count
             ]
-            polynomial_count_row = raw_setup_data.napsetup_rows[datapoint_count + 2]
+            polynomial_count_row = raw_setup_data.napsetup_rows[datapoint_count + 1]
             sampling_points_row = raw_setup_data.napsetup_rows[
-                datapoint_count + 3 : len(raw_setup_data.napsetup_rows)
+                datapoint_count + 2 : len(raw_setup_data.napsetup_rows)
             ]
         except IndexError as e:
             raise ImportExportError(
@@ -220,8 +220,9 @@ class NapatauFactory:
                 datapoint_active_rows,
                 dataset.get_datapoints().get_distances(),
             ):
-                dataset.datapoints.get_datapoint_by_distance(distance) \
-                    .set_active(active)
+                dataset.datapoints.get_datapoint_by_distance(distance).set_active(
+                    active
+                )
         except ValueError as e:
             raise ImportExportError(
                 "The active rows provided in the Napatau setup file are not formatted correctly. Please check the file."  # noqa E501
@@ -249,7 +250,7 @@ class NapatauFactory:
 
     @staticmethod
     def parse_tau_factor(tau_row: str) -> float:
-        split_row = tau_row.split(" ")
+        split_row = tau_row.split()
 
         return float(split_row[0])
 
@@ -260,7 +261,7 @@ class NapatauFactory:
     ) -> List[Tuple[float, bool]]:
         active_datapoints = []
         for index, active_row in enumerate(active_rows):
-            split_row = active_row.split(" ")
+            split_row = active_row.split()
             active = bool(int(split_row[0]))
             distance = distances[index].value
 
@@ -270,7 +271,7 @@ class NapatauFactory:
 
     @staticmethod
     def parse_polynomial_count(polynomial_count_row: str) -> int:
-        split_row = polynomial_count_row.split(" ")
+        split_row = polynomial_count_row.split()
 
         return int(split_row[0])
 
@@ -278,7 +279,7 @@ class NapatauFactory:
     def parse_sampling_points(sampling_points_row: List[str]) -> List[float]:
         sampling_points = []
         for sampling_point_row in sampling_points_row:
-            split_row = sampling_point_row.split(" ")
+            split_row = sampling_point_row.split()
             sampling_points.append(float(split_row[0]))
 
         return sampling_points

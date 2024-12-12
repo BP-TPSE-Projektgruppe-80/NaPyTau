@@ -18,15 +18,21 @@ def parse_cli_arguments() -> CLIArguments:
         help="Format of the dataset to ingest",
     )
     parser.add_argument(
-        "--setup_files_directory",
+        "--data_files_directory",
         type=str,
-        help="Path to the directory containing either setup files or subdirectories "
-        "with setup files",
+        help="Path to the directory containing either data files or subdirectories "
+        "with data files",
     )
     parser.add_argument(
         "--fit_file",
         type=str,
         help="Path to a fit file to use instead of the one found in the setup files",
+    )
+
+    parser.add_argument(
+        "--setup_file",
+        type=str,
+        help="Path to a setup file to load",
     )
 
     return CLIArguments(parser.parse_args())

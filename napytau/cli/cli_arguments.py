@@ -8,14 +8,16 @@ from argparse import Namespace
 class CLIArguments:
     headless: bool
     dataset_format: str
-    setup_files_directory: str
+    data_files_directory: str
     fit_file_path: Optional[str]
+    setup_file_path: Optional[str]
 
     def __init__(self, raw_args: Namespace):
         self.headless = coalesce(raw_args.headless, False)
         self.dataset_format = raw_args.dataset_format
-        self.setup_files_directory = coalesce(raw_args.setup_files_directory, getcwd())
+        self.data_files_directory = coalesce(raw_args.data_files_directory, getcwd())
         self.fit_file_path = raw_args.fit_file
+        self.setup_file_path = raw_args.setup_file
 
     def is_headless(self) -> bool:
         return self.headless
@@ -23,8 +25,11 @@ class CLIArguments:
     def get_dataset_format(self) -> str:
         return self.dataset_format
 
-    def get_setup_files_directory_path(self) -> str:
-        return self.setup_files_directory
+    def get_data_files_directory_path(self) -> str:
+        return self.data_files_directory
 
     def get_fit_file_path(self) -> Optional[str]:
         return self.fit_file_path
+
+    def get_setup_file_path(self) -> Optional[str]:
+        return self.setup_file_path
