@@ -152,7 +152,7 @@ class App(customtkinter.CTk):
         Changes the appearance mode to the variable appearance_mode.
         """
         customtkinter.set_appearance_mode(self.menu_bar.appearance_mode.get())
-        self.logger.change_appearance_mode(self.menu_bar.appearance_mode.get())
+        self.logger.change_logger_appearance(self.menu_bar.appearance_mode.get())
 
         self.graph.update_plot()
 

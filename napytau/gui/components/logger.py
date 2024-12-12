@@ -6,6 +6,16 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
+# Define color constants for the logger
+LIGHT_MODE_INFO_COLOR = "black"
+LIGHT_MODE_ERROR_COLOR = "#ba1500"
+LIGHT_MODE_SUCCESS_COLOR = "#388f00"
+
+DARK_MODE_INFO_COLOR = "white"
+DARK_MODE_ERROR_COLOR = "#ff3a21"
+DARK_MODE_SUCCESS_COLOR = "#48ba00"
+
+
 class Logger(customtkinter.CTkFrame):
     def __init__(self, parent: "App") -> None:
         """
@@ -25,13 +35,13 @@ class Logger(customtkinter.CTkFrame):
 
         # Set initial text colors
         if customtkinter.get_appearance_mode() == "Light":
-            self.info_color = "black"
-            self.error_color = "#ba1500"
-            self.success_color = "#388f00" # Tweak
+            self.info_color = LIGHT_MODE_INFO_COLOR
+            self.error_color = LIGHT_MODE_ERROR_COLOR
+            self.success_color = LIGHT_MODE_SUCCESS_COLOR
         else:
-            self.info_color = "white"
-            self.error_color = "#ff3a21" # Tweak
-            self.success_color = "#48ba00"
+            self.info_color = DARK_MODE_INFO_COLOR
+            self.error_color = DARK_MODE_ERROR_COLOR
+            self.success_color = DARK_MODE_SUCCESS_COLOR
 
         # Store labels in a deque with a max length of 50
         self.labels: deque = deque(maxlen=50)
@@ -93,24 +103,19 @@ class Logger(customtkinter.CTkFrame):
         :param appearance_mode: The appearance mode to change to.
         """
         if appearance_mode == "dark":
-            self.info_color = "white"
+            self.info_color = DARK_MODE_INFO_COLOR
+            self.error_color = DARK_MODE_ERROR_COLOR
+            self.success_color = DARK_MODE_SUCCESS_COLOR
         else:
-            self.info_color = "black"
+            self.info_color = LIGHT_MODE_INFO_COLOR
+            self.error_color = LIGHT_MODE_ERROR_COLOR
+            self.success_color = LIGHT_MODE_SUCCESS_COLOR
 
         # Update the text color for each label based on the appearance mode
         for label in self.labels:
             if label.cget("text").startswith("[ERROR]"):
-                if appearance_mode == "dark":
-                    label.configure(text_color="#ff3a21")
-                else:
-                    label.configure(text_color="#ba1500")
+                label.configure(text_color=self.error_color)
             elif label.cget("text").startswith("[SUCCESS]"):
-                if appearance_mode == "dark":
-                    label.configure(text_color="#48ba00")
-                else:
-                    label.configure(text_color="#388f00")
+                label.configure(text_color=self.success_color)
             else:
-                if appearance_mode == "dark":
-                    label.configure(text_color="white")
-                else:
-                    label.configure(text_color="black")
+                label.configure(text_color=self.info_color)
