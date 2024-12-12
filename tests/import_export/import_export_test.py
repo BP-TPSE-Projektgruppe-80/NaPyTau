@@ -11,9 +11,9 @@ def set_up_mocks() -> (
     MagicMock,
     MagicMock,
 ):
-    napatau_dataset_factory_module_mock = MagicMock()
-    napatau_dataset_factory_mock = MagicMock()
-    napatau_dataset_factory_module_mock.NapatauSetupFiles = napatau_dataset_factory_mock
+    napatau_factory_module_mock = MagicMock()
+    napatau_factory_mock = MagicMock()
+    napatau_factory_module_mock.NapatauSetupFiles = napatau_factory_mock
     file_crawler_module_mock = MagicMock()
     file_crawler_mock = MagicMock()
     file_crawler_mock.crawl = MagicMock()
@@ -30,7 +30,7 @@ def set_up_mocks() -> (
     compile_regex_mock = MagicMock()
     regex_module_mock.compile = compile_regex_mock
     return (
-        napatau_dataset_factory_module_mock,
+        napatau_factory_module_mock,
         file_crawler_module_mock,
         file_reader_module_mock,
         regex_module_mock,
@@ -41,7 +41,7 @@ class IngestUnitTest(unittest.TestCase):
     def test_instantiatesTheFileCrawlerWithAFitPatternIfNoFitFileIsProvided(self):
         """Instantiates the file crawler with a fit pattern if no fit file is provided."""  # noqa E501
         (
-            napatau_dataset_factory_module_mock,
+            napatau_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
@@ -50,7 +50,7 @@ class IngestUnitTest(unittest.TestCase):
         with patch.dict(
             "sys.modules",
             {
-                "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
+                "napytau.import_export.factory.napatau.napatau_factory": napatau_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
                 "re": regex_module_mock,
@@ -69,7 +69,7 @@ class IngestUnitTest(unittest.TestCase):
     def test_instantiatesTheFileCrawlerWithoutAFitPatternIfAFitFileIsProvided(self):
         """Instantiates the file crawler without a fit pattern if a fit file is provided."""  # noqa E501
         (
-            napatau_dataset_factory_module_mock,
+            napatau_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
@@ -78,7 +78,7 @@ class IngestUnitTest(unittest.TestCase):
         with patch.dict(
             "sys.modules",
             {
-                "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
+                "napytau.import_export.factory.napatau.napatau_factory": napatau_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
                 "re": regex_module_mock,
@@ -100,7 +100,7 @@ class IngestUnitTest(unittest.TestCase):
     def test_callsTheCrawlersCrawlMethodWithTheProvidedDirectoryPath():
         """Calls the crawler's crawl method with the provided directory path."""
         (
-            napatau_dataset_factory_module_mock,
+            napatau_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
@@ -108,7 +108,7 @@ class IngestUnitTest(unittest.TestCase):
         with patch.dict(
             "sys.modules",
             {
-                "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
+                "napytau.import_export.factory.napatau.napatau_factory": napatau_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
                 "re": regex_module_mock,
@@ -118,13 +118,13 @@ class IngestUnitTest(unittest.TestCase):
                 import_napatau_format_from_files,
             )
 
-            import_napatau_format_from_files("test_directory")
+            import_napatau_format_from_files(PurePath("test_directory"))
             file_crawler_module_mock.FileCrawler.mock_calls[0].crawl("test_directory")
 
     def test_readsEveryFileReturnedByTheFileCrawler(self):
         """Reads every file returned by the file crawler."""
         (
-            napatau_dataset_factory_module_mock,
+            napatau_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
@@ -134,17 +134,17 @@ class IngestUnitTest(unittest.TestCase):
         )
         file_crawler_module_mock.FileCrawler.crawl.return_value = [
             NapatauSetupFiles(
-                "test_distances.dat",
-                "test_v_c",
-                "test_fit",
-                "test_norm.fac",
+                PurePath("test_distances.dat"),
+                PurePath("test_v_c"),
+                PurePath("test_fit"),
+                PurePath("test_norm.fac"),
             )
         ]
 
         with patch.dict(
             "sys.modules",
             {
-                "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
+                "napytau.import_export.factory.napatau.napatau_factory": napatau_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
                 "re": regex_module_mock,
@@ -154,30 +154,30 @@ class IngestUnitTest(unittest.TestCase):
                 import_napatau_format_from_files,
             )
 
-            import_napatau_format_from_files("test_directory")
+            import_napatau_format_from_files(PurePath("test_directory"))
             self.assertEqual(
                 file_reader_module_mock.FileReader.read_rows.mock_calls[0].args[0],
-                "test_v_c",
+                PurePath("test_v_c"),
             )
             self.assertEqual(
                 file_reader_module_mock.FileReader.read_rows.mock_calls[1].args[0],
-                "test_distances.dat",
+                PurePath("test_distances.dat"),
             )
             self.assertEqual(
                 file_reader_module_mock.FileReader.read_rows.mock_calls[2].args[0],
-                "test_fit",
+                PurePath("test_fit"),
             )
             self.assertEqual(
                 file_reader_module_mock.FileReader.read_rows.mock_calls[3].args[0],
-                "test_norm.fac",
+                PurePath("test_norm.fac"),
             )
 
-    def test_callsTheNapatauDatasetFactoryWithTheRawNapatauDataIfNoFitFileIsProvided(
+    def test_callsTheNapatauFactoryWithTheRawNapatauDataIfNoFitFileIsProvided(
         self,
     ):
-        """Calls the napatau dataset factory with the raw napatau data."""
+        """Calls the napatau factory with the raw napatau data."""
         (
-            napatau_dataset_factory_module_mock,
+            napatau_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
@@ -187,10 +187,10 @@ class IngestUnitTest(unittest.TestCase):
         )
         file_crawler_module_mock.FileCrawler.crawl.return_value = [
             NapatauSetupFiles(
-                "test_distances.dat",
-                "test_v_c",
-                "test_fit",
-                "test_norm.fac",
+                PurePath("test_distances.dat"),
+                PurePath("test_v_c"),
+                PurePath("test_fit"),
+                PurePath("test_norm.fac"),
             )
         ]
         file_reader_module_mock.FileReader.read_rows.side_effect = [
@@ -203,7 +203,7 @@ class IngestUnitTest(unittest.TestCase):
         with patch.dict(
             "sys.modules",
             {
-                "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
+                "napytau.import_export.factory.napatau.napatau_factory": napatau_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
                 "re": regex_module_mock,
@@ -213,9 +213,9 @@ class IngestUnitTest(unittest.TestCase):
                 import_napatau_format_from_files,
             )
 
-            import_napatau_format_from_files("test_directory")
+            import_napatau_format_from_files(PurePath("test_directory"))
             self.assertEqual(
-                napatau_dataset_factory_module_mock.NapatauDatasetFactory.create_dataset.mock_calls[
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
                     0
                 ]
                 .args[0]
@@ -223,7 +223,7 @@ class IngestUnitTest(unittest.TestCase):
                 ["v_c_row"],
             )
             self.assertEqual(
-                napatau_dataset_factory_module_mock.NapatauDatasetFactory.create_dataset.mock_calls[
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
                     0
                 ]
                 .args[0]
@@ -231,7 +231,7 @@ class IngestUnitTest(unittest.TestCase):
                 ["distances.dat_row"],
             )
             self.assertEqual(
-                napatau_dataset_factory_module_mock.NapatauDatasetFactory.create_dataset.mock_calls[
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
                     0
                 ]
                 .args[0]
@@ -239,7 +239,7 @@ class IngestUnitTest(unittest.TestCase):
                 ["fit_row"],
             )
             self.assertEqual(
-                napatau_dataset_factory_module_mock.NapatauDatasetFactory.create_dataset.mock_calls[
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
                     0
                 ]
                 .args[0]
@@ -247,12 +247,12 @@ class IngestUnitTest(unittest.TestCase):
                 ["calibration_row"],
             )
 
-    def test_callsTheNapatauDatasetFactoryWithTheRawNapatauDataIfAFitFileIsProvided(
+    def test_callsTheNapatauFactoryWithTheRawNapatauDataIfAFitFileIsProvided(
         self,
     ):
-        """Calls the napatau dataset factory with the raw napatau data."""
+        """Calls the napatau factory with the raw napatau data."""
         (
-            napatau_dataset_factory_module_mock,
+            napatau_factory_module_mock,
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
@@ -262,10 +262,10 @@ class IngestUnitTest(unittest.TestCase):
         )
         file_crawler_module_mock.FileCrawler.crawl.return_value = [
             NapatauSetupFiles(
-                "test_distances.dat",
-                "test_v_c",
-                "test_fit",
-                "test_norm.fac",
+                PurePath("test_distances.dat"),
+                PurePath("test_v_c"),
+                PurePath("test_fit"),
+                PurePath("test_norm.fac"),
             )
         ]
         file_reader_module_mock.FileReader.read_rows.side_effect = [
@@ -278,7 +278,7 @@ class IngestUnitTest(unittest.TestCase):
         with patch.dict(
             "sys.modules",
             {
-                "napytau.import_export.dataset_factory.napatau_dataset_factory": napatau_dataset_factory_module_mock,  # noqa E501
+                "napytau.import_export.factory.napatau.napatau_factory": napatau_factory_module_mock,  # noqa E501
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,  # noqa E501
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,  # noqa E501
                 "re": regex_module_mock,
@@ -288,9 +288,12 @@ class IngestUnitTest(unittest.TestCase):
                 import_napatau_format_from_files,
             )
 
-            import_napatau_format_from_files("test_directory", "test.fit")
+            import_napatau_format_from_files(
+                PurePath("test_directory"),
+                PurePath("test.fit"),
+            )
             self.assertEqual(
-                napatau_dataset_factory_module_mock.NapatauDatasetFactory.create_dataset.mock_calls[
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
                     0
                 ]
                 .args[0]
@@ -298,7 +301,7 @@ class IngestUnitTest(unittest.TestCase):
                 ["v_c_row"],
             )
             self.assertEqual(
-                napatau_dataset_factory_module_mock.NapatauDatasetFactory.create_dataset.mock_calls[
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
                     0
                 ]
                 .args[0]
@@ -306,7 +309,7 @@ class IngestUnitTest(unittest.TestCase):
                 ["distances.dat_row"],
             )
             self.assertEqual(
-                napatau_dataset_factory_module_mock.NapatauDatasetFactory.create_dataset.mock_calls[
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
                     0
                 ]
                 .args[0]
@@ -314,7 +317,7 @@ class IngestUnitTest(unittest.TestCase):
                 ["fit_row"],
             )
             self.assertEqual(
-                napatau_dataset_factory_module_mock.NapatauDatasetFactory.create_dataset.mock_calls[
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
                     0
                 ]
                 .args[0]
