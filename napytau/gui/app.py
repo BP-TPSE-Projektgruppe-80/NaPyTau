@@ -162,6 +162,9 @@ class App(customtkinter.CTk):
         """
         print("selected number of polynomials: "
               + self.menu_bar.number_of_polynomials.get())
+        self.logger.log_info("selected number of polynomials: "
+              + self.menu_bar.number_of_polynomials.get()
+              + " but not implemented yet!")
 
     def select_polynomial_mode(self) -> None:
         """

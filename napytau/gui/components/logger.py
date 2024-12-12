@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 class Logger(customtkinter.CTkFrame):
     def __init__(self, parent: "App") -> None:
         """
-        Initializes the logger frame.
+        The logger for the GUI.
         :param parent: Parent widget to host the logger.
         """
         super().__init__(parent, height=10, corner_radius=10)
@@ -59,7 +59,7 @@ class Logger(customtkinter.CTkFrame):
 
     def _log_message(self, message: str, color: str) -> None:
         """
-        Adds a message to the scrollable frame as a label.
+        Adds a message to the logger. Scrolls down to the bottom of the logger frame.
         :param message: The message to append.
         :param color: The color of the text.
         """
@@ -86,10 +86,11 @@ class Logger(customtkinter.CTkFrame):
         canvas = self.scrollable_frame._parent_canvas
         canvas.yview_scroll(canvas.bbox("all")[3], "units")
 
-    def change_appearance_mode(self, appearance_mode: str) -> None:
+    def change_logger_appearance(self, appearance_mode: str) -> None:
         """
         Called when the appearance mode (light/dark) changes.
         Updates the text color of all labels accordingly.
+        :param appearance_mode: The appearance mode to change to.
         """
         if appearance_mode == "dark":
             self.info_color = "white"
