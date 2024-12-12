@@ -5,6 +5,7 @@ from napytau.import_export.factory.napatau.raw_napatau_data import RawNapatauDat
 from napytau.import_export.factory.napatau.raw_napatau_setup_data import (
     RawNapatauSetupData,
 )
+from napytau.import_export.import_export_error import ImportExportError
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.import_export.model.dataset import DataSet
@@ -203,25 +204,46 @@ class NapatauFactory:
                 datapoint_count + 3 : len(raw_setup_data.napsetup_rows)
             ]
         except IndexError as e:
-            raise ValueError(
+            raise ImportExportError(
                 "The provided Napatau setup file is not formatted correctly. Please check the file."  # noqa E501
             ) from e
 
-        dataset.set_tau_factor(NapatauFactory.parse_tau_factor(tau_row))
+        try:
+            dataset.set_tau_factor(NapatauFactory.parse_tau_factor(tau_row))
+        except ValueError as e:
+            raise ImportExportError(
+                "The tau factor provided in the Napatau setup file is not formatted correctly. Please check the file."  # noqa E501
+            ) from e
 
-        for distance, active in NapatauFactory.parse_datapoint_active_rows(
-            datapoint_active_rows,
-            dataset.get_datapoints().get_distances(),
-        ):
-            dataset.datapoints.get_datapoint_by_distance(distance).set_active(active)
+        try:
+            for distance, active in NapatauFactory.parse_datapoint_active_rows(
+                datapoint_active_rows,
+                dataset.get_datapoints().get_distances(),
+            ):
+                dataset.datapoints.get_datapoint_by_distance(distance) \
+                    .set_active(active)
+        except ValueError as e:
+            raise ImportExportError(
+                "The active rows provided in the Napatau setup file are not formatted correctly. Please check the file."  # noqa E501
+            ) from e
 
-        dataset.set_polynomial_count(
-            NapatauFactory.parse_polynomial_count(polynomial_count_row)
-        )
+        try:
+            dataset.set_polynomial_count(
+                NapatauFactory.parse_polynomial_count(polynomial_count_row)
+            )
+        except ValueError as e:
+            raise ImportExportError(
+                "The polynomial count provided in the Napatau setup file is not formatted correctly. Please check the file."  # noqa E501
+            ) from e
 
-        dataset.set_sampling_points(
-            NapatauFactory.parse_sampling_points(sampling_points_row)
-        )
+        try:
+            dataset.set_sampling_points(
+                NapatauFactory.parse_sampling_points(sampling_points_row)
+            )
+        except ValueError as e:
+            raise ImportExportError(
+                "The sampling points provided in the Napatau setup file are not formatted correctly. Please check the file."  # noqa E501
+            ) from e
 
         return dataset
 
