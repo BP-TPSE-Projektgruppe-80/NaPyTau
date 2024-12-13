@@ -27,8 +27,8 @@ jobs:
     # if: ${{ github.ref == 'refs/heads/main' }}
     needs: create-release
     strategy:
-    matrix:
-      os: [ macos-latest, ubuntu-latest, windows-latest ]
+      matrix:
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check-out repository
