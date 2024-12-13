@@ -58,6 +58,8 @@ jobs:
             echo "artifact=build/main.bin" >> $GITHUB_ENV
           fi
         shell: bash
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Upload Artifacts
         uses: actions/upload-release-asset@v1
         env:
