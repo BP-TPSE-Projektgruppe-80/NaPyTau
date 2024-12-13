@@ -1,0 +1,61 @@
+name: release.yml
+run-name: release
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' # Run on semver like tags
+
+jobs:
+  create-release:
+    # if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    outputs:
+      release_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  build:
+    # if: ${{ github.ref == 'refs/heads/main' }}
+    needs: create-release
+    strategy:
+      matrix:
+      os: [ macos-latest, ubuntu-latest, windows-latest ]
+
+      runs-on: ${{ matrix.os }}
+
+      steps:
+        - name: Check-out repository
+          uses: actions/checkout@v4
+        - name: Install uv
+          uses: astral-sh/setup-uv@v3
+        - name: Install Python
+          run: uv python install
+        - name: Install dependencies
+          run: uv sync --all-extras --dev
+        - name: Build Executable with Nuitka
+          uses: Nuitka/Nuitka-Action@main
+          with:
+            nuitka-version: main
+            script-name: naptytau/main.py
+            onefile: true
+        - name: Upload Artifacts
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+          with:
+            upload_url: ${{ needs.create-release.outputs.release_url }}
+            asset_name: ${{ runner.os }} Build
+            asset_path: | # match what's created for the 3 OSes
+              build/*.exe
+              build/*.bin
+              build/*.app/**/*
+            asset_content_type: application/octet-stream
