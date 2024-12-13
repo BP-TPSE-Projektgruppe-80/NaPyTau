@@ -17,9 +17,9 @@ class MainUnitTest(unittest.TestCase):
         with patch.dict(
             "sys.modules",
             {
-                "gui.app": gui_mock,
-                "headless.headless_mockup": headless_mock,
-                "cli.parser": parser_mock,
+                "napytau.gui.app": gui_mock,
+                "napytau.headless.headless_mockup": headless_mock,
+                "napytau.cli.parser": parser_mock,
             },
         ):
             headless_mock.init = MagicMock()
@@ -38,9 +38,9 @@ class MainUnitTest(unittest.TestCase):
         with patch.dict(
             "sys.modules",
             {
-                "gui.app": gui_mock,
-                "headless.headless_mockup": headless_mock,
-                "cli.parser": parser_mock,
+                "napytau.gui.app": gui_mock,
+                "napytau.headless.headless_mockup": headless_mock,
+                "napytau.cli.parser": parser_mock,
             },
         ):
             gui_mock.init = MagicMock()

@@ -10,8 +10,8 @@ dependencies = [
 ]
 
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["setuptools>=42", "wheel", "nuitka", "toml"]
+build-backend = "nuitka.distutils.Build"
 
 [tool.setuptools]
 packages = ["napytau"]
@@ -23,6 +23,11 @@ lint = "uv run ruff check --config ruff.toml"
 lint-fix = "uv run ruff check --config ruff.toml --fix"
 format = "uv run ruff format"
 typecheck = "uv run mypy napytau --config-file=mypy.ini"
+# Run prepare-release with --type {type} where {type} is one of patch, minor, major
+# After the resulting pull request is merged, run release to create a new release
+# Run both commands from the main branch and the root of the repository
+prepare-release = "uv run tools/prepare_release.py --type {type}"
+release = "uv run tools/release.py"
 
 [dependency-groups]
 dev = [
