@@ -220,8 +220,9 @@ class NapatauFactory:
                 datapoint_active_rows,
                 dataset.get_datapoints().get_distances(),
             ):
-                dataset.datapoints.get_datapoint_by_distance(distance) \
-                    .set_active(active)
+                dataset.datapoints.get_datapoint_by_distance(distance).set_active(
+                    active
+                )
         except ValueError as e:
             raise ImportExportError(
                 "The active rows provided in the Napatau setup file are not formatted correctly. Please check the file."  # noqa E501

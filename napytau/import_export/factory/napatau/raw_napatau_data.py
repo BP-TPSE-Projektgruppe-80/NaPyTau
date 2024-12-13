@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class RawNapatauData:
     velocity_rows: List[str]

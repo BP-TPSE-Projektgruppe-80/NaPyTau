@@ -8,8 +8,9 @@ from napytau.import_export.factory.napatau.napatau_factory import (
 from napytau.import_export.factory.napatau.raw_napatau_data import RawNapatauData
 from napytau.import_export.crawler.file_crawler import FileCrawler
 from napytau.import_export.crawler.napatau_setup_files import NapatauSetupFiles
-from napytau.import_export.factory.napatau.raw_napatau_setup_data import \
-    RawNapatauSetupData
+from napytau.import_export.factory.napatau.raw_napatau_setup_data import (
+    RawNapatauSetupData,
+)
 from napytau.import_export.model.dataset import DataSet
 from napytau.import_export.reader.file_reader import FileReader
 
@@ -73,9 +74,12 @@ def _configure_file_crawler(fit_file_path: Optional[PurePath]) -> FileCrawler:
         )
     return file_crawler
 
-def read_napatau_setup_data_into_data_set(dataset: DataSet, setup_file_path: PurePath) -> DataSet:
+
+def read_napatau_setup_data_into_data_set(
+    dataset: DataSet, setup_file_path: PurePath
+) -> DataSet:
     """
-    Reads the setup data from the provided file path and adds it to the provided dataset.
+    Reads the setup data from the provided file path and adds it to the provided dataset
     """
 
     setup_data = FileReader.read_rows(setup_file_path)

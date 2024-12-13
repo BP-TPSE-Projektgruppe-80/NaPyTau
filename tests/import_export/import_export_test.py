@@ -215,33 +215,25 @@ class IngestUnitTest(unittest.TestCase):
 
             import_napatau_format_from_files(PurePath("test_directory"))
             self.assertEqual(
-                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
-                    0
-                ]
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[0]
                 .args[0]
                 .velocity_rows,
                 ["v_c_row"],
             )
             self.assertEqual(
-                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
-                    0
-                ]
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[0]
                 .args[0]
                 .distance_rows,
                 ["distances.dat_row"],
             )
             self.assertEqual(
-                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
-                    0
-                ]
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[0]
                 .args[0]
                 .fit_rows,
                 ["fit_row"],
             )
             self.assertEqual(
-                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
-                    0
-                ]
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[0]
                 .args[0]
                 .calibration_rows,
                 ["calibration_row"],
@@ -293,33 +285,25 @@ class IngestUnitTest(unittest.TestCase):
                 PurePath("test.fit"),
             )
             self.assertEqual(
-                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
-                    0
-                ]
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[0]
                 .args[0]
                 .velocity_rows,
                 ["v_c_row"],
             )
             self.assertEqual(
-                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
-                    0
-                ]
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[0]
                 .args[0]
                 .distance_rows,
                 ["distances.dat_row"],
             )
             self.assertEqual(
-                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
-                    0
-                ]
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[0]
                 .args[0]
                 .fit_rows,
                 ["fit_row"],
             )
             self.assertEqual(
-                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[
-                    0
-                ]
+                napatau_factory_module_mock.NapatauFactory.create_dataset.mock_calls[0]
                 .args[0]
                 .calibration_rows,
                 ["calibration_row"],
