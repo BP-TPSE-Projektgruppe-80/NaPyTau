@@ -36,7 +36,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v3
       - name: Install Python
-        run: uv python install
+        run: uv python install 3.12
       - name: Install dependencies
         run: uv sync --all-extras --dev
       - name: Build Executable with Nuitka
@@ -45,6 +45,16 @@ jobs:
           nuitka-version: main
           script-name: napytau/main.py
           mode: app
+      - name: Determine Build Artifact
+        id: artifact-path
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            echo "artifact=build/main.exe" >> $GITHUB_ENV
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            echo "artifact=build/main.app" >> $GITHUB_ENV
+          else
+            echo "artifact=build/main.bin" >> $GITHUB_ENV
+        shell: bash
       - name: Upload Artifacts
         uses: actions/upload-release-asset@v1
         env:
@@ -52,8 +62,5 @@ jobs:
         with:
           upload_url: ${{ needs.create-release.outputs.release_url }}
           asset_name: ${{ runner.os }} Build
-          asset_path: | # match what's created for the 3 OSes
-            build/*.exe
-            build/*.bin
-            build/*.app/**/*
+          asset_path: ${{ env.artifact }}
           asset_content_type: application/octet-stream
