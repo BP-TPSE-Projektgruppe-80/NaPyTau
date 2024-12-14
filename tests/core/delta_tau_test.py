@@ -30,7 +30,8 @@ class DeltaChiUnitTests(unittest.TestCase):
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
-        polynomial_module_mock.polynomial_sum_at_measuring_times.side_effect = [
+        polynomial_module_mock.polynomial_sum_at_measuring_times.side_effect = \
+            [
             6,
             3,
             2,

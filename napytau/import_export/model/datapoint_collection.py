@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Dict, List, Callable, Iterator
 
-from napytau.ingest.model.datapoint import Datapoint
+from napytau.import_export.model.datapoint import Datapoint
 from napytau.util.coalesce import coalesce
 from napytau.util.model.value_error_pair import ValueErrorPair
 
