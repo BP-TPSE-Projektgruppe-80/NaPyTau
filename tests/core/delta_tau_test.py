@@ -165,16 +165,37 @@ class DeltaChiUnitTests(unittest.TestCase):
 
     def testCanCalculateGaussianErrorPropagation(self):
         """Can calculate Gaussian error propagation"""
-        polynomial_module_mock, zeros_mock, numpy_module_mock, jacobian_matrix_mock = (
+        polynomial_module_mock, zeros_mock, numpy_module_mock = (
             set_up_mocks()
         )
-        coviance_matrix_mock = MagicMock()
-        coviance_matrix_mock.calculate_coviance_matrix = MagicMock()
 
-        zeros_mock.return_value = np.zeros((1, 3))
-        coviance_matrix_mock.return_value = np.array(
+        zeros_mock.side_effect = [np.array([0,0,0]), np.array([[0, 0], [0, 0], [0, 0]])]
+        polynomial_module_mock.polynomial_sum_at_measuring_times.side_effect = [
+            6,
+            3,
+            2,
+            1,
+        ]
+        numpy_module_mock.power.return_value = np.array([4, 9, 16])
+        numpy_module_mock.diag.return_value = np.array(
+            [[1 / 4, 0, 0], [0, 1 / 9, 0], [0, 0, 1 / 16]]
+        )
+        numpy_module_mock.linalg.inv.return_value = np.array(
             [[-0.13826047, 0.41478141], [0.41478141, -1.24434423]]
         )
+
+
+
+        numpy_module_mock.power.side_effect = [np.array([25, 36, 49]),np.array([16,16,16]),
+                                               np.array([1,1,1]), np.array([1,1,1]),
+                                               np.array([1,1,1]), np.array([0,1,2]),
+                                               np.array([0,1,2]), np.array([1,1,1]),
+                                               np.array([0,1,2]), np.array([0,1,2]),
+                                               np.array([16,25,36]),
+                                               np.array([256, 256, 256]),
+                                               np.array([2.60475853e+26, 2.60475853e+26, 2.60475853e+26]),
+                                               np.array([64,64,64])
+                                              ]
 
         polynomial_module_mock.differentiated_polynomial_sum_at_measuring_times.return_value = np.array(
             [4, 4, 4]
@@ -183,12 +204,12 @@ class DeltaChiUnitTests(unittest.TestCase):
         with patch.dict(
             "sys.modules",
             {
-                "napytau.core.delta_tau": polynomial_module_mock,
+                "napytau.core.polynomial": polynomial_module_mock,
                 "numpy": numpy_module_mock,
             },
         ):
             from napytau.core.delta_tau import (
-                calculate_gaussian_error_propagation_terms,
+                calculate_error_propagation_terms,
             )
 
             delta_shifted_intensities: np.array = np.array([2, 3, 4])
@@ -207,7 +228,7 @@ class DeltaChiUnitTests(unittest.TestCase):
             )
 
             calculated_gaussian_error_propagation_terms = (
-                calculate_gaussian_error_propagation_terms(
+                calculate_error_propagation_terms(
                     unshifted_intensities,
                     delta_shifted_intensities,
                     delta_unshifted_intensities,
@@ -216,11 +237,12 @@ class DeltaChiUnitTests(unittest.TestCase):
                     taufactor,
                 )
             )
+            gaussian_error_propagation_terms = np.array([1.69038314, 2.25, 4.88219561])
 
             np.testing.assert_array_equal(
-                calculated_gaussian_error_propagation_terms,
-                np.array([1.69038314, 2.25, 4.88219561]),
+                calculated_gaussian_error_propagation_terms, gaussian_error_propagation_terms
             )
+
 
 
 if __name__ == "__main__":
