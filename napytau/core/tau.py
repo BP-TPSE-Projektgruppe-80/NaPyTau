@@ -16,29 +16,29 @@ def calculate_tau_i(
     weight_factor: float,
 ) -> ndarray:
     """
-       Calculates the decay times (tau_i) based on the provided
-       intensities and time points.
+    Calculates the decay times (tau_i) based on the provided
+    intensities and time points.
 
-       Args:
-           doppler_shifted_intensities (ndarray):
-           Array of Doppler-shifted intensity measurements
-           unshifted_intensities (ndarray):
-           Array of unshifted intensity measurements
-           delta_doppler_shifted_intensities (ndarray):
-           Uncertainties in Doppler-shifted intensities
-           delta_unshifted_intensities (ndarray):
-           Uncertainties in unshifted intensities
-           initial_coefficients (ndarray):
-           Initial guess for the polynomial coefficients
-           times (ndarray):
-           Array of time points corresponding to measurements
-           t_hyp_range (tuple):
-           Range for hypothesis optimization (min, max)
-           weight_factor (float):
-           Weighting factor for unshifted intensities
+    Args:
+        doppler_shifted_intensities (ndarray):
+        Array of Doppler-shifted intensity measurements
+        unshifted_intensities (ndarray):
+        Array of unshifted intensity measurements
+        delta_doppler_shifted_intensities (ndarray):
+        Uncertainties in Doppler-shifted intensities
+        delta_unshifted_intensities (ndarray):
+        Uncertainties in unshifted intensities
+        initial_coefficients (ndarray):
+        Initial guess for the polynomial coefficients
+        times (ndarray):
+        Array of time points corresponding to measurements
+        t_hyp_range (tuple):
+        Range for hypothesis optimization (min, max)
+        weight_factor (float):
+        Weighting factor for unshifted intensities
 
-       Returns:
-           ndarray: Calculated decay times for each time point.
+    Returns:
+        ndarray: Calculated decay times for each time point.
     """
 
     # optimize the hypothesis value (t_hyp) to minimize chi-squared

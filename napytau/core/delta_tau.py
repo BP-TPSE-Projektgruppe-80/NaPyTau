@@ -23,9 +23,8 @@ def calculate_jacobian_matrix(times: ndarray, coefficients: ndarray) -> ndarray:
         The computed Jacobian matrix with shape (len(times), len(coefficients)).
     """
 
-    # initializes the jacobian matrixjacobian_matrix: ndarray = zeros(
-        (len(times), len(coefficients))
-    )
+    # initializes the jacobian matrix
+    jacobian_matrix: ndarray = zeros((len(times), len(coefficients)))
 
     epsilon: float = 1e-8  # small disturbance value
 
@@ -120,11 +119,10 @@ def calculate_error_propagation_terms(
     # Calculate the polynomial uncertainty contributions
     for k in range(len(coefficients)):
         for l in range(len(coefficients)):  # noqa E741
-            delta_p_j_i_squared = (delta_p_j_i_squared
-                                   + power(times, k)
-                                   * power(times, l)
-                                   * covariance_matrix[k, l])
-
+            delta_p_j_i_squared = (
+                delta_p_j_i_squared
+                + power(times, k) * power(times, l) * covariance_matrix[k, l]
+            )
 
     # Second summand: Contribution from polynomial uncertainties
     second_summand: ndarray = (
@@ -145,4 +143,5 @@ def calculate_error_propagation_terms(
 
     # Return the sum of all three contribution
     result: ndarray = first_summand + second_summand + third_summand
-return result
+
+    return result

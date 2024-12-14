@@ -17,15 +17,12 @@ class CoreUnitTest(unittest.TestCase):
             calculate_tau_final(tau_i, delta_tau_i)[1], expected_uncertainty
         )
 
-
     def test_calculateTauFinalForEmptyInput(self):
         tau_i: ndarray = array([])
         delta_tau_i: ndarray = array([])
         expected_tau_final: float = -1
         expected_uncertainty: float = -1
-        self.assertEqual(
-            calculate_tau_final(tau_i, delta_tau_i)[0], expected_tau_final
-        )
+        self.assertEqual(calculate_tau_final(tau_i, delta_tau_i)[0], expected_tau_final)
         self.assertEqual(
             calculate_tau_final(tau_i, delta_tau_i)[1], expected_uncertainty
         )

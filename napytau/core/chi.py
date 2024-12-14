@@ -102,7 +102,7 @@ def optimize_coefficients(
 
     Returns:
         tuple: Optimized coefficients (ndarray) and minimized chi-squared value (float).
-        """
+    """
     result: OptimizeResult = minimize(
         lambda coefficients: chi_squared_fixed_t(
             doppler_shifted_intensities,
@@ -115,7 +115,7 @@ def optimize_coefficients(
             weight_factor,
         ),
         initial_coefficients,
-        method="L-BFGS-B", # Optimization method for bounded optimization
+        method="L-BFGS-B",  # Optimization method for bounded optimization
     )
 
     # Return optimized coefficients and chi-squared value
@@ -160,21 +160,21 @@ def optimize_t_hyp(
     # defines a function for chi-squared computation with fixed t_hyp
     # return the minimized chi-squared value for the current t_hyp
     chi_squared_t_hyp = lambda t_hyp: optimize_coefficients(
-            doppler_shifted_intensities,
-            unshifted_intensities,
-            delta_doppler_shifted_intensities,
-            delta_unshifted_intensities,
-            time,
-            initial_coefficients,
-            t_hyp,
-            weight_factor,
-        )[1]
+        doppler_shifted_intensities,
+        unshifted_intensities,
+        delta_doppler_shifted_intensities,
+        delta_unshifted_intensities,
+        time,
+        initial_coefficients,
+        t_hyp,
+        weight_factor,
+    )[1]
 
     # minimize chi-squared function over the range of t_hyp
     result: OptimizeResult = minimize(
         chi_squared_t_hyp,
-        x0 = mean(t_hyp_range), # Initial guess for t_hyp
-        bounds = [(t_hyp_range[0], t_hyp_range[1])], # Boundaries for optimization
+        x0=mean(t_hyp_range),  # Initial guess for t_hyp
+        bounds=[(t_hyp_range[0], t_hyp_range[1])],  # Boundaries for optimization
     )
 
     # Return optimized t_hyp value
