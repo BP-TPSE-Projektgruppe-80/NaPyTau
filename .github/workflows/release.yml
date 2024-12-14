@@ -40,7 +40,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: uv sync --all-extras --dev
+        run: uv pip compile > requirements.txt && uv pip install -r requirements.txt
       - name: Build Executable with Nuitka
         uses: Nuitka/Nuitka-Action@main
         with:
