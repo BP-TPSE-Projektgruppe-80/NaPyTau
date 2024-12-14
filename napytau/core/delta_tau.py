@@ -20,14 +20,16 @@ def calculate_jacobian_matrix(times: array, coefficients: array) -> ndarray:
         ndarray: The computed Jacobian matrix with shape (len(times), len(coefficients)).
     """
 
-    jacobian_matrix: ndarray = zeros((len(times), len(coefficients))) #initializes the jacobian matrix
+    jacobian_matrix: ndarray = zeros(
+        (len(times), len(coefficients))
+    )  # initializes the jacobian matrix
 
-    epsilon: float = 1e-8 #small disturbance value
+    epsilon: float = 1e-8  # small disturbance value
 
     # Loop over each coefficient and calculate the partial derivative
     for i in range(len(coefficients)):
         perturbed_coefficients: array = array(coefficients, dtype=float)
-        perturbed_coefficients[i] += epsilon #slightly disturb the current coefficient
+        perturbed_coefficients[i] += epsilon  # slightly disturb the current coefficient
 
         # Compute the disturbed and original polynomial values at the given times
         perturbed_function: array = polynomial_sum_at_measuring_times(
@@ -80,7 +82,7 @@ def calculate_gaussian_error_propagation_terms(
     times: array,
     coefficients: array,
     taufactor: float,
-    ) -> array:
+) -> array:
     """
     creates the gaussian error propagation term for the polynomial coefficients.
     combining direct errors, polynomial uncertainties, and mixed covariance terms.
@@ -132,11 +134,9 @@ def calculate_gaussian_error_propagation_terms(
     ) * power(delta_p_j_i_squared, 2)
 
     # Third summand: Mixed covariance contribution
-    third_summand: array = \
-        ((unshifted_intensities * taufactor * delta_p_j_i_squared)
-         / power(differentiated_polynomial_sum_at_measuring_times(
-                    times,
-                    coefficients), 3))
+    third_summand: array = (
+        unshifted_intensities * taufactor * delta_p_j_i_squared
+    ) / power(differentiated_polynomial_sum_at_measuring_times(times, coefficients), 3)
 
     # Return the sum of all three contribution
     return first_summand + second_summand + third_summand
