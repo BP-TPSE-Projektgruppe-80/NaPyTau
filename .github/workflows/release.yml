@@ -51,21 +51,22 @@ jobs:
         run: |
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             echo "artifact=build/main.exe" >> $GITHUB_ENV
+            echo "filename=main.exe" >> $GITHUB_ENV
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
             zip -r build/main.app.zip build/main.app
             echo "artifact=build/main.app.zip" >> $GITHUB_ENV
+            echo "filename=main.app.zip" >> $GITHUB_ENV
           else
             echo "artifact=build/main.bin" >> $GITHUB_ENV
+            echo "filename=main.bin" >> $GITHUB_ENV
           fi
         shell: bash
-      - name: Display structure of downloaded files
-        run: ls -R
       - name: Upload Artifacts
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ needs.create-release.outputs.release_url }}
-          asset_name: ${{ runner.os }} Build
+          asset_name: ${{ env.filename }}
           asset_path: ${{ env.artifact }}
           asset_content_type: application/octet-stream
