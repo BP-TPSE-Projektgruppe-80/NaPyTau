@@ -569,7 +569,8 @@ class ChiUnitTest(unittest.TestCase):
             self.assertEqual(actual_chi, expected_chi)
             testing.assert_array_equal(actual_coefficients, expected_coefficients)
 
-self.assertEqual(len(scipy_optimize_module_mock.minimize.mock_calls), 1)            self.assertEqual(len(scipy_optimize_module_mock.minimize.mock_calls), 1)
+            self.assertEqual(len(scipy_optimize_module_mock.minimize.mock_calls), 1)
+            self.assertEqual(len(scipy_optimize_module_mock.minimize.mock_calls), 1)
 
             testing.assert_array_equal(
                 scipy_optimize_module_mock.minimize.mock_calls[0].args[1],

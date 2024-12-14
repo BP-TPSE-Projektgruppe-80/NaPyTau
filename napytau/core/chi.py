@@ -68,6 +68,7 @@ def chi_squared_fixed_t(
     )
     return result
 
+
 def optimize_coefficients(
     doppler_shifted_intensities: ndarray,
     unshifted_intensities: ndarray,

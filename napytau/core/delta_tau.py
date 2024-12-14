@@ -101,12 +101,16 @@ def calculate_error_propagation_terms(
         ndarray: The combined Gaussian error propagation terms for each time point.
     """
 
-    # First summand: Contribution from unshifted intensity errors
-    first_summand: ndarray = power(delta_unshifted_intensities, 2) / power(
-        differentiated_polynomial_sum_at_measuring_times(
+    calculated_differentiated_polynomial_sum_at_measuring_times = (
+        differentiated_polynomial_sum_at_measuring_times(  # noqa E501
             times,
             coefficients,
-        ),
+        )
+    )
+
+    # First summand: Contribution from unshifted intensity errors
+    first_summand: ndarray = power(delta_unshifted_intensities, 2) / power(
+        calculated_differentiated_polynomial_sum_at_measuring_times,
         2,
     )
 
@@ -128,10 +132,7 @@ def calculate_error_propagation_terms(
     second_summand: ndarray = (
         power(unshifted_intensities, 2)
         / power(
-            differentiated_polynomial_sum_at_measuring_times(
-                times,
-                coefficients,
-            ),
+            calculated_differentiated_polynomial_sum_at_measuring_times,
             4,
         )
     ) * power(delta_p_j_i_squared, 2)
@@ -139,7 +140,7 @@ def calculate_error_propagation_terms(
     # Third summand: Mixed covariance contribution
     third_summand: ndarray = (
         unshifted_intensities * taufactor * delta_p_j_i_squared
-    ) / power(differentiated_polynomial_sum_at_measuring_times(times, coefficients), 3)
+    ) / power(calculated_differentiated_polynomial_sum_at_measuring_times, 3)
 
     # Return the sum of all three contribution
     result: ndarray = first_summand + second_summand + third_summand
