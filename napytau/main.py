@@ -1,6 +1,13 @@
-from gui.app import init as init_gui
-from headless.headless_mockup import init as init_headless
-from cli.parser import parse_cli_arguments
+# Compilation mode, standalone everywhere, except on macOS there app bundle
+# nuitka-project-if: {OS} in ("Windows", "Linux", "FreeBSD"):
+#    nuitka-project: --onefile
+# nuitka-project-if: {OS} == "Darwin":
+#    nuitka-project: --standalone
+#    nuitka-project: --macos-create-app-bundle
+#
+from napytau.gui.app import init as init_gui
+from napytau.headless.headless_mockup import init as init_headless
+from napytau.cli.parser import parse_cli_arguments
 
 
 def main() -> None:
