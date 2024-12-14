@@ -46,7 +46,6 @@ jobs:
         with:
           nuitka-version: main
           script-name: napytau/main.py
-          mode: app
       - name: Determine Build Artifact
         id: artifact-path
         run: |
