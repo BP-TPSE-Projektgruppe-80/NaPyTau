@@ -18,7 +18,7 @@ packages = ["napytau"]
 
 [tool.tomlscript]
 run= "uv run napytau/main.py"
-test = "uv run pytest -rA"
+test = "uv run pytest -rA tests/{filter: }"
 lint = "uv run ruff check --config ruff.toml"
 lint-fix = "uv run ruff check --config ruff.toml --fix"
 format = "uv run ruff format"
