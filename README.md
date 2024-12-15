@@ -20,6 +20,7 @@ To build the project from source requires the following dependencies:
 - [Python 3.12 or greater](https://www.python.org/downloads/)
 - [PIP](https://pypi.org/project/pip/#description)
 - [UV](https://docs.astral.sh/uv/getting-started/installation/)
+- [Nuitka](https://nuitka.net/pages/download.html)
 - One of the following C compilers:
   - GCC (MinGW on Windows)
   - Clang
