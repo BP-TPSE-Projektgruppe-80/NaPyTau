@@ -8,6 +8,7 @@ from napytau.import_export.import_export import (
     read_napatau_setup_data_into_data_set,
 )
 from napytau.import_export.model.dataset import DataSet
+from napytau.util.coalesce import coalesce
 
 
 def init(cli_arguments: CLIArguments) -> None:
@@ -48,21 +49,24 @@ def init(cli_arguments: CLIArguments) -> None:
                 print("-" * 80)
             print("=" * 80)
 
-        if cli_arguments.get_setup_file_path() is not None:
+        setup_file_path = cli_arguments.get_setup_file_path()
+        if setup_file_path is not None:
             for dataset in datasets:
                 read_napatau_setup_data_into_data_set(
-                    dataset, PurePath(cli_arguments.get_setup_file_path())
+                    dataset, PurePath(setup_file_path)
                 )
 
                 print("Dataset:")
                 print(f"  Velocity: {dataset.relative_velocity.value.get_velocity()}")
                 print(
-                    f"  Velocity Error: {dataset.relative_velocity.error.get_velocity()}" # noqa: E501
+                    f"  Velocity Error: {dataset.relative_velocity.error.get_velocity()}"  # noqa: E501
                 )
                 print(f"  Tau factor: {dataset.get_tau_factor()}")
                 print(f"  Polynomial count: {dataset.get_polynomial_count()}")
 
-                for (index, sampling_point) in enumerate(dataset.get_sampling_points()):
+                for index, sampling_point in enumerate(
+                    coalesce(dataset.get_sampling_points(), [])
+                ):
                     print(f"  Sampling point #{index}: {sampling_point}")
 
                 for datapoint in dataset.datapoints:

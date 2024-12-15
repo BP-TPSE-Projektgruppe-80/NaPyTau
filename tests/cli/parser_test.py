@@ -29,7 +29,7 @@ class ParserUnitTest(unittest.TestCase):
             from napytau.cli.parser import parse_cli_arguments
 
             parse_cli_arguments()
-            self.assertEqual(len(argument_parser_mock.add_argument.mock_calls), 4)
+            self.assertEqual(len(argument_parser_mock.add_argument.mock_calls), 5)
             self.assertEqual(
                 argument_parser_mock.add_argument.mock_calls[0],
                 (
@@ -55,10 +55,10 @@ class ParserUnitTest(unittest.TestCase):
             self.assertEqual(
                 argument_parser_mock.add_argument.mock_calls[2],
                 (
-                    ("--setup_files_directory",),
+                    ("--data_files_directory",),
                     {
                         "type": str,
-                        "help": "Path to the directory containing either setup files or subdirectories with setup files",  # noqa E501
+                        "help": "Path to the directory containing either data files or subdirectories with data files",
                     },
                 ),
             )
@@ -70,6 +70,17 @@ class ParserUnitTest(unittest.TestCase):
                     {
                         "type": str,
                         "help": "Path to a fit file to use instead of the one found in the setup files",  # noqa E501
+                    },
+                ),
+            )
+
+            self.assertEqual(
+                argument_parser_mock.add_argument.mock_calls[4],
+                (
+                    ("--setup_file",),
+                    {
+                        "type": str,
+                        "help": "Path to a setup file to load",
                     },
                 ),
             )
