@@ -27,7 +27,7 @@ class TauUnitTest(unittest.TestCase):
             0,
         )
         chi_mock.optimize_t_hyp.return_value: float = 2.0
-        polynomials_mock.differentiated_polynomial_sum_at_measuring_times.return_value: ndarray = array(
+        polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.return_value: ndarray = array(
             [2, 6]
         )
 
@@ -46,7 +46,7 @@ class TauUnitTest(unittest.TestCase):
             delta_doppler_shifted_intensities: ndarray = array([1, 1])
             delta_unshifted_intensities: ndarray = array([1, 1])
             initial_coefficients: ndarray = array([1, 1, 1])
-            times: ndarray = array([0, 1])
+            distances: ndarray = array([0, 1])
             t_hyp_range: (float, float) = (-5, 5)
             weight_factor: float = 1.0
 
@@ -60,7 +60,7 @@ class TauUnitTest(unittest.TestCase):
                     delta_doppler_shifted_intensities,
                     delta_unshifted_intensities,
                     initial_coefficients,
-                    times,
+                    distances,
                     t_hyp_range,
                     weight_factor,
                 ),
@@ -106,6 +106,7 @@ class TauUnitTest(unittest.TestCase):
 
             self.assertEqual(chi_mock.optimize_coefficients.mock_calls[0].args[7], 1.0)
 
+
             self.assertEqual(len(chi_mock.optimize_t_hyp.mock_calls), 1)
 
             testing.assert_array_equal(
@@ -145,22 +146,23 @@ class TauUnitTest(unittest.TestCase):
 
             self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[7], 1.0)
 
+
             self.assertEqual(
                 len(
-                    polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls
+                    polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls
                 ),
                 1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (array([0, 1])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 (array([2, 3, 1])),

@@ -25,12 +25,13 @@ def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
 
 
 class DeltaChiUnitTests(unittest.TestCase):
-    def test_canCalculateJacobianMatrixOutOfTimesAndCoefficients(self):
-        """ " Can calculate Jacobian matrix out of times and coefficients."""
+    @staticmethod
+    def test_canCalculateJacobianMatrixOutOfTimesAndCoefficients():
+        """ " Can calculate Jacobian matrix out of distances and coefficients."""
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
-        polynomial_module_mock.polynomial_sum_at_measuring_times.side_effect = [
+        polynomial_module_mock.polynomial_sum_at_measuring_distances.side_effect = [
             6,
             3,
             2,
@@ -47,20 +48,20 @@ class DeltaChiUnitTests(unittest.TestCase):
             from napytau.core.delta_tau import calculate_jacobian_matrix
 
             coefficients = np.array([5, 4])
-            times = np.array([0, 1, 2])
+            distances = np.array([0, 1, 2])
 
             jacobian_matrix = np.array([[3e8, 1e8], [3e8, 1e8], [3e8, 1e8]])
 
             np.testing.assert_array_equal(
-                calculate_jacobian_matrix(times, coefficients), jacobian_matrix
+                calculate_jacobian_matrix(distances, coefficients), jacobian_matrix
             )
 
-    def test_canCalculateCovianceMatrixOutOfJacobianMatrixAndWeightMatrix(self):
-        """Can calculate Coviance matrix out of times and coefficients."""
+    def test_canCalculateCovarianceMatrixOutOfJacobianMatrixAndWeightMatrix(self):
+        """Can calculate Covariance matrix out of times and coefficients."""
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
-        polynomial_module_mock.polynomial_sum_at_measuring_times.side_effect = [
+        polynomial_module_mock.polynomial_sum_at_measuring_distances.side_effect = [
             6,
             3,
             2,
@@ -84,12 +85,12 @@ class DeltaChiUnitTests(unittest.TestCase):
             from napytau.core.delta_tau import calculate_covariance_matrix
 
             delta_shifted_intensities: np.array = np.array([2, 3, 4])
-            times: np.array = np.array([0, 1, 2])
+            distances: np.array = np.array([0, 1, 2])
             coefficients = np.array([5, 4])
 
             np.testing.assert_array_equal(
                 calculate_covariance_matrix(
-                    delta_shifted_intensities, times, coefficients
+                    delta_shifted_intensities, distances, coefficients
                 ),
                 np.array([[-0.13826047, 0.41478141], [0.41478141, -1.24434423]]),
             )
@@ -98,54 +99,54 @@ class DeltaChiUnitTests(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomial_module_mock.polynomial_sum_at_measuring_times.mock_calls
+                    polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls
                 ),
                 4,
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_times.mock_calls[
+                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 np.array([0, 1, 2]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_times.mock_calls[
+                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 np.array([5 + 1e-8, 4]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_times.mock_calls[
+                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
                     1
                 ].args[0],
                 np.array([0, 1, 2]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_times.mock_calls[
+                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
                     1
                 ].args[1],
                 np.array([5, 4]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_times.mock_calls[
+                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
                     2
                 ].args[0],
                 np.array([0, 1, 2]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_times.mock_calls[
+                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
                     2
                 ].args[1],
                 np.array([5, 4 + 1e-8]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_times.mock_calls[
+                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
                     3
                 ].args[0],
                 np.array([0, 1, 2]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_times.mock_calls[
+                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
                     3
                 ].args[1],
                 np.array([5, 4]),
@@ -163,15 +164,15 @@ class DeltaChiUnitTests(unittest.TestCase):
                 ),
             )
 
-    def testCanCalculateGaussianErrorPropagation(self):
-        """Can calculate Gaussian error propagation"""
+    def testCanCalculateErrorPropagation(self):
+        """Can calculate error propagation"""
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.side_effect = [
             np.array([0, 0, 0]),
             np.array([[0, 0], [0, 0], [0, 0]]),
         ]
-        polynomial_module_mock.polynomial_sum_at_measuring_times.side_effect = [
+        polynomial_module_mock.polynomial_sum_at_measuring_distances.side_effect = [
             6,
             3,
             2,
@@ -203,7 +204,7 @@ class DeltaChiUnitTests(unittest.TestCase):
             np.array([64, 64, 64]),
         ]
 
-        polynomial_module_mock.differentiated_polynomial_sum_at_measuring_times.return_value = np.array(
+        polynomial_module_mock.differentiated_polynomial_sum_at_measuring_distances.return_value = np.array(
             [4, 4, 4]
         )
 
@@ -219,31 +220,31 @@ class DeltaChiUnitTests(unittest.TestCase):
             )
 
             delta_shifted_intensities: np.array = np.array([2, 3, 4])
-            times: np.array = np.array([0, 1, 2])
+            distances: np.array = np.array([0, 1, 2])
             coefficients: np.array = np.array([5, 4])
             delta_unshifted_intensities: np.array = np.array([5, 6, 7])
             unshifted_intensities: np.array = np.array([4, 5, 6])
             taufactor = 0.4
 
-            calculated_gaussian_error_propagation_terms = (
+            calculated_error_propagation_terms = (
                 calculate_error_propagation_terms(
                     unshifted_intensities,
                     delta_shifted_intensities,
                     delta_unshifted_intensities,
-                    times,
+                    distances,
                     coefficients,
                     taufactor,
                 )
             )
 
             np.testing.assert_array_equal(
-                polynomial_module_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomial_module_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 np.array([0, 1, 2]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomial_module_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 np.array([5, 4]),
@@ -379,7 +380,7 @@ class DeltaChiUnitTests(unittest.TestCase):
             )
 
             np.testing.assert_allclose(
-                calculated_gaussian_error_propagation_terms,
+                calculated_error_propagation_terms,
                 gaussian_error_propagation_terms,
             )
 

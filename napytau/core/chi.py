@@ -1,5 +1,5 @@
-from napytau.core.polynomials import polynomial_sum_at_measuring_times
-from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_times
+from napytau.core.polynomials import polynomial_sum_at_measuring_distances
+from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances
 from numpy import sum
 from numpy import ndarray
 from numpy import mean
@@ -16,7 +16,7 @@ def chi_squared_fixed_t(
     delta_doppler_shifted_intensities: ndarray,
     delta_unshifted_intensities: ndarray,
     coefficients: ndarray,
-    times: ndarray,
+    distances: ndarray,
     t_hyp: float,
     weight_factor: float,
 ) -> float:
@@ -34,8 +34,8 @@ def chi_squared_fixed_t(
         Uncertainties in unshifted intensities
         coefficients (ndarray):
         Polynomial coefficients for fitting
-        times (ndarray):
-        Array of time points
+        distances (ndarray):
+        Array of distance points
         t_hyp (float):
         Hypothesis value for the scaling factor
         weight_factor (float):
@@ -47,8 +47,8 @@ def chi_squared_fixed_t(
 
     # Compute the difference between Doppler-shifted intensities and polynomial model
     shifted_intensity_difference: ndarray = (
-        doppler_shifted_intensities
-        - polynomial_sum_at_measuring_times(times, coefficients)
+                                                    doppler_shifted_intensities
+                                                    - polynomial_sum_at_measuring_distances(distances, coefficients)
     ) / delta_doppler_shifted_intensities
 
     # Compute the difference between unshifted intensities and
@@ -56,8 +56,8 @@ def chi_squared_fixed_t(
     unshifted_intensity_difference: ndarray = (
         unshifted_intensities
         - (
-            t_hyp
-            * differentiated_polynomial_sum_at_measuring_times(times, coefficients)
+                t_hyp
+                * differentiated_polynomial_sum_at_measuring_distances(distances, coefficients)
         )
     ) / delta_unshifted_intensities
 
@@ -75,7 +75,7 @@ def optimize_coefficients(
     delta_doppler_shifted_intensities: ndarray,
     delta_unshifted_intensities: ndarray,
     initial_coefficients: ndarray,
-    times: ndarray,
+    distances: ndarray,
     t_hyp: float,
     weight_factor: float,
 ) -> Tuple[ndarray, float]:
@@ -93,8 +93,8 @@ def optimize_coefficients(
         Uncertainties in unshifted intensities
         initial_coefficients (ndarray):
         Initial guess for the polynomial coefficients
-        times (ndarray):
-        Array of time points
+        distances (ndarray):
+        Array of distance points
         t_hyp (float):
         Hypothesis value for the scaling factor
         weight_factor (float):
@@ -110,7 +110,7 @@ def optimize_coefficients(
             delta_doppler_shifted_intensities,
             delta_unshifted_intensities,
             coefficients,
-            times,
+            distances,
             t_hyp,
             weight_factor,
         ),
@@ -128,7 +128,7 @@ def optimize_t_hyp(
     delta_doppler_shifted_intensities: ndarray,
     delta_unshifted_intensities: ndarray,
     initial_coefficients: ndarray,
-    time: ndarray,
+    distances: ndarray,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
 ) -> float:
@@ -146,8 +146,8 @@ def optimize_t_hyp(
         Uncertainties in unshifted intensities
         initial_coefficients (ndarray):
         Initial guess for the polynomial coefficients
-        time (ndarray):
-        Array of time points
+        distances (ndarray):
+        Array of distance points
         t_hyp_range (tuple):
         Range for t_hyp optimization (min, max)
         weight_factor (float):
@@ -164,7 +164,7 @@ def optimize_t_hyp(
         unshifted_intensities,
         delta_doppler_shifted_intensities,
         delta_unshifted_intensities,
-        time,
+        distances,
         initial_coefficients,
         t_hyp,
         weight_factor,

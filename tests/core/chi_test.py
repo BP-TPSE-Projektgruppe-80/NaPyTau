@@ -23,10 +23,10 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.polynomial_sum_at_measuring_times.return_value = array(
+        polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array(
             [5, 15, 57]
         )
-        polynomials_mock.differentiated_polynomial_sum_at_measuring_times.return_value = array(
+        polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.return_value = array(
             [4, 20, 72]
         )
 
@@ -44,7 +44,7 @@ class ChiUnitTest(unittest.TestCase):
             delta_doppler_shifted_intensities: ndarray = array([2, 3, 4])
             delta_unshifted_intensities: ndarray = array([5, 6, 7])
             coefficients: ndarray = array([5, 4, 3, 2, 1])
-            times: ndarray = array([0, 1, 2])
+            distances: ndarray = array([0, 1, 2])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -58,7 +58,7 @@ class ChiUnitTest(unittest.TestCase):
                     delta_doppler_shifted_intensities,
                     delta_unshifted_intensities,
                     coefficients,
-                    times,
+                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -66,18 +66,18 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.polynomial_sum_at_measuring_times.mock_calls), 1
+                len(polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls), 1
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     0
                 ],
                 (array([0, 1, 2])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     1
                 ],
                 (array([5, 4, 3, 2, 1])),
@@ -85,20 +85,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls
+                    polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls
                 ),
                 1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (array([0, 1, 2])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 (array([5, 4, 3, 2, 1])),
@@ -108,8 +108,8 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.polynomial_sum_at_measuring_times.return_value = array([])
-        polynomials_mock.differentiated_polynomial_sum_at_measuring_times.return_value = array(
+        polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array([])
+        polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.return_value = array(
             []
         )
 
@@ -127,7 +127,7 @@ class ChiUnitTest(unittest.TestCase):
             delta_doppler_shifted_intensities: ndarray = array([])
             delta_unshifted_intensities: ndarray = array([])
             coefficients: ndarray = array([])
-            times: ndarray = array([])
+            distances: ndarray = array([])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -141,7 +141,7 @@ class ChiUnitTest(unittest.TestCase):
                     delta_doppler_shifted_intensities,
                     delta_unshifted_intensities,
                     coefficients,
-                    times,
+                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -149,18 +149,18 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.polynomial_sum_at_measuring_times.mock_calls), 1
+                len(polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls), 1
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     0
                 ],
                 (array([])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     1
                 ],
                 (array([])),
@@ -168,20 +168,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls
+                    polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls
                 ),
                 1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (array([])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 (array([])),
@@ -191,8 +191,8 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.polynomial_sum_at_measuring_times.return_value = array([57])
-        polynomials_mock.differentiated_polynomial_sum_at_measuring_times.return_value = array(
+        polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array([57])
+        polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.return_value = array(
             [72]
         )
 
@@ -210,7 +210,7 @@ class ChiUnitTest(unittest.TestCase):
             delta_doppler_shifted_intensities: ndarray = array([3])
             delta_unshifted_intensities: ndarray = array([4])
             coefficients: ndarray = array([5, 4, 3, 2, 1])
-            times: ndarray = array([2])
+            distances: ndarray = array([2])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -224,7 +224,7 @@ class ChiUnitTest(unittest.TestCase):
                     delta_doppler_shifted_intensities,
                     delta_unshifted_intensities,
                     coefficients,
-                    times,
+                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -232,18 +232,18 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.polynomial_sum_at_measuring_times.mock_calls), 1
+                len(polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls), 1
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     0
                 ],
                 (array([2])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     1
                 ],
                 (array([5, 4, 3, 2, 1])),
@@ -251,20 +251,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls
+                    polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls
                 ),
                 1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (array([2])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 (array([5, 4, 3, 2, 1])),
@@ -274,8 +274,8 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.polynomial_sum_at_measuring_times.return_value = array([5, 15])
-        polynomials_mock.differentiated_polynomial_sum_at_measuring_times.return_value = array(
+        polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array([5, 15])
+        polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.return_value = array(
             [4, 20]
         )
 
@@ -293,7 +293,7 @@ class ChiUnitTest(unittest.TestCase):
             delta_doppler_shifted_intensities: ndarray = array([0, 1])
             delta_unshifted_intensities: ndarray = array([0, 1])
             coefficients: ndarray = array([5, 4, 3, 2, 1])
-            times: ndarray = array([0, 1])
+            distances: ndarray = array([0, 1])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -307,7 +307,7 @@ class ChiUnitTest(unittest.TestCase):
                     delta_doppler_shifted_intensities,
                     delta_unshifted_intensities,
                     coefficients,
-                    times,
+                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -315,18 +315,18 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.polynomial_sum_at_measuring_times.mock_calls), 1
+                len(polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls), 1
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     0
                 ],
                 (array([0, 1])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     1
                 ],
                 (array([5, 4, 3, 2, 1])),
@@ -334,20 +334,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls
+                    polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls
                 ),
                 1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (array([0, 1])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 (array([5, 4, 3, 2, 1])),
@@ -357,10 +357,10 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.polynomial_sum_at_measuring_times.return_value = array(
+        polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array(
             [-5, -5]
         )
-        polynomials_mock.differentiated_polynomial_sum_at_measuring_times.return_value = array(
+        polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.return_value = array(
             [-4, -4]
         )
 
@@ -378,7 +378,7 @@ class ChiUnitTest(unittest.TestCase):
             delta_doppler_shifted_intensities: ndarray = array([1, 2])
             delta_unshifted_intensities: ndarray = array([3, 4])
             coefficients: ndarray = array([-5, -4, 3, 2, -1])
-            times: ndarray = array([0, 1])
+            distances: ndarray = array([0, 1])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -392,7 +392,7 @@ class ChiUnitTest(unittest.TestCase):
                     delta_doppler_shifted_intensities,
                     delta_unshifted_intensities,
                     coefficients,
-                    times,
+                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -400,18 +400,18 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.polynomial_sum_at_measuring_times.mock_calls), 1
+                len(polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls), 1
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     0
                 ],
                 (array([0, 1])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     1
                 ],
                 (array([-5, -4, 3, 2, -1])),
@@ -419,20 +419,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls
+                    polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls
                 ),
                 1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (array([0, 1])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 (array([-5, -4, 3, 2, -1])),
@@ -442,10 +442,10 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.polynomial_sum_at_measuring_times.return_value = array(
+        polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array(
             [5, 15, 57]
         )
-        polynomials_mock.differentiated_polynomial_sum_at_measuring_times.return_value = array(
+        polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.return_value = array(
             [4, 20, 72]
         )
 
@@ -463,7 +463,7 @@ class ChiUnitTest(unittest.TestCase):
             delta_doppler_shifted_intensities: ndarray = array([2, 3, 4])
             delta_unshifted_intensities: ndarray = array([5, 6, 7])
             coefficients: ndarray = array([5, 4, 3, 2, 1])
-            times: ndarray = array([0, 1, 2])
+            distances: ndarray = array([0, 1, 2])
             t_hyp: float = 2.0
             weight_factor: float = 0.0
 
@@ -477,7 +477,7 @@ class ChiUnitTest(unittest.TestCase):
                     delta_doppler_shifted_intensities,
                     delta_unshifted_intensities,
                     coefficients,
-                    times,
+                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -485,18 +485,18 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.polynomial_sum_at_measuring_times.mock_calls), 1
+                len(polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls), 1
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     0
                 ],
                 (array([0, 1, 2])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.polynomial_sum_at_measuring_times.mock_calls[0].args[
+                polynomials_mock.polynomial_sum_at_measuring_distances.mock_calls[0].args[
                     1
                 ],
                 (array([5, 4, 3, 2, 1])),
@@ -504,20 +504,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls
+                    polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls
                 ),
                 1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (array([0, 1, 2])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_times.mock_calls[
+                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 (array([5, 4, 3, 2, 1])),
@@ -545,7 +545,7 @@ class ChiUnitTest(unittest.TestCase):
             delta_doppler_shifted_intensities: ndarray = array([1, 1])
             delta_unshifted_intensities: ndarray = array([1, 1])
             initial_coefficients: ndarray = array([1, 1, 1])
-            times: ndarray = array([0, 1])
+            distances: ndarray = array([0, 1])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -561,7 +561,7 @@ class ChiUnitTest(unittest.TestCase):
                 delta_doppler_shifted_intensities,
                 delta_unshifted_intensities,
                 initial_coefficients,
-                times,
+                distances,
                 t_hyp,
                 weight_factor,
             )
@@ -602,7 +602,7 @@ class ChiUnitTest(unittest.TestCase):
             delta_doppler_shifted_intensities: ndarray = array([1, 1])
             delta_unshifted_intensities: ndarray = array([1, 1])
             initial_coefficients: ndarray = array([1, 1, 1])
-            times: ndarray = array([0, 1])
+            distances: ndarray = array([0, 1])
             t_hyp_range: (float, float) = (-5, 5)
             weight_factor: float = 1.0
 
@@ -615,7 +615,7 @@ class ChiUnitTest(unittest.TestCase):
                 delta_doppler_shifted_intensities,
                 delta_unshifted_intensities,
                 initial_coefficients,
-                times,
+                distances,
                 t_hyp_range,
                 weight_factor,
             )

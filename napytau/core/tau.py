@@ -1,6 +1,6 @@
 from napytau.core.chi import optimize_t_hyp
 from napytau.core.chi import optimize_coefficients
-from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_times
+from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances
 from numpy import ndarray
 from typing import Tuple
 
@@ -11,7 +11,7 @@ def calculate_tau_i(
     delta_doppler_shifted_intensities: ndarray,
     delta_unshifted_intensities: ndarray,
     initial_coefficients: ndarray,
-    times: ndarray,
+    distances: ndarray,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
 ) -> ndarray:
@@ -30,15 +30,15 @@ def calculate_tau_i(
         Uncertainties in unshifted intensities
         initial_coefficients (ndarray):
         Initial guess for the polynomial coefficients
-        times (ndarray):
-        Array of time points corresponding to measurements
+        distances (ndarray):
+        Array of distance points corresponding to measurements
         t_hyp_range (tuple):
         Range for hypothesis optimization (min, max)
         weight_factor (float):
         Weighting factor for unshifted intensities
 
     Returns:
-        ndarray: Calculated decay times for each time point.
+        ndarray: Calculated decay times for each distance point.
     """
 
     # optimize the hypothesis value (t_hyp) to minimize chi-squared
@@ -48,7 +48,7 @@ def calculate_tau_i(
         delta_doppler_shifted_intensities,
         delta_unshifted_intensities,
         initial_coefficients,
-        times,
+        distances,
         t_hyp_range,
         weight_factor,
     )
@@ -61,7 +61,7 @@ def calculate_tau_i(
             delta_doppler_shifted_intensities,
             delta_unshifted_intensities,
             initial_coefficients,
-            times,
+            distances,
             t_opt,
             weight_factor,
         )
@@ -69,9 +69,9 @@ def calculate_tau_i(
 
     # calculate decay times using the optimized coefficients
     tau_i: ndarray = (
-        unshifted_intensities
-        / differentiated_polynomial_sum_at_measuring_times(
-            times, optimized_coefficients
+            unshifted_intensities
+            / differentiated_polynomial_sum_at_measuring_distances(
+            distances, optimized_coefficients
         )
     )
 
