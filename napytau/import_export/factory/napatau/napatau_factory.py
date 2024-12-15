@@ -250,7 +250,7 @@ class NapatauFactory:
 
     @staticmethod
     def parse_tau_factor(tau_row: str) -> float:
-        split_row = tau_row.split(" ")
+        split_row = tau_row.split()
 
         return float(split_row[0])
 
@@ -261,7 +261,7 @@ class NapatauFactory:
     ) -> List[Tuple[float, bool]]:
         active_datapoints = []
         for index, active_row in enumerate(active_rows):
-            split_row = active_row.split(" ")
+            split_row = active_row.split()
             active = bool(int(split_row[0]))
             distance = distances[index].value
 
@@ -271,7 +271,7 @@ class NapatauFactory:
 
     @staticmethod
     def parse_polynomial_count(polynomial_count_row: str) -> int:
-        split_row = polynomial_count_row.split(" ")
+        split_row = polynomial_count_row.split()
 
         return int(split_row[0])
 
@@ -279,7 +279,7 @@ class NapatauFactory:
     def parse_sampling_points(sampling_points_row: List[str]) -> List[float]:
         sampling_points = []
         for sampling_point_row in sampling_points_row:
-            split_row = sampling_point_row.split(" ")
+            split_row = sampling_point_row.split()
             sampling_points.append(float(split_row[0]))
 
         return sampling_points
