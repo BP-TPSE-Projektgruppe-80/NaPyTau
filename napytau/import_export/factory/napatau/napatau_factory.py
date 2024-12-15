@@ -197,7 +197,7 @@ class NapatauFactory:
             datapoint_count = len(dataset.datapoints)
             tau_row = raw_setup_data.napsetup_rows[0]
             datapoint_active_rows = raw_setup_data.napsetup_rows[
-                1 : datapoint_count
+                1 : (datapoint_count + 1)
             ]
             polynomial_count_row = raw_setup_data.napsetup_rows[datapoint_count + 1]
             sampling_points_row = raw_setup_data.napsetup_rows[
