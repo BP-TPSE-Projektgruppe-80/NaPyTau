@@ -10,7 +10,7 @@ from napytau.cli.cli_arguments import CLIArguments
 from napytau.gui.components.checkbox_panel import CheckboxPanel
 from napytau.gui.components.control_panel import ControlPanel
 from napytau.gui.components.graph import Graph
-from napytau.gui.components.logger import Logger
+from napytau.gui.components.logger import Logger, MessageType
 from napytau.gui.components.menu_bar import MenuBar
 from napytau.gui.model.checkbox_datapoint import CheckboxDataPoint
 
@@ -113,7 +113,6 @@ class App(customtkinter.CTk):
         """
         Opens the file explorer and lets the user choose a file to open.
         """
-        print("open_file")
         file_path = filedialog.askopenfilename(
             title="Choose file",
             filetypes=[
@@ -124,25 +123,24 @@ class App(customtkinter.CTk):
         )
 
         if file_path:
-            print(f"chosen file: {file_path}")
+            self.logger.log_message(f"chosen file: {file_path}", MessageType.INFO)
 
     def save_file(self) -> None:
         """
         Saves the file.
         """
-        print("save_file")
+        self.logger.log_message("Saved file", MessageType.SUCCESS)
 
     def read_setup(self) -> None:
         """
         Reads the setup.
         """
-        print("read_setup")
+        self.logger.log_message("read setup not implemented yet.", MessageType.INFO)
 
     def quit(self) -> None:
         """
         Quits the program.
         """
-        print("quit")
         self.destroy()
 
     def change_appearance_mode(self) -> None:
@@ -150,7 +148,7 @@ class App(customtkinter.CTk):
         Changes the appearance mode to the variable appearance_mode.
         """
         customtkinter.set_appearance_mode(self.menu_bar.appearance_mode.get())
-        self.logger.change_logger_appearance(self.menu_bar.appearance_mode.get())
+        self.logger.switch_logger_appearance(self.menu_bar.appearance_mode.get())
 
         self.graph.update_plot()
 
@@ -158,29 +156,25 @@ class App(customtkinter.CTk):
         """
         Selects the number of polynomials to use.
         """
-        print("selected number of polynomials: "
-              + self.menu_bar.number_of_polynomials.get())
-        self.logger.log_info("selected number of polynomials: "
+        self.logger.log_message("selected number of polynomials: "
               + self.menu_bar.number_of_polynomials.get()
-              + " but not implemented yet!")
+              + " but not implemented yet!", MessageType.INFO)
 
     def select_polynomial_mode(self) -> None:
         """
         Selects the polynomial mode.
         """
-        print("select polynomial mode " + self.menu_bar.polynomial_mode.get())
-        self.logger.log_error("Polynomials set to "
+        self.logger.log_message("Polynomials set to "
                               + self.menu_bar.polynomial_mode.get()
-                              + " but not implemented yet!")
+                              + " but not implemented yet!", MessageType.ERROR)
 
     def select_alpha_calc_mode(self) -> None:
         """
         Selects the alpha calculation mode.
         """
-        print("select alpha calc mode " + self.menu_bar.alpha_calc_mode.get())
-        self.logger.log_error("Alpha calculation set to "
+        self.logger.log_message("Alpha calculation set to "
                               + self.menu_bar.alpha_calc_mode.get()
-                              + " but not implemented yet!")
+                              + " but not implemented yet!", MessageType.ERROR)
 
     def update_data_checkboxes(self, new_datapoints: List[Tuple[float, float]]) -> None:
         """

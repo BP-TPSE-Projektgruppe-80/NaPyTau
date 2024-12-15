@@ -2,24 +2,22 @@ import customtkinter
 
 from collections import deque
 from typing import TYPE_CHECKING
+from napytau.gui.model.color import Color
 
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
-# Define color constants for the logger
-LIGHT_MODE_INFO_COLOR = "black"
-LIGHT_MODE_ERROR_COLOR = "#ba1500"
-LIGHT_MODE_SUCCESS_COLOR = "#388f00"
+from enum import Enum
 
-DARK_MODE_INFO_COLOR = "white"
-DARK_MODE_ERROR_COLOR = "#ff3a21"
-DARK_MODE_SUCCESS_COLOR = "#48ba00"
-
+class MessageType(Enum):
+    INFO = "[INFO]"
+    ERROR = "[ERROR]"
+    SUCCESS = "[SUCCESS]"
 
 class Logger(customtkinter.CTkFrame):
     def __init__(self, parent: "App") -> None:
         """
-        The logger for the GUI.
+        A scrolling textbox, displaying up to 50 queued messages.
         :param parent: Parent widget to host the logger.
         """
         super().__init__(parent, height=10, corner_radius=10)
@@ -29,61 +27,44 @@ class Logger(customtkinter.CTkFrame):
                   sticky="ew")
         self.grid_propagate(False)
 
-        # Create a scrollable frame for the log messages
         self.scrollable_frame = customtkinter.CTkScrollableFrame(self, height=40)
         self.scrollable_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Set initial text colors
         if customtkinter.get_appearance_mode() == "Light":
-            self.info_color = LIGHT_MODE_INFO_COLOR
-            self.error_color = LIGHT_MODE_ERROR_COLOR
-            self.success_color = LIGHT_MODE_SUCCESS_COLOR
+            self.info_color = Color.LIGHT_MODE_INFO_COLOR
+            self.error_color = Color.LIGHT_MODE_ERROR_COLOR
+            self.success_color = Color.LIGHT_MODE_SUCCESS_COLOR
         else:
-            self.info_color = DARK_MODE_INFO_COLOR
-            self.error_color = DARK_MODE_ERROR_COLOR
-            self.success_color = DARK_MODE_SUCCESS_COLOR
+            self.info_color = Color.DARK_MODE_INFO_COLOR
+            self.error_color = Color.DARK_MODE_ERROR_COLOR
+            self.success_color = Color.DARK_MODE_SUCCESS_COLOR
 
-        # Store labels in a deque with a max length of 50
         self.labels: deque = deque(maxlen=50)
 
-    def log_info(self, message: str) -> None:
-        """
-        Appends an informational message to the logger.
-        :param message: The message to log.
-        """
-        self._log_message("[INFO] " + message, color=self.info_color)
-
-    def log_error(self, message: str) -> None:
-        """
-        Appends an error message to the logger in red.
-        :param message: The error message to log.
-        """
-        self._log_message("[ERROR] " + message, color=self.error_color)
-
-    def log_success(self, message: str) -> None:
-        """
-        Appends a success message to the logger.
-        :param message: The message to log.
-        """
-        self._log_message("[SUCCESS] " + message, color=self.success_color)
-
-    def _log_message(self, message: str, color: str) -> None:
+    def log_message(self, message: str, message_type: MessageType) -> None:
         """
         Adds a message to the logger. Scrolls down to the bottom of the logger frame.
+        :param message_type: The message type.
         :param message: The message to append.
-        :param color: The color of the text.
         """
-        # Create a new label for the message
+        color: str
+        if message_type == MessageType.ERROR:
+            color = self.error_color
+        elif message_type == MessageType.SUCCESS:
+            color = self.success_color
+        else:
+            color = self.info_color
+
         message_label = customtkinter.CTkLabel(
             self.scrollable_frame,
-            text=message,
+            text=message_type.value + " " + message,
             fg_color="transparent",
             text_color=color,
             anchor="w"
         )
         message_label.pack(fill="x", padx=5, pady=0)
 
-        # Add the label to the deque
         self.labels.append(message_label)
 
         # Remove the oldest widget if the deque is full
@@ -96,20 +77,20 @@ class Logger(customtkinter.CTkFrame):
         canvas = self.scrollable_frame._parent_canvas
         canvas.yview_scroll(canvas.bbox("all")[3], "units")
 
-    def change_logger_appearance(self, appearance_mode: str) -> None:
+    def switch_logger_appearance(self, appearance_mode: str) -> None:
         """
         Called when the appearance mode (light/dark) changes.
         Updates the text color of all labels accordingly.
         :param appearance_mode: The appearance mode to change to.
         """
         if appearance_mode == "dark":
-            self.info_color = DARK_MODE_INFO_COLOR
-            self.error_color = DARK_MODE_ERROR_COLOR
-            self.success_color = DARK_MODE_SUCCESS_COLOR
+            self.info_color = Color.DARK_MODE_INFO_COLOR
+            self.error_color = Color.DARK_MODE_ERROR_COLOR
+            self.success_color = Color.DARK_MODE_SUCCESS_COLOR
         else:
-            self.info_color = LIGHT_MODE_INFO_COLOR
-            self.error_color = LIGHT_MODE_ERROR_COLOR
-            self.success_color = LIGHT_MODE_SUCCESS_COLOR
+            self.info_color = Color.LIGHT_MODE_INFO_COLOR
+            self.error_color = Color.LIGHT_MODE_ERROR_COLOR
+            self.success_color = Color.LIGHT_MODE_SUCCESS_COLOR
 
         # Update the text color for each label based on the appearance mode
         for label in self.labels:
