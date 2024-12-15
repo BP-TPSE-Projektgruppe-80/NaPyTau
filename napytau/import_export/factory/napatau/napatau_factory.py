@@ -199,9 +199,9 @@ class NapatauFactory:
             datapoint_active_rows = raw_setup_data.napsetup_rows[
                 1 : (datapoint_count + 1)
             ]
-            polynomial_count_row = raw_setup_data.napsetup_rows[datapoint_count + 2]
+            polynomial_count_row = raw_setup_data.napsetup_rows[datapoint_count + 1]
             sampling_points_row = raw_setup_data.napsetup_rows[
-                datapoint_count + 3 : len(raw_setup_data.napsetup_rows)
+                datapoint_count + 2 : len(raw_setup_data.napsetup_rows)
             ]
         except IndexError as e:
             raise ImportExportError(

@@ -4,6 +4,28 @@ from napytau.import_export.factory.napatau.napatau_factory import (
     NapatauFactory,
 )
 from napytau.import_export.factory.napatau.raw_napatau_data import RawNapatauData
+from napytau.import_export.factory.napatau.raw_napatau_setup_data import (
+    RawNapatauSetupData,
+)
+from napytau.import_export.import_export_error import ImportExportError
+from napytau.import_export.model.datapoint import Datapoint
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.relative_velocity import RelativeVelocity
+from napytau.util.model.value_error_pair import ValueErrorPair
+
+
+def create_dummy_dataset() -> DataSet:
+    return DataSet(
+        ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0)),
+        DatapointCollection(
+            [
+                Datapoint(
+                    ValueErrorPair(1, 1),
+                )
+            ]
+        ),
+    )
 
 
 class NapatauFactoryUnitTest(unittest.TestCase):
@@ -221,6 +243,127 @@ class NapatauFactoryUnitTest(unittest.TestCase):
         self.assertEqual(dataset.relative_velocity.value.get_velocity(), 1)
         self.assertEqual(dataset.relative_velocity.error.get_velocity(), 1)
         self.assertEqual(len(dataset.datapoints.as_dict()), 1)
+
+    def test_raisesAnErrorIfTheProvidedSetupDataIsInvalidWhenEnrichingADataSet(self):
+        """Raises an error if the provided setup data is invalid when enriching a dataset"""
+        dataset = create_dummy_dataset()
+        invalid_setup_data = RawNapatauSetupData(["invalid_setup_data"])
+
+        with self.assertRaises(ImportExportError):
+            NapatauFactory.enrich_dataset(dataset, invalid_setup_data)
+
+    def test_raisesAnErrorIfTheProvidedTauFactorRowIsInvalidWhenEnrichingADataSet(self):
+        """Raises an error if the provided tau factor row is invalid when enriching a dataset"""
+        dataset = create_dummy_dataset()
+        invalid_setup_data = RawNapatauSetupData(
+            [
+                "invalid-tau-factor",
+                "1",
+                "1",
+                "1",
+            ]
+        )
+
+        with self.assertRaises(ImportExportError):
+            NapatauFactory.enrich_dataset(dataset, invalid_setup_data)
+
+    def test_raisesAnErrorIfTheProvidedActiveDistanceRowIsInvalidWhenEnrichingADataSet(
+        self,
+    ):
+        """Raises an error if the provided active distance row is invalid when enriching a dataset"""
+        dataset = create_dummy_dataset()
+        invalid_setup_data = RawNapatauSetupData(
+            [
+                "1",
+                "invalid-active-distance",
+                "1",
+                "1",
+            ]
+        )
+
+        with self.assertRaises(ImportExportError):
+            NapatauFactory.enrich_dataset(dataset, invalid_setup_data)
+
+    def test_raisesAnErrorIfTheProvidedPolynomialCountRowIsInvalidWhenEnrichingADataSet(
+        self,
+    ):
+        """Raises an error if the provided polynomial count row is invalid when enriching a dataset"""
+        dataset = create_dummy_dataset()
+        invalid_setup_data = RawNapatauSetupData(
+            [
+                "1",
+                "1",
+                "invalid-polynomial-count",
+                "1",
+            ]
+        )
+
+        with self.assertRaises(ImportExportError):
+            NapatauFactory.enrich_dataset(dataset, invalid_setup_data)
+
+    def test_raisesAnErrorIfTheProvidedSamplingPointRowIsInvalidWhenEnrichingADataSet(
+        self,
+    ):
+        """Raises an error if the provided sampling point row is invalid when enriching a dataset"""
+        dataset = create_dummy_dataset()
+        invalid_setup_data = RawNapatauSetupData(
+            [
+                "1",
+                "1",
+                "1",
+                "invalid-sampling-point",
+            ]
+        )
+
+        with self.assertRaises(ImportExportError):
+            NapatauFactory.enrich_dataset(dataset, invalid_setup_data)
+
+    def test_enrichesADataSetWithValidSetupData(self):
+        """Enriches a dataset with valid setup data"""
+        dataset = DataSet(
+            ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0)),
+            DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(1, 13),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 3),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(3, 7),
+                    ),
+                ]
+            ),
+        )
+        setup_data = RawNapatauSetupData(
+            [
+                "42",
+                "1",
+                "0",
+                "1",
+                "2",
+                "420",
+                "1337",
+            ]
+        )
+
+        enriched_dataset = NapatauFactory.enrich_dataset(dataset, setup_data)
+
+        self.assertEqual(enriched_dataset.tau_factor, 42)
+        self.assertTrue(
+            enriched_dataset.datapoints.get_datapoint_by_distance(1).is_active()
+        )
+        self.assertFalse(
+            enriched_dataset.datapoints.get_datapoint_by_distance(2).is_active()
+        )
+        self.assertTrue(
+            enriched_dataset.datapoints.get_datapoint_by_distance(3).is_active()
+        )
+        self.assertEqual(enriched_dataset.polynomial_count, 2)
+        self.assertEqual(len(enriched_dataset.sampling_points), 2)
+        self.assertEqual(enriched_dataset.sampling_points[0], 420)
+        self.assertEqual(enriched_dataset.sampling_points[1], 1337)
 
 
 if __name__ == "__main__":

@@ -3,8 +3,9 @@ from pathlib import PurePath
 from unittest.mock import MagicMock, patch
 
 from napytau.import_export.crawler.napatau_setup_files import NapatauSetupFiles
-from napytau.import_export.factory.napatau.raw_napatau_setup_data import \
-    RawNapatauSetupData
+from napytau.import_export.factory.napatau.raw_napatau_setup_data import (
+    RawNapatauSetupData,
+)
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.import_export.model.dataset import DataSet
 from napytau.import_export.model.relative_velocity import RelativeVelocity
@@ -356,7 +357,9 @@ class IngestUnitTest(unittest.TestCase):
                 PurePath("test.napaset"),
             )
 
-    def test_callsTheNapatauFactoryToEnrichTheDatasetWithTheSetupDataReadByTheFileReader(self):
+    def test_callsTheNapatauFactoryToEnrichTheDatasetWithTheSetupDataReadByTheFileReader(
+        self,
+    ):
         """Calls the Napatau factory to enrich the dataset with the setup data read by the file reader."""
         (
             napatau_factory_module_mock,
@@ -391,17 +394,17 @@ class IngestUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                napatau_factory_module_mock.NapatauFactory.enrich_dataset.mock_calls[0]
-                .args[0],
+                napatau_factory_module_mock.NapatauFactory.enrich_dataset.mock_calls[
+                    0
+                ].args[0],
                 dataset,
             )
             self.assertEqual(
-                napatau_factory_module_mock.NapatauFactory.enrich_dataset.mock_calls[0]
-                .args[1],
+                napatau_factory_module_mock.NapatauFactory.enrich_dataset.mock_calls[
+                    0
+                ].args[1],
                 RawNapatauSetupData(["row1", "row2"]),
             )
-
-
 
 
 if __name__ == "__main__":
