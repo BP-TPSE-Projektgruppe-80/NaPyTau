@@ -1,4 +1,5 @@
 import unittest
+from pathlib import PurePath
 from unittest.mock import MagicMock, patch
 
 
@@ -18,7 +19,7 @@ class FileReaderUnitTest(unittest.TestCase):
             from napytau.import_export.reader.file_reader import FileReader
 
             with self.assertRaises(FileNotFoundError):
-                FileReader.read_rows("test.txt")
+                FileReader.read_rows(PurePath("test.txt"))
 
     def test_returnsTheRowsOfTheFile(self):
         """Returns the rows of the file."""
@@ -32,7 +33,7 @@ class FileReaderUnitTest(unittest.TestCase):
                     "row1",
                     "row2",
                 ]
-                rows = FileReader.read_rows("test.txt")
+                rows = FileReader.read_rows(PurePath("test.txt"))
                 self.assertEqual(rows, ["row1", "row2"])
 
 
