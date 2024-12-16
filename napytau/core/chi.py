@@ -1,5 +1,5 @@
 from napytau.core.polynomials import polynomial_sum_at_measuring_distances
-from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances
+from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances # noqa E501
 from numpy import sum
 from numpy import ndarray
 from numpy import mean
@@ -47,8 +47,8 @@ def chi_squared_fixed_t(
 
     # Compute the difference between Doppler-shifted intensities and polynomial model
     shifted_intensity_difference: ndarray = (
-                                                    doppler_shifted_intensities
-                                                    - polynomial_sum_at_measuring_distances(distances, coefficients)
+                    doppler_shifted_intensities
+                    - polynomial_sum_at_measuring_distances(distances, coefficients)
     ) / delta_doppler_shifted_intensities
 
     # Compute the difference between unshifted intensities and
@@ -57,7 +57,8 @@ def chi_squared_fixed_t(
         unshifted_intensities
         - (
                 t_hyp
-                * differentiated_polynomial_sum_at_measuring_distances(distances, coefficients)
+                * differentiated_polynomial_sum_at_measuring_distances(distances,
+                                                                       coefficients)
         )
     ) / delta_unshifted_intensities
 

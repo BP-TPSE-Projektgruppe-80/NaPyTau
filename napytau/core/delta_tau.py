@@ -1,4 +1,4 @@
-from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances
+from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances # noqa E501
 from napytau.core.polynomials import polynomial_sum_at_measuring_distances
 from numpy import array
 from numpy import ndarray

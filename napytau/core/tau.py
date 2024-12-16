@@ -1,6 +1,6 @@
 from napytau.core.chi import optimize_t_hyp
 from napytau.core.chi import optimize_coefficients
-from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances
+from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances # noqa E501
 from numpy import ndarray
 from typing import Tuple
 

@@ -5,7 +5,8 @@ from numpy import zeros
 from numpy import zeros_like
 
 
-def polynomial_sum_at_measuring_distances(distances: ndarray, coefficients: ndarray) -> ndarray:
+def polynomial_sum_at_measuring_distances(distances: ndarray,
+                                          coefficients: ndarray) -> ndarray:
     """
     Computes the sum of a polynomial evaluated at given distance points.
 
