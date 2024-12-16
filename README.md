@@ -10,7 +10,7 @@
 
 ### Distributions
 
-With every release, we provide pre-built binaries for Windows, and Linux. You can find the latest releases under [releases](https://github.com/BP-TPSE-Projektgruppe-80/NaPyTau/releases)
+With every release, we provide pre-built binaries for Windows, and Linux. You can find the latest releases under [releases](https://github.com/BP-TPSE-Projektgruppe-80/NaPyTau/releases).
 Note that we do not provide pre-built binaries for MacOS, however, you can build the project from source.
 
 ### Building from source
