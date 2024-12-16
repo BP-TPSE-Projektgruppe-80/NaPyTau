@@ -1,6 +1,4 @@
-import tkinter as tk
 import customtkinter
-from napytau.core.logic_mockup import logic
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -10,7 +8,7 @@ if TYPE_CHECKING:
 class ControlPanel(customtkinter.CTkFrame):
     def __init__(self, parent: "App"):
         """
-        Initializes the control panel .
+        The panel with all the control needed.
         :param parent: Parent widget to host the control panel.
         """
         super().__init__(parent, corner_radius=10)
@@ -21,51 +19,119 @@ class ControlPanel(customtkinter.CTkFrame):
         self.grid_rowconfigure((0, 1), weight=1)
         self.grid_propagate(True)
 
-        # Scaling menu
-        self.scaling_label = customtkinter.CTkLabel(
-            self, text="UI Scaling:", anchor="nw"
-        )
-        self.scaling_label.grid(row=0, column=0, padx=10, pady=10)
+        self.timescale = customtkinter.DoubleVar(value=1.0)
+        self.result_chi2 = customtkinter.StringVar(value="N/A")
+        self.result_tau = customtkinter.StringVar(value="N/A")
+        self.result_tau_error = customtkinter.StringVar(value="N/A")
+        self.result_abs_tau_t = customtkinter.StringVar(value="N/A")
 
-        self.scaling_optionemenu = customtkinter.CTkOptionMenu(
-            self,
-            values=["80%", "90%", "100%", "110%", "120%"],
-            command=self.change_scaling_event,
-        )
-        self.scaling_optionemenu.grid(row=0, column=1, padx=20, pady=(10, 20))
-        self.scaling_optionemenu.set("100%")
+        self.create_widgets()
 
-        # Calculation Entry and Button
-        self.tau = tk.StringVar()  # Tau als StringVar initialisieren
-        self.entry = customtkinter.CTkEntry(self, textvariable=self.parent.tau)
-        self.entry.grid(row=1, column=0, padx=10, pady=10)
-
-        self.main_button_1 = customtkinter.CTkButton(
-            self,
-            fg_color="transparent",
-            border_width=1,
-            text="calc",
-            text_color=("gray10", "#DCE4EE"),
-            command=self.calc,
-        )
-        self.main_button_1.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
-
-        # Result label
-        self.label = customtkinter.CTkLabel(self, width=200)
-        self.label.grid(row=2, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
-        self.label.configure(text="Result: ")
-
-    def change_scaling_event(self, new_scaling: str) -> None:
+    def create_widgets(self) -> None:
         """
-        Adjusts the UI scaling factor for CustomTkinter widgets.
+        Create the control panel widgets.
         """
-        new_scaling_float = int(new_scaling.replace("%", "")) / 100
-        customtkinter.set_widget_scaling(new_scaling_float)
+        # Row 1: Timescale Controls
+        timescale_widget = self.create_timescale_widget()
+        timescale_widget.pack(fill="x", padx=5, pady=5)
 
-    def calc(self) -> None:
-        """
-        Starts the main calculation.
-        """
-        entry_value = self.parent.tau.get()
+        # Row 2: Chi^2 Display
+        chi2_widget = self.create_chi2_widget()
+        chi2_widget.pack(fill="x", padx=5, pady=5)
 
-        self.label.configure(text=f"Result: {logic(entry_value)}")
+        # Row 3: Tau Display
+        tau_widget = self.create_tau_widget()
+        tau_widget.pack(fill="x", padx=5, pady=5)
+
+        # Row 4: Abs(Tau - T) Display
+        abs_tau_t_widget = self.create_abs_tau_t_widget()
+        abs_tau_t_widget.pack(fill="x", padx=5, pady=5)
+
+    def create_timescale_widget(self) -> customtkinter.CTkFrame:
+        """
+        Create the timescale widget.
+        """
+        frame = customtkinter.CTkFrame(self)
+
+        button = customtkinter.CTkButton(frame, text="t [ps]",
+                                         command=self.timescale_button_event)
+        button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+        entry = customtkinter.CTkEntry(frame, textvariable=self.timescale,
+                                       justify="right", width=80)
+        entry.grid(row=0, column=1, padx=5, pady=5, sticky="e")
+
+        slider = customtkinter.CTkSlider(frame, from_=0.01, to=100.0,
+                                         variable=self.timescale,
+                                         command=self.timescale_slider_event)
+        slider.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+
+        frame.columnconfigure(0, weight=1)
+        frame.columnconfigure(1, weight=1)
+
+        return frame
+
+    def create_chi2_widget(self) -> customtkinter.CTkFrame:
+        """
+        Create the chi^2 widget.
+        """
+        frame = customtkinter.CTkFrame(self)
+
+        label = customtkinter.CTkLabel(frame, text="χ²:")
+        label.pack(side="left", padx=15)
+
+        result = customtkinter.CTkLabel(frame, textvariable=self.result_chi2)
+        result.pack(side="left", padx=5)
+
+        return frame
+
+    def create_tau_widget(self) -> customtkinter.CTkFrame:
+        """
+        Create the tau widget.
+        """
+        frame = customtkinter.CTkFrame(self)
+
+        button = customtkinter.CTkButton(frame, text="τ ± Δτ [ps]:",
+                                         command=self.tau_button_event)
+        button.pack(side="left", padx=5)
+
+        result = customtkinter.CTkLabel(frame, textvariable=self.result_tau)
+        result.pack(side="left", padx=5)
+
+        error = customtkinter.CTkLabel(frame, textvariable=self.result_tau_error)
+        error.pack(side="left", padx=5)
+
+        return frame
+
+    def create_abs_tau_t_widget(self) -> customtkinter.CTkFrame:
+        """
+        Create the abs tau t widget.
+        """
+        frame = customtkinter.CTkFrame(self)
+
+        label = customtkinter.CTkLabel(frame, text="|τ - t| [ps]:")
+        label.pack(side="left", padx=15)
+
+        result = customtkinter.CTkLabel(frame, textvariable=self.result_abs_tau_t)
+        result.pack(side="left", padx=5)
+
+        return frame
+
+    def timescale_button_event(self) -> None:
+        """
+        Event if the timescale button is clicked.
+        """
+        print(f"Timescale set to {self.timescale.get():.2f} ps")
+
+    def timescale_slider_event(self, value: str) -> None:
+       """
+       Event for the timescale slider.
+       :param value: The current value of the slider.
+       """
+       self.timescale.set(round(float(value), 2))
+
+    def tau_button_event(self) -> None:
+        """
+        Event if the tau button is clicked.
+        """
+        print("Tau button clicked")
