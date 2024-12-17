@@ -2,7 +2,7 @@ from napytau.core.chi import optimize_t_hyp
 from napytau.core.chi import optimize_coefficients
 from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances # noqa E501
 from numpy import ndarray
-from typing import Tuple
+from typing import Tuple, Optional
 
 
 def calculate_tau_i(
@@ -14,7 +14,7 @@ def calculate_tau_i(
     distances: ndarray,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
-) -> ndarray:
+    custom_t_hyp_estimate: Optional[float]) -> ndarray:
     """
     Calculates the decay times (tau_i) based on the provided
     intensities and time points.
@@ -41,17 +41,19 @@ def calculate_tau_i(
         ndarray: Calculated decay times for each distance point.
     """
 
-    # optimize the hypothesis value (t_hyp) to minimize chi-squared
-    t_opt: float = optimize_t_hyp(
-        doppler_shifted_intensities,
-        unshifted_intensities,
-        delta_doppler_shifted_intensities,
-        delta_unshifted_intensities,
-        initial_coefficients,
-        distances,
-        t_hyp_range,
-        weight_factor,
-    )
+    # If a custom hypothesis for t_hyp is given, we use it for the further calculations
+    # Otherwise we optimize the hypothesis value (t_hyp) to minimize chi-squared
+    if custom_t_hyp_estimate is not None:
+        t_hyp: float = custom_t_hyp_estimate
+    else:
+        t_hyp = optimize_t_hyp(doppler_shifted_intensities,
+                               unshifted_intensities,
+                               delta_doppler_shifted_intensities,
+                               delta_unshifted_intensities,
+                               initial_coefficients,
+                               distances,
+                               t_hyp_range,
+                               weight_factor)
 
     # optimize the polynomial coefficients with the optimized t_hyp
     optimized_coefficients: ndarray = (
@@ -62,7 +64,7 @@ def calculate_tau_i(
             delta_unshifted_intensities,
             initial_coefficients,
             distances,
-            t_opt,
+            t_hyp,
             weight_factor,
         )
     )[0]

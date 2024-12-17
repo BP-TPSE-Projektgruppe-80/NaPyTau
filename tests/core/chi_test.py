@@ -7,20 +7,25 @@ from numpy import mean
 from scipy.optimize import OptimizeResult
 
 
-def set_up_mocks() -> (MagicMock, MagicMock):
+def set_up_mocks() -> (MagicMock, MagicMock, MagicMock):
     polynomials_mock = MagicMock()
     polynomials_mock.polynomial_sum_at_measuring_times = MagicMock()
     polynomials_mock.differentiated_polynomial_sum_at_measuring_times = MagicMock()
 
+    numpy_module_mock = MagicMock()
+    numpy_module_mock.sum = MagicMock()
+    numpy_module_mock.power = MagicMock()
+    numpy_module_mock.mean = MagicMock()
+
     scipy_optimize_module_mock = MagicMock()
     scipy_optimize_module_mock.minimize = MagicMock()
 
-    return polynomials_mock, scipy_optimize_module_mock
+    return polynomials_mock, numpy_module_mock, scipy_optimize_module_mock
 
 
 class ChiUnitTest(unittest.TestCase):
     def test_ChiCalculationForValidData(self):
-        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
+        polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array(
@@ -30,10 +35,14 @@ class ChiUnitTest(unittest.TestCase):
             [4, 20, 72]
         )
 
+        numpy_module_mock.sum.return_value =
+        numpy_module_mock.power.side_effect = []
+
         with patch.dict(
             "sys.modules",
             {
                 "napytau.core.polynomials": polynomials_mock,
+                "numpy": numpy_module_mock,
             },
         ):
             from napytau.core.chi import chi_squared_fixed_t
@@ -105,7 +114,7 @@ class ChiUnitTest(unittest.TestCase):
             )
 
     def test_ChiCalculationForEmptyDataArrays(self):
-        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
+        polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array([])
@@ -188,7 +197,7 @@ class ChiUnitTest(unittest.TestCase):
             )
 
     def test_ChiCalculationForSingleDatapoint(self):
-        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
+        polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array([57])
@@ -271,7 +280,7 @@ class ChiUnitTest(unittest.TestCase):
             )
 
     def test_ChiCalculationForDenominatorZero(self):
-        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
+        polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array([5, 15])
@@ -354,7 +363,7 @@ class ChiUnitTest(unittest.TestCase):
             )
 
     def test_ChiCalculationForNegativeValues(self):
-        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
+        polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array(
@@ -439,7 +448,7 @@ class ChiUnitTest(unittest.TestCase):
             )
 
     def test_ChiCalculationForWeightFactorZero(self):
-        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
+        polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
         polynomials_mock.polynomial_sum_at_measuring_distances.return_value = array(
@@ -524,7 +533,7 @@ class ChiUnitTest(unittest.TestCase):
             )
 
     def test_coefficientOptimization(self):
-        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
+        polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return value of called function
         scipy_optimize_module_mock.minimize.return_value = OptimizeResult(
@@ -583,7 +592,7 @@ class ChiUnitTest(unittest.TestCase):
             )
 
     def test_tHypOptimization(self):
-        polynomials_mock, scipy_optimize_module_mock = set_up_mocks()
+        polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return value of called function
         scipy_optimize_module_mock.minimize.return_value = OptimizeResult(x=2.0)

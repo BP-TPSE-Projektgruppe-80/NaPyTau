@@ -1,7 +1,7 @@
 from napytau.core.polynomials import polynomial_sum_at_measuring_distances
 from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances # noqa E501
-from numpy import sum
 from numpy import ndarray
+from numpy import sum
 from numpy import mean
 from numpy import power
 from scipy.optimize import minimize
@@ -9,7 +9,7 @@ from scipy.optimize import OptimizeResult
 from typing import Tuple
 
 
-# Chi^2 Funktion für festes t-hyp
+# chi^2 function for fixed t_hyp
 def chi_squared_fixed_t(
     doppler_shifted_intensities: ndarray,
     unshifted_intensities: ndarray,
@@ -67,6 +67,7 @@ def chi_squared_fixed_t(
         (power(shifted_intensity_difference, 2))
         + (weight_factor * (power(unshifted_intensity_difference, 2)))
     )
+
     return result
 
 
@@ -104,8 +105,7 @@ def optimize_coefficients(
     Returns:
         tuple: Optimized coefficients (ndarray) and minimized chi-squared value (float).
     """
-    result: OptimizeResult = minimize(
-        lambda coefficients: chi_squared_fixed_t(
+    chi_squared = lambda coefficients: chi_squared_fixed_t(
             doppler_shifted_intensities,
             unshifted_intensities,
             delta_doppler_shifted_intensities,
@@ -113,10 +113,15 @@ def optimize_coefficients(
             coefficients,
             distances,
             t_hyp,
-            weight_factor,
-        ),
+            weight_factor)
+
+    result: OptimizeResult = minimize(
+        chi_squared,
         initial_coefficients,
-        method="L-BFGS-B",  # Optimization method for bounded optimization
+        # Optimization method for bounded optimization. It minimizes a scalar function
+        # of one or more variables using the BFGS optimization algorithm,
+        # which uses a limited amount of computer memory.
+        method="L-BFGS-B",
     )
 
     # Return optimized coefficients and chi-squared value
@@ -158,8 +163,6 @@ def optimize_t_hyp(
         float: Optimized t_hyp value.
     """
 
-    # defines a function for chi-squared computation with fixed t_hyp
-    # return the minimized chi-squared value for the current t_hyp
     chi_squared_t_hyp = lambda t_hyp: optimize_coefficients(
         doppler_shifted_intensities,
         unshifted_intensities,
@@ -171,13 +174,15 @@ def optimize_t_hyp(
         weight_factor,
     )[1]
 
-    # minimize chi-squared function over the range of t_hyp
     result: OptimizeResult = minimize(
         chi_squared_t_hyp,
-        x0=mean(t_hyp_range),  # Initial guess for t_hyp
+        # Initial guess for t_hyp. Startíng with the mean reduces likelihood of
+        # biasing the optimization process toward one boundary.
+        x0=mean(t_hyp_range),
         bounds=[(t_hyp_range[0], t_hyp_range[1])],  # Boundaries for optimization
     )
 
     # Return optimized t_hyp value
     optimized_t_hyp: float = result.x
+
     return optimized_t_hyp
