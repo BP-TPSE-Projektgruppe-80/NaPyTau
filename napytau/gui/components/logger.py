@@ -3,16 +3,10 @@ import customtkinter
 from collections import deque
 from typing import TYPE_CHECKING
 from napytau.gui.model.color import Color
+from napytau.gui.model.log_message_type import LogMessageType
 
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
-
-from enum import Enum
-
-class MessageType(Enum):
-    INFO = "[INFO]"
-    ERROR = "[ERROR]"
-    SUCCESS = "[SUCCESS]"
 
 class Logger(customtkinter.CTkFrame):
     def __init__(self, parent: "App") -> None:
@@ -40,18 +34,20 @@ class Logger(customtkinter.CTkFrame):
             self.error_color = Color.DARK_MODE_ERROR_COLOR
             self.success_color = Color.DARK_MODE_SUCCESS_COLOR
 
+        # Store the logger messages in a deque because it is more efficient
+        # than a normal queue when updating appearance.
         self.labels: deque = deque(maxlen=50)
 
-    def log_message(self, message: str, message_type: MessageType) -> None:
+    def log_message(self, message: str, message_type: LogMessageType) -> None:
         """
         Adds a message to the logger. Scrolls down to the bottom of the logger frame.
         :param message_type: The message type.
         :param message: The message to append.
         """
         color: str
-        if message_type == MessageType.ERROR:
+        if message_type == LogMessageType.ERROR:
             color = self.error_color
-        elif message_type == MessageType.SUCCESS:
+        elif message_type == LogMessageType.SUCCESS:
             color = self.success_color
         else:
             color = self.info_color
@@ -67,7 +63,6 @@ class Logger(customtkinter.CTkFrame):
 
         self.labels.append(message_label)
 
-        # Remove the oldest widget if the deque is full
         if len(self.labels) == self.labels.maxlen:
             oldest_label = self.labels.popleft()
             oldest_label.destroy()
@@ -92,7 +87,6 @@ class Logger(customtkinter.CTkFrame):
             self.error_color = Color.LIGHT_MODE_ERROR_COLOR
             self.success_color = Color.LIGHT_MODE_SUCCESS_COLOR
 
-        # Update the text color for each label based on the appearance mode
         for label in self.labels:
             if label.cget("text").startswith("[ERROR]"):
                 label.configure(text_color=self.error_color)

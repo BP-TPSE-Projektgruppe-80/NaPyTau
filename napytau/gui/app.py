@@ -10,7 +10,7 @@ from napytau.cli.cli_arguments import CLIArguments
 from napytau.gui.components.checkbox_panel import CheckboxPanel
 from napytau.gui.components.control_panel import ControlPanel
 from napytau.gui.components.graph import Graph
-from napytau.gui.components.logger import Logger, MessageType
+from napytau.gui.components.logger import Logger, LogMessageType
 from napytau.gui.components.menu_bar import MenuBar
 from napytau.gui.model.checkbox_datapoint import CheckboxDataPoint
 
@@ -123,19 +123,19 @@ class App(customtkinter.CTk):
         )
 
         if file_path:
-            self.logger.log_message(f"chosen file: {file_path}", MessageType.INFO)
+            self.logger.log_message(f"chosen file: {file_path}", LogMessageType.INFO)
 
     def save_file(self) -> None:
         """
         Saves the file.
         """
-        self.logger.log_message("Saved file", MessageType.SUCCESS)
+        self.logger.log_message("Saved file", LogMessageType.SUCCESS)
 
     def read_setup(self) -> None:
         """
         Reads the setup.
         """
-        self.logger.log_message("read setup not implemented yet.", MessageType.INFO)
+        self.logger.log_message("read setup not implemented yet.", LogMessageType.INFO)
 
     def quit(self) -> None:
         """
@@ -158,7 +158,7 @@ class App(customtkinter.CTk):
         """
         self.logger.log_message("selected number of polynomials: "
               + self.menu_bar.number_of_polynomials.get()
-              + " but not implemented yet!", MessageType.INFO)
+              + " but not implemented yet!", LogMessageType.INFO)
 
     def select_polynomial_mode(self) -> None:
         """
@@ -166,7 +166,7 @@ class App(customtkinter.CTk):
         """
         self.logger.log_message("Polynomials set to "
                               + self.menu_bar.polynomial_mode.get()
-                              + " but not implemented yet!", MessageType.ERROR)
+                              + " but not implemented yet!", LogMessageType.ERROR)
 
     def select_alpha_calc_mode(self) -> None:
         """
@@ -174,7 +174,7 @@ class App(customtkinter.CTk):
         """
         self.logger.log_message("Alpha calculation set to "
                               + self.menu_bar.alpha_calc_mode.get()
-                              + " but not implemented yet!", MessageType.ERROR)
+                              + " but not implemented yet!", LogMessageType.ERROR)
 
     def update_data_checkboxes(self, new_datapoints: List[Tuple[float, float]]) -> None:
         """
