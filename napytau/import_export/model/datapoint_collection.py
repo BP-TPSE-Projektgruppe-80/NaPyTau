@@ -109,3 +109,16 @@ class DatapointCollection:
                 ).elements.values(),
             )
         )
+
+    def get_taus(self) -> List[ValueErrorPair[float]]:
+        return list(
+            map(
+                lambda datapoint: coalesce(datapoint.tau),
+                self.filter(
+                    lambda datapoint: datapoint.tau is not None
+                ).elements.values(),
+            )
+        )
+
+    def get_active_datapoints(self) -> DatapointCollection:
+        return self.filter(lambda datapoint: datapoint.active)
