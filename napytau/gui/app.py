@@ -10,7 +10,7 @@ from napytau.cli.cli_arguments import CLIArguments
 from napytau.gui.components.checkbox_panel import CheckboxPanel
 from napytau.gui.components.control_panel import ControlPanel
 from napytau.gui.components.graph import Graph
-from napytau.gui.components.logger import Logger
+from napytau.gui.components.logger import Logger, LogMessageType
 from napytau.gui.components.menu_bar import MenuBar
 from napytau.gui.model.checkbox_datapoint import CheckboxDataPoint
 
@@ -18,7 +18,6 @@ from napytau.gui.model.checkbox_datapoint import CheckboxDataPoint
 customtkinter.set_appearance_mode("System")
 # Themes: "blue" (standard), "green", "dark-blue"
 customtkinter.set_default_color_theme("blue")
-
 
 class App(customtkinter.CTk):
     def __init__(self) -> None:
@@ -39,25 +38,32 @@ class App(customtkinter.CTk):
 
         # configure window
         self.title("NaPyTau")
-        self.geometry("1366x768")
+        width = 1366
+        height = 768
+        self.geometry(f"{width}x{height}")
 
         """
         Configure grid. Current Layout:
         Three rows, two columns with
         - Graph from row 0 to 1, column 0
-        - Checkboxes in row 0, column 1
-        - Control area in row 1, column 1
-        - Information area in row 2, column 0 to 1
+        - Checkbox panel in row 0, column 1
+        - Control panel from row 1 to 2, column 1
+        - Logger in row 2, column 0
         """
-        self.grid_rowconfigure((0, 2), weight=1)  # Three rows
-        self.grid_columnconfigure((0, 1), weight=1)  # Two columns
+        # Row ratio: 3/8, 3/8, 1/4
+        total_height = 8  # 3+3+2 = 8 parts
+        self.grid_rowconfigure(0, weight=3, minsize=3 * height // total_height)
+        # Reduce graph height by 30 to asure all components and their
+        # separators are inside the window.
+        self.grid_rowconfigure(1, weight=3, minsize=3 * height // total_height -30)
+        self.grid_rowconfigure(2, weight=2, minsize=2 * height // total_height)
 
-        # Weights are adjusted
-        self.grid_rowconfigure(0, weight=10)
-        self.grid_rowconfigure(1, weight=1)
-        self.grid_rowconfigure(2, weight=1)
-        self.grid_columnconfigure(0, weight=10)
-        self.grid_columnconfigure(1, weight=1)
+        # column ratio: 2/3, 1/3
+        total_width = 3  # 2+1 = 3 parts
+        # Reduce graph width by 30 to asure all components and their
+        # separators are inside the window.
+        self.grid_columnconfigure(0, weight=2, minsize=2 * width // total_width -30)
+        self.grid_columnconfigure(1, weight=1, minsize=1 * width // total_width)
 
         # Define menu bar callback functions
         menu_bar_callbacks = {
@@ -107,7 +113,6 @@ class App(customtkinter.CTk):
         """
         Opens the file explorer and lets the user choose a file to open.
         """
-        print("open_file")
         file_path = filedialog.askopenfilename(
             title="Choose file",
             filetypes=[
@@ -118,25 +123,24 @@ class App(customtkinter.CTk):
         )
 
         if file_path:
-            print(f"chosen file: {file_path}")
+            self.logger.log_message(f"chosen file: {file_path}", LogMessageType.INFO)
 
     def save_file(self) -> None:
         """
         Saves the file.
         """
-        print("save_file")
+        self.logger.log_message("Saved file", LogMessageType.SUCCESS)
 
     def read_setup(self) -> None:
         """
         Reads the setup.
         """
-        print("read_setup")
+        self.logger.log_message("read setup not implemented yet.", LogMessageType.INFO)
 
     def quit(self) -> None:
         """
         Quits the program.
         """
-        print("quit")
         self.destroy()
 
     def change_appearance_mode(self) -> None:
@@ -144,6 +148,7 @@ class App(customtkinter.CTk):
         Changes the appearance mode to the variable appearance_mode.
         """
         customtkinter.set_appearance_mode(self.menu_bar.appearance_mode.get())
+        self.logger.switch_logger_appearance(self.menu_bar.appearance_mode.get())
 
         self.graph.update_plot()
 
@@ -151,22 +156,25 @@ class App(customtkinter.CTk):
         """
         Selects the number of polynomials to use.
         """
-        print(
-            "selected number of polynomials: "
-            + self.menu_bar.number_of_polynomials.get()
-        )
+        self.logger.log_message("selected number of polynomials: "
+              + self.menu_bar.number_of_polynomials.get()
+              + " but not implemented yet!", LogMessageType.INFO)
 
     def select_polynomial_mode(self) -> None:
         """
         Selects the polynomial mode.
         """
-        print("select polynomial mode " + self.menu_bar.polynomial_mode.get())
+        self.logger.log_message("Polynomials set to "
+                              + self.menu_bar.polynomial_mode.get()
+                              + " but not implemented yet!", LogMessageType.ERROR)
 
     def select_alpha_calc_mode(self) -> None:
         """
         Selects the alpha calculation mode.
         """
-        print("select alpha calc mode " + self.menu_bar.alpha_calc_mode.get())
+        self.logger.log_message("Alpha calculation set to "
+                              + self.menu_bar.alpha_calc_mode.get()
+                              + " but not implemented yet!", LogMessageType.ERROR)
 
     def update_data_checkboxes(self, new_datapoints: List[Tuple[float, float]]) -> None:
         """
