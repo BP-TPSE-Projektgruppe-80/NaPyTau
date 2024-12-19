@@ -1,4 +1,6 @@
-from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances # noqa E501
+from napytau.core.polynomials import (
+    evaluate_differentiated_polynomial_at_measuring_distances,
+)  # noqa E501
 from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 from numpy import array
 from numpy import ndarray
@@ -107,7 +109,9 @@ def calculate_error_propagation_terms(
         )
     )
 
-    gaussian_error_from_unshifted_intensity: ndarray = power(delta_unshifted_intensities, 2) / power(
+    gaussian_error_from_unshifted_intensity: ndarray = power(
+        delta_unshifted_intensities, 2
+    ) / power(
         calculated_differentiated_polynomial_sum_at_measuring_distances,
         2,
     )
@@ -138,7 +142,10 @@ def calculate_error_propagation_terms(
         unshifted_intensities * taufactor * delta_p_j_i_squared
     ) / power(calculated_differentiated_polynomial_sum_at_measuring_distances, 3)
 
-    test = gaussian_error_from_unshifted_intensity + gaussian_error_from_polynomial_uncertainties
-    res = test + error_from_covariance
+    interim_result: ndarray = (
+        gaussian_error_from_unshifted_intensity
+        + gaussian_error_from_polynomial_uncertainties
+    )
+    errors: ndarray = interim_result + error_from_covariance
     # Return the sum of all three contributions
-    return res
+    return errors

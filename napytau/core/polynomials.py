@@ -3,8 +3,9 @@ from numpy import power
 from numpy import zeros_like
 
 
-def evaluate_polynomial_at_measuring_distances(distances: ndarray,
-                                               coefficients: ndarray) -> ndarray:
+def evaluate_polynomial_at_measuring_distances(
+    distances: ndarray, coefficients: ndarray
+) -> ndarray:
     """
     Computes the sum of a polynomial evaluated at given distance points.
 
@@ -51,6 +52,8 @@ def evaluate_differentiated_polynomial_at_measuring_distances(
     sum_of_derivative_at_measuring_distances: ndarray = zeros_like(distances)
     for exponent, coefficient in enumerate(coefficients):
         if exponent > 0:
-            sum_of_derivative_at_measuring_distances += exponent * coefficient * power(distances, (exponent - 1))
+            sum_of_derivative_at_measuring_distances += (
+                exponent * coefficient * power(distances, (exponent - 1))
+            )
 
     return sum_of_derivative_at_measuring_distances

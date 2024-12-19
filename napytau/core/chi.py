@@ -1,5 +1,7 @@
 from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
-from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances # noqa E501
+from napytau.core.polynomials import (
+    evaluate_differentiated_polynomial_at_measuring_distances,
+)  # noqa E501
 from numpy import ndarray
 from numpy import sum
 from numpy import mean
@@ -46,18 +48,20 @@ def chi_squared_fixed_t(
 
     # Compute the difference between Doppler-shifted intensities and polynomial model
     shifted_intensity_difference: ndarray = (
-                                                    doppler_shifted_intensities
-                                                    - evaluate_polynomial_at_measuring_distances(distances, coefficients)
+        doppler_shifted_intensities
+        - evaluate_polynomial_at_measuring_distances(distances, coefficients)
     ) / delta_doppler_shifted_intensities
 
     # Compute the difference between unshifted intensities and
     # scaled derivative of the polynomial model
     unshifted_intensity_difference: ndarray = (
         unshifted_intensities
-        - (t_hyp
-           * evaluate_differentiated_polynomial_at_measuring_distances(distances,
-                                                                       coefficients)
-           )
+        - (
+            t_hyp
+            * evaluate_differentiated_polynomial_at_measuring_distances(
+                distances, coefficients
+            )
+        )
     ) / delta_unshifted_intensities
 
     # combine the weighted sum of squared differences
@@ -104,14 +108,15 @@ def optimize_coefficients(
         tuple: Optimized coefficients (ndarray) and minimized chi-squared value (float).
     """
     chi_squared = lambda coefficients: chi_squared_fixed_t(
-            doppler_shifted_intensities,
-            unshifted_intensities,
-            delta_doppler_shifted_intensities,
-            delta_unshifted_intensities,
-            coefficients,
-            distances,
-            t_hyp,
-            weight_factor)
+        doppler_shifted_intensities,
+        unshifted_intensities,
+        delta_doppler_shifted_intensities,
+        delta_unshifted_intensities,
+        coefficients,
+        distances,
+        t_hyp,
+        weight_factor,
+    )
 
     result: OptimizeResult = minimize(
         chi_squared,

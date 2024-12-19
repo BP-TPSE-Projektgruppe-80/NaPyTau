@@ -30,14 +30,18 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances\
-            .return_value = array([5, 15, 57])
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances\
-            .return_value = array([4, 20, 72])
+        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
+            array([5, 15, 57])
+        )
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = array(
+            [4, 20, 72]
+        )
 
         numpy_module_mock.sum.return_value = 628.3486168
-        numpy_module_mock.power.side_effect = [array([4, 18.77777778, 182.25]),
-                                               array([0.64, 34.02777778, 388.65306122])]
+        numpy_module_mock.power.side_effect = [
+            array([4, 18.77777778, 182.25]),
+            array([0.64, 34.02777778, 388.65306122]),
+        ]
 
         with patch.dict(
             "sys.modules",
@@ -76,18 +80,23 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls), 1
+                len(
+                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
+                ),
+                1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances
-                .mock_calls[0].args[0],
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[0],
                 (array([0, 1, 2])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances
-                .mock_calls[0].args[1],
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[1],
                 (array([5, 4, 3, 2, 1])),
             )
 
@@ -99,58 +108,51 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances
-                .mock_calls[0].args[0],
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[0],
                 (array([0, 1, 2])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances
-                .mock_calls[0].args[1],
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[1],
                 (array([5, 4, 3, 2, 1])),
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.sum.mock_calls
-                ),
+                len(numpy_module_mock.sum.mock_calls),
                 1,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.sum
-                .mock_calls[0].args[0],
+                numpy_module_mock.sum.mock_calls[0].args[0],
                 (array([4.64, 52.80555556, 570.90306122])),
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.power.mock_calls
-                ),
+                len(numpy_module_mock.power.mock_calls),
                 2,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[0],
+                numpy_module_mock.power.mock_calls[0].args[0],
                 (array([-2, -4.33333333, -13.5])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[1],
+                numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[0],
+                numpy_module_mock.power.mock_calls[1].args[0],
                 (array([-0.8, -5.83333333, -19.71428571])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[1],
+                numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
 
@@ -159,13 +161,15 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances\
-            .return_value = array([])
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances\
-            .return_value = array([])
+        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
+            array([])
+        )
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = array(
+            []
+        )
 
         numpy_module_mock.sum.return_value = 0
-        numpy_module_mock.power.side_effect = [array([]),array([])]
+        numpy_module_mock.power.side_effect = [array([]), array([])]
 
         with patch.dict(
             "sys.modules",
@@ -204,20 +208,23 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls), 1
+                len(
+                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
+                ),
+                1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[0].args[
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
-                ],
+                ].args[0],
                 (array([])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[0].args[
-                    1
-                ],
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[1],
                 (array([])),
             )
 
@@ -243,46 +250,37 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.sum.mock_calls
-                ),
+                len(numpy_module_mock.sum.mock_calls),
                 1,
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.sum
-                .mock_calls[0].args[0],
+                numpy_module_mock.sum.mock_calls[0].args[0],
                 array([]),
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.power.mock_calls
-                ),
+                len(numpy_module_mock.power.mock_calls),
                 2,
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[0],
+                numpy_module_mock.power.mock_calls[0].args[0],
                 (array([])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[1],
+                numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[0],
+                numpy_module_mock.power.mock_calls[1].args[0],
                 (array([])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[1],
+                numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
 
@@ -291,9 +289,12 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = array([57])
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances\
-            .return_value = array([72])
+        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
+            array([57])
+        )
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = array(
+            [72]
+        )
 
         numpy_module_mock.sum.return_value = 1608.69444444
         numpy_module_mock.power.side_effect = [array([348.44444444]), array([1260.25])]
@@ -335,20 +336,23 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls), 1
+                len(
+                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
+                ),
+                1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[0].args[
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
-                ],
+                ].args[0],
                 (array([2])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[0].args[
-                    1
-                ],
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[1],
                 (array([5, 4, 3, 2, 1])),
             )
 
@@ -374,46 +378,37 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.sum.mock_calls
-                ),
+                len(numpy_module_mock.sum.mock_calls),
                 1,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.sum
-                .mock_calls[0].args[0],
+                numpy_module_mock.sum.mock_calls[0].args[0],
                 (array([1608.69444444])),
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.power.mock_calls
-                ),
+                len(numpy_module_mock.power.mock_calls),
                 2,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[0],
+                numpy_module_mock.power.mock_calls[0].args[0],
                 (array([-18.66666667])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[1],
+                numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[0],
+                numpy_module_mock.power.mock_calls[1].args[0],
                 (array([-35.5])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[1],
+                numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
 
@@ -422,14 +417,18 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances\
-            .return_value = array([5, 15])
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances\
-            .return_value = array([4, 20])
+        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
+            array([5, 15])
+        )
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = array(
+            [4, 20]
+        )
 
         numpy_module_mock.sum.return_value = float("inf")
-        numpy_module_mock.power.side_effect = [array([float("inf"), 169]),
-                                               array([float("inf"), 1296])]
+        numpy_module_mock.power.side_effect = [
+            array([float("inf"), 169]),
+            array([float("inf"), 1296]),
+        ]
 
         with patch.dict(
             "sys.modules",
@@ -468,18 +467,23 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls), 1
+                len(
+                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
+                ),
+                1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances
-                .mock_calls[0].args[0],
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[0],
                 (array([0, 1])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances
-                .mock_calls[0].args[1],
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[1],
                 (array([5, 4, 3, 2, 1])),
             )
 
@@ -491,58 +495,51 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances
-                .mock_calls[0].args[0],
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[0],
                 (array([0, 1])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances
-                .mock_calls[0].args[1],
-                (array([5, 4, 3, 2, 1]))
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[1],
+                (array([5, 4, 3, 2, 1])),
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.sum.mock_calls
-                ),
+                len(numpy_module_mock.sum.mock_calls),
                 1,
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.sum
-                .mock_calls[0].args[0],
+                numpy_module_mock.sum.mock_calls[0].args[0],
                 (array([float("inf"), 1465])),
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.power.mock_calls
-                ),
+                len(numpy_module_mock.power.mock_calls),
                 2,
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[0],
+                numpy_module_mock.power.mock_calls[0].args[0],
                 (array([-float("inf"), -13])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[1],
+                numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[0],
+                numpy_module_mock.power.mock_calls[1].args[0],
                 (array([-float("inf"), -36])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[1],
+                numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
 
@@ -551,14 +548,18 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances\
-            .return_value = array([-5, -5])
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances\
-            .return_value = array([-4, -4])
+        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
+            array([-5, -5])
+        )
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = array(
+            [-4, -4]
+        )
 
         numpy_module_mock.sum.return_value = 22.02777778
-        numpy_module_mock.power.side_effect = [array([16, 2.25]),
-                                               array([2.77777778, 1])]
+        numpy_module_mock.power.side_effect = [
+            array([16, 2.25]),
+            array([2.77777778, 1]),
+        ]
 
         with patch.dict(
             "sys.modules",
@@ -597,18 +598,23 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls), 1
+                len(
+                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
+                ),
+                1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances
-                .mock_calls[0].args[0],
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[0],
                 (array([0, 1])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances
-                .mock_calls[0].args[1],
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[1],
                 (array([-5, -4, 3, 2, -1])),
             )
 
@@ -620,58 +626,51 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances
-                .mock_calls[0].args[0],
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[0],
                 (array([0, 1])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances
-                .mock_calls[0].args[1],
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[1],
                 (array([-5, -4, 3, 2, -1])),
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.sum.mock_calls
-                ),
+                len(numpy_module_mock.sum.mock_calls),
                 1,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.sum
-                .mock_calls[0].args[0],
+                numpy_module_mock.sum.mock_calls[0].args[0],
                 (array([18.77777778, 3.25])),
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.power.mock_calls
-                ),
+                len(numpy_module_mock.power.mock_calls),
                 2,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[0],
+                numpy_module_mock.power.mock_calls[0].args[0],
                 (array([4, 1.5])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[1],
+                numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[0],
+                numpy_module_mock.power.mock_calls[1].args[0],
                 (array([1.66666667, 1])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[1],
+                numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
 
@@ -680,14 +679,18 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances\
-            .return_value = array([5, 15, 57])
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances\
-            .return_value = array([4, 20, 72])
+        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
+            array([5, 15, 57])
+        )
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = array(
+            [4, 20, 72]
+        )
 
         numpy_module_mock.sum.return_value = 205.02777778
-        numpy_module_mock.power.side_effect = [array([4, 18.77777778, 182.25]),
-                                               array([0.64, 34.02777778, 388.65306122])]
+        numpy_module_mock.power.side_effect = [
+            array([4, 18.77777778, 182.25]),
+            array([0.64, 34.02777778, 388.65306122]),
+        ]
 
         with patch.dict(
             "sys.modules",
@@ -726,20 +729,23 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls), 1
+                len(
+                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
+                ),
+                1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[0].args[
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
-                ],
+                ].args[0],
                 (array([0, 1, 2])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[0].args[
-                    1
-                ],
+                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                    0
+                ].args[1],
                 (array([5, 4, 3, 2, 1])),
             )
 
@@ -765,46 +771,37 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.sum.mock_calls
-                ),
+                len(numpy_module_mock.sum.mock_calls),
                 1,
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.sum
-                .mock_calls[0].args[0],
+                numpy_module_mock.sum.mock_calls[0].args[0],
                 (array([4, 18.77777778, 182.25])),
             )
 
             self.assertEqual(
-                len(
-                    numpy_module_mock.power.mock_calls
-                ),
+                len(numpy_module_mock.power.mock_calls),
                 2,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[0],
+                numpy_module_mock.power.mock_calls[0].args[0],
                 (array([-2, -4.33333333, -13.5])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[0].args[1],
+                numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
             testing.assert_array_almost_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[0],
+                numpy_module_mock.power.mock_calls[1].args[0],
                 (array([-0.8, -5.83333333, -19.71428571])),
             )
 
             testing.assert_array_equal(
-                numpy_module_mock.power
-                .mock_calls[1].args[1],
+                numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
 
@@ -930,6 +927,4 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(len(numpy_module_mock.mean.mock_calls), 1)
 
-            self.assertEqual(
-                numpy_module_mock.mean.mock_calls[0].args[0], (-5, 5)
-            )
+            self.assertEqual(numpy_module_mock.mean.mock_calls[0].args[0], (-5, 5))

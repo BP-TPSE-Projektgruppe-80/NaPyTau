@@ -108,7 +108,6 @@ class TauUnitTest(unittest.TestCase):
 
             self.assertEqual(chi_mock.optimize_coefficients.mock_calls[0].args[7], 1.0)
 
-
             self.assertEqual(len(chi_mock.optimize_t_hyp.mock_calls), 1)
 
             testing.assert_array_equal(
@@ -147,7 +146,6 @@ class TauUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[7], 1.0)
-
 
             self.assertEqual(
                 len(

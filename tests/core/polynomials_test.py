@@ -1,7 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances
 from numpy import ndarray
 from numpy import array
 from numpy import testing
@@ -22,16 +21,22 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [array([1, 1, 1]), array([1, 2, 3]), array([1, 4, 9])]
+        numpy_module_mock.power.side_effect = [
+            array([1, 1, 1]),
+            array([1, 2, 3]),
+            array([1, 4, 9]),
+        ]
         numpy_module_mock.zeros_like.return_value = array([0, 0, 0])
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "numpy": numpy_module_mock,
-                },
+            "sys.modules",
+            {
+                "numpy": numpy_module_mock,
+            },
         ):
-            from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
+            from napytau.core.polynomials import (
+                evaluate_polynomial_at_measuring_distances,
+            )
 
             # Test for a simple quadratic polynomial: 2 + 3x + 4x^2
             distances: ndarray = array([1, 2, 3])
@@ -41,7 +46,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             # At x = 3: 2 + 3(3) + 4(3^2) = 2 + 9 + 36 = 47
             expected_result: ndarray = array([9, 24, 47])
             testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(distances, coefficients), expected_result
+                evaluate_polynomial_at_measuring_distances(distances, coefficients),
+                expected_result,
             )
 
     @staticmethod
@@ -50,24 +56,26 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [array([]), array([]),
-                                               array([])]
+        numpy_module_mock.power.side_effect = [array([]), array([]), array([])]
         numpy_module_mock.zeros_like.return_value = array([])
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "numpy": numpy_module_mock,
-                },
+            "sys.modules",
+            {
+                "numpy": numpy_module_mock,
+            },
         ):
-            from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
+            from napytau.core.polynomials import (
+                evaluate_polynomial_at_measuring_distances,
+            )
 
             distances: ndarray = array([])
             coefficients: ndarray = array([2, 3, 4])
             # With an empty input array, the result should also be an empty array
             expected_result: ndarray = array([])
             testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(distances, coefficients), expected_result
+                evaluate_polynomial_at_measuring_distances(distances, coefficients),
+                expected_result,
             )
 
     @staticmethod
@@ -76,17 +84,18 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [array([1]), array([2]),
-                                               array([4])]
+        numpy_module_mock.power.side_effect = [array([1]), array([2]), array([4])]
         numpy_module_mock.zeros_like.return_value = array([0])
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "numpy": numpy_module_mock,
-                },
+            "sys.modules",
+            {
+                "numpy": numpy_module_mock,
+            },
         ):
-            from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
+            from napytau.core.polynomials import (
+                evaluate_polynomial_at_measuring_distances,
+            )
 
             distances: ndarray = array([2])
             coefficients: ndarray = array([1, 2])
@@ -94,7 +103,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             # At x = 2: 1 + 2(2) = 5
             expected_result: ndarray = array([5])
             testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(distances, coefficients), expected_result
+                evaluate_polynomial_at_measuring_distances(distances, coefficients),
+                expected_result,
             )
 
     @staticmethod
@@ -103,17 +113,22 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [array([1, 1, 1]), array([1, 2, 3]),
-                                               array([1, 4, 9])]
+        numpy_module_mock.power.side_effect = [
+            array([1, 1, 1]),
+            array([1, 2, 3]),
+            array([1, 4, 9]),
+        ]
         numpy_module_mock.zeros_like.return_value = array([0, 0, 0])
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "numpy": numpy_module_mock,
-                },
+            "sys.modules",
+            {
+                "numpy": numpy_module_mock,
+            },
         ):
-            from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
+            from napytau.core.polynomials import (
+                evaluate_polynomial_at_measuring_distances,
+            )
 
             distances: ndarray = array([1, 2, 3])
             coefficients: ndarray = array([5])
@@ -121,7 +136,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             # All values should be 5
             expected_result: ndarray = array([5, 5, 5])
             testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(distances, coefficients), expected_result
+                evaluate_polynomial_at_measuring_distances(distances, coefficients),
+                expected_result,
             )
 
     @staticmethod
@@ -133,12 +149,14 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock.zeros_like.return_value = array([0, 0])
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "numpy": numpy_module_mock,
-                },
+            "sys.modules",
+            {
+                "numpy": numpy_module_mock,
+            },
         ):
-            from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
+            from napytau.core.polynomials import (
+                evaluate_polynomial_at_measuring_distances,
+            )
 
             distances: ndarray = array([1, 2])
             coefficients: ndarray = array([])
@@ -146,7 +164,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             # with the same length as 'distances'
             expected_result: ndarray = array([0, 0], float)
             testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(distances, coefficients), expected_result
+                evaluate_polynomial_at_measuring_distances(distances, coefficients),
+                expected_result,
             )
 
     @staticmethod
@@ -159,12 +178,14 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock.zeros_like.return_value = array([0, 0, 0])
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "numpy": numpy_module_mock,
-                },
+            "sys.modules",
+            {
+                "numpy": numpy_module_mock,
+            },
         ):
-            from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances
+            from napytau.core.polynomials import (
+                evaluate_differentiated_polynomial_at_measuring_distances,
+            )
 
             # Test for a simple quadratic polynomial: 2 + 3x + 4x^2
             distances: ndarray = array([1, 2, 3])
@@ -175,7 +196,9 @@ class PolynomialsUnitTest(unittest.TestCase):
             # At x = 3: 3 + 8(3) = 3 + 24 = 27
             expected_result: ndarray = array([11, 19, 27])
             testing.assert_array_equal(
-                evaluate_differentiated_polynomial_at_measuring_distances(distances, coefficients),
+                evaluate_differentiated_polynomial_at_measuring_distances(
+                    distances, coefficients
+                ),
                 expected_result,
             )
 
@@ -189,19 +212,23 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock.zeros_like.return_value = array([])
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "numpy": numpy_module_mock,
-                },
+            "sys.modules",
+            {
+                "numpy": numpy_module_mock,
+            },
         ):
-            from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances
+            from napytau.core.polynomials import (
+                evaluate_differentiated_polynomial_at_measuring_distances,
+            )
 
             distances: ndarray = array([])
             coefficients: ndarray = array([2, 3, 4])
             # With an empty input array, the result should also be an empty array
             expected_result: ndarray = array([])
             testing.assert_array_equal(
-                evaluate_differentiated_polynomial_at_measuring_distances(distances, coefficients),
+                evaluate_differentiated_polynomial_at_measuring_distances(
+                    distances, coefficients
+                ),
                 expected_result,
             )
 
@@ -215,12 +242,14 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock.zeros_like.return_value = array([0])
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "numpy": numpy_module_mock,
-                },
+            "sys.modules",
+            {
+                "numpy": numpy_module_mock,
+            },
         ):
-            from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances
+            from napytau.core.polynomials import (
+                evaluate_differentiated_polynomial_at_measuring_distances,
+            )
 
             distances: ndarray = array([2])
             coefficients: ndarray = array([1, 2])
@@ -228,7 +257,9 @@ class PolynomialsUnitTest(unittest.TestCase):
             # At x = 2: 2
             expected_result: ndarray = array([2])
             testing.assert_array_equal(
-                evaluate_differentiated_polynomial_at_measuring_distances(distances, coefficients),
+                evaluate_differentiated_polynomial_at_measuring_distances(
+                    distances, coefficients
+                ),
                 expected_result,
             )
 
@@ -242,12 +273,14 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock.zeros_like.return_value = array([0, 0, 0])
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "numpy": numpy_module_mock,
-                },
+            "sys.modules",
+            {
+                "numpy": numpy_module_mock,
+            },
         ):
-            from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances
+            from napytau.core.polynomials import (
+                evaluate_differentiated_polynomial_at_measuring_distances,
+            )
 
             distances: ndarray = array([1, 2, 3])
             coefficients: ndarray = array([5])
@@ -255,7 +288,9 @@ class PolynomialsUnitTest(unittest.TestCase):
             # All values should therefore be 0
             expected_result: ndarray = array([0, 0, 0])
             testing.assert_array_equal(
-                evaluate_differentiated_polynomial_at_measuring_distances(distances, coefficients),
+                evaluate_differentiated_polynomial_at_measuring_distances(
+                    distances, coefficients
+                ),
                 expected_result,
             )
 
@@ -268,12 +303,14 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock.zeros_like.return_value = array([0, 0])
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "numpy": numpy_module_mock,
-                },
+            "sys.modules",
+            {
+                "numpy": numpy_module_mock,
+            },
         ):
-            from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances
+            from napytau.core.polynomials import (
+                evaluate_differentiated_polynomial_at_measuring_distances,
+            )
 
             distances: ndarray = array([1, 2])
             coefficients: ndarray = array([])
@@ -281,7 +318,9 @@ class PolynomialsUnitTest(unittest.TestCase):
             # with the same length as 'distances'
             expected_result: ndarray = array([0, 0])
             testing.assert_array_equal(
-                evaluate_differentiated_polynomial_at_measuring_distances(distances, coefficients),
+                evaluate_differentiated_polynomial_at_measuring_distances(
+                    distances, coefficients
+                ),
                 expected_result,
             )
 

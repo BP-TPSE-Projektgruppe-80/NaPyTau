@@ -1,6 +1,8 @@
 from napytau.core.chi import optimize_t_hyp
 from napytau.core.chi import optimize_coefficients
-from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances # noqa E501
+from napytau.core.polynomials import (
+    evaluate_differentiated_polynomial_at_measuring_distances,
+)  # noqa E501
 from numpy import ndarray
 from typing import Tuple, Optional
 
@@ -14,7 +16,8 @@ def calculate_tau_i_values(
     distances: ndarray,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
-    custom_t_hyp_estimate: Optional[float]) -> ndarray:
+    custom_t_hyp_estimate: Optional[float],
+) -> ndarray:
     """
     Calculates the decay times (tau_i) based on the provided
     intensities and time points.
@@ -46,14 +49,16 @@ def calculate_tau_i_values(
     if custom_t_hyp_estimate is not None:
         t_hyp: float = custom_t_hyp_estimate
     else:
-        t_hyp = optimize_t_hyp(doppler_shifted_intensities,
-                               unshifted_intensities,
-                               delta_doppler_shifted_intensities,
-                               delta_unshifted_intensities,
-                               initial_coefficients,
-                               distances,
-                               t_hyp_range,
-                               weight_factor)
+        t_hyp = optimize_t_hyp(
+            doppler_shifted_intensities,
+            unshifted_intensities,
+            delta_doppler_shifted_intensities,
+            delta_unshifted_intensities,
+            initial_coefficients,
+            distances,
+            t_hyp_range,
+            weight_factor,
+        )
 
     # optimize the polynomial coefficients with the optimized t_hyp
     optimized_coefficients: ndarray = (
@@ -71,8 +76,8 @@ def calculate_tau_i_values(
 
     # calculate decay times using the optimized coefficients
     tau_i_values: ndarray = (
-            unshifted_intensities
-            / evaluate_differentiated_polynomial_at_measuring_distances(
+        unshifted_intensities
+        / evaluate_differentiated_polynomial_at_measuring_distances(
             distances, optimized_coefficients
         )
     )

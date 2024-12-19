@@ -226,15 +226,13 @@ class DeltaChiUnitTests(unittest.TestCase):
             unshifted_intensities: np.array = np.array([4, 5, 6])
             taufactor = 0.4
 
-            calculated_error_propagation_terms = (
-                calculate_error_propagation_terms(
-                    unshifted_intensities,
-                    delta_shifted_intensities,
-                    delta_unshifted_intensities,
-                    distances,
-                    coefficients,
-                    taufactor,
-                )
+            calculated_error_propagation_terms = calculate_error_propagation_terms(
+                unshifted_intensities,
+                delta_shifted_intensities,
+                delta_unshifted_intensities,
+                distances,
+                coefficients,
+                taufactor,
             )
 
             np.testing.assert_array_equal(
