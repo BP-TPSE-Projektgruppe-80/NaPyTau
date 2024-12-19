@@ -12,7 +12,7 @@ def set_up_mocks() -> MagicMock:
     return numpy_module_mock
 
 
-class CoreUnitTest(unittest.TestCase):
+class TauFinalUnitTest(unittest.TestCase):
     def test_calculateTauFinalForValidData(self):
         """Calculates the weighted mean and the uncertainty of tau correctly"""
         numpy_module_mock = set_up_mocks()

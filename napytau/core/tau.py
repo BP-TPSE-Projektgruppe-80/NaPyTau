@@ -1,11 +1,11 @@
 from napytau.core.chi import optimize_t_hyp
 from napytau.core.chi import optimize_coefficients
-from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances # noqa E501
+from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances # noqa E501
 from numpy import ndarray
 from typing import Tuple, Optional
 
 
-def calculate_tau_i(
+def calculate_tau_i_values(
     doppler_shifted_intensities: ndarray,
     unshifted_intensities: ndarray,
     delta_doppler_shifted_intensities: ndarray,
@@ -70,11 +70,11 @@ def calculate_tau_i(
     )[0]
 
     # calculate decay times using the optimized coefficients
-    tau_i: ndarray = (
+    tau_i_values: ndarray = (
             unshifted_intensities
-            / differentiated_polynomial_sum_at_measuring_distances(
+            / evaluate_differentiated_polynomial_at_measuring_distances(
             distances, optimized_coefficients
         )
     )
 
-    return tau_i
+    return tau_i_values

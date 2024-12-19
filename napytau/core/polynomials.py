@@ -1,12 +1,10 @@
 from numpy import ndarray
-from numpy import array
 from numpy import power
-from numpy import zeros
 from numpy import zeros_like
 
 
-def polynomial_sum_at_measuring_distances(distances: ndarray,
-                                          coefficients: ndarray) -> ndarray:
+def evaluate_polynomial_at_measuring_distances(distances: ndarray,
+                                               coefficients: ndarray) -> ndarray:
     """
     Computes the sum of a polynomial evaluated at given distance points.
 
@@ -21,18 +19,18 @@ def polynomial_sum_at_measuring_distances(distances: ndarray,
         ndarray: Array of polynomial values evaluated at the given distance points.
     """
 
-    # If no coefficients are provided, return a ndarray of zeros
     if len(coefficients) == 0:
-        return zeros(array(len(distances)), dtype=float)
+        return zeros_like(distances)
 
     # Evaluate the polynomial sum at the given time points
-    result: ndarray = zeros_like(distances)
-    for i, c in enumerate(coefficients):
-        result += c * power(distances, i)
-    return result
+    sum_at_measuring_distances: ndarray = zeros_like(distances)
+    for exponent, coefficient in enumerate(coefficients):
+        sum_at_measuring_distances += coefficient * power(distances, exponent)
+
+    return sum_at_measuring_distances
 
 
-def differentiated_polynomial_sum_at_measuring_distances(
+def evaluate_differentiated_polynomial_at_measuring_distances(
     distances: ndarray, coefficients: ndarray
 ) -> ndarray:
     """
@@ -50,8 +48,9 @@ def differentiated_polynomial_sum_at_measuring_distances(
         ndarray:
         Array of the derivative values of the polynomial at the given distance points.
     """
-    result: ndarray = zeros_like(distances)
-    for i, c in enumerate(coefficients):
-        if i > 0:
-            result += i * c * power(distances, (i - 1))
-    return result
+    sum_of_derivative_at_measuring_distances: ndarray = zeros_like(distances)
+    for exponent, coefficient in enumerate(coefficients):
+        if exponent > 0:
+            sum_of_derivative_at_measuring_distances += exponent * coefficient * power(distances, (exponent - 1))
+
+    return sum_of_derivative_at_measuring_distances

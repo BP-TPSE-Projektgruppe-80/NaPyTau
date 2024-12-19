@@ -27,11 +27,11 @@ def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
 class DeltaChiUnitTests(unittest.TestCase):
     @staticmethod
     def test_canCalculateJacobianMatrixOutOfTimesAndCoefficients():
-        """ " Can calculate Jacobian matrix out of distances and coefficients."""
+        """Can calculate Jacobian matrix out of distances and coefficients."""
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
-        polynomial_module_mock.polynomial_sum_at_measuring_distances.side_effect = [
+        polynomial_module_mock.evaluate_polynomial_at_measuring_distances.side_effect = [
             6,
             3,
             2,
@@ -61,7 +61,7 @@ class DeltaChiUnitTests(unittest.TestCase):
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
-        polynomial_module_mock.polynomial_sum_at_measuring_distances.side_effect = [
+        polynomial_module_mock.evaluate_polynomial_at_measuring_distances.side_effect = [
             6,
             3,
             2,
@@ -99,54 +99,54 @@ class DeltaChiUnitTests(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls
+                    polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls
                 ),
                 4,
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 np.array([0, 1, 2]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 np.array([5 + 1e-8, 4]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     1
                 ].args[0],
                 np.array([0, 1, 2]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     1
                 ].args[1],
                 np.array([5, 4]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     2
                 ].args[0],
                 np.array([0, 1, 2]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     2
                 ].args[1],
                 np.array([5, 4 + 1e-8]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     3
                 ].args[0],
                 np.array([0, 1, 2]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.polynomial_sum_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     3
                 ].args[1],
                 np.array([5, 4]),
@@ -172,7 +172,7 @@ class DeltaChiUnitTests(unittest.TestCase):
             np.array([0, 0, 0]),
             np.array([[0, 0], [0, 0], [0, 0]]),
         ]
-        polynomial_module_mock.polynomial_sum_at_measuring_distances.side_effect = [
+        polynomial_module_mock.evaluate_polynomial_at_measuring_distances.side_effect = [
             6,
             3,
             2,
@@ -204,7 +204,7 @@ class DeltaChiUnitTests(unittest.TestCase):
             np.array([64, 64, 64]),
         ]
 
-        polynomial_module_mock.differentiated_polynomial_sum_at_measuring_distances.return_value = np.array(
+        polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = np.array(
             [4, 4, 4]
         )
 
@@ -238,13 +238,13 @@ class DeltaChiUnitTests(unittest.TestCase):
             )
 
             np.testing.assert_array_equal(
-                polynomial_module_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 np.array([0, 1, 2]),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 np.array([5, 4]),

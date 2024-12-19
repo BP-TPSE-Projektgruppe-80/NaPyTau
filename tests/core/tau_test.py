@@ -18,7 +18,8 @@ def set_up_mocks() -> (MagicMock, MagicMock):
 
 
 class TauUnitTest(unittest.TestCase):
-    def test_tauCalculation(self):
+    def test_CanCalculateTau(self):
+        """Can calculate tau"""
         chi_mock, polynomials_mock = set_up_mocks()
 
         # Mocked return values of called functions
@@ -27,7 +28,7 @@ class TauUnitTest(unittest.TestCase):
             0,
         )
         chi_mock.optimize_t_hyp.return_value: float = 2.0
-        polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.return_value: ndarray = array(
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value: ndarray = array(
             [2, 6]
         )
 
@@ -38,7 +39,7 @@ class TauUnitTest(unittest.TestCase):
                 "napytau.core.chi": chi_mock,
             },
         ):
-            from napytau.core.tau import calculate_tau_i
+            from napytau.core.tau import calculate_tau_i_values
 
             # Mocked input data
             doppler_shifted_intensities: ndarray = array([2, 6])
@@ -54,7 +55,7 @@ class TauUnitTest(unittest.TestCase):
             expected_tau: ndarray = array([3, 1.6666667])
 
             testing.assert_array_almost_equal(
-                calculate_tau_i(
+                calculate_tau_i_values(
                     doppler_shifted_intensities,
                     unshifted_intensities,
                     delta_doppler_shifted_intensities,
@@ -63,6 +64,7 @@ class TauUnitTest(unittest.TestCase):
                     distances,
                     t_hyp_range,
                     weight_factor,
+                    None,
                 ),
                 expected_tau,
             )
@@ -149,20 +151,20 @@ class TauUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls
+                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls
                 ),
                 1,
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (array([0, 1])),
             )
 
             testing.assert_array_equal(
-                polynomials_mock.differentiated_polynomial_sum_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
                 (array([2, 3, 1])),

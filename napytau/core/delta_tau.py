@@ -1,5 +1,5 @@
-from napytau.core.polynomials import differentiated_polynomial_sum_at_measuring_distances # noqa E501
-from napytau.core.polynomials import polynomial_sum_at_measuring_distances
+from napytau.core.polynomials import evaluate_differentiated_polynomial_at_measuring_distances # noqa E501
+from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 from numpy import array
 from numpy import ndarray
 from numpy import zeros
@@ -20,7 +20,7 @@ def calculate_jacobian_matrix(distances: ndarray, coefficients: ndarray) -> ndar
 
     Returns:
         ndarray:
-        The computed Jacobian matrix with shape (len(times), len(coefficients)).
+        The computed Jacobian matrix with shape (len(distances), len(coefficients)).
     """
 
     # initializes the jacobian matrix
@@ -33,16 +33,18 @@ def calculate_jacobian_matrix(distances: ndarray, coefficients: ndarray) -> ndar
         perturbed_coefficients: ndarray = array(coefficients, dtype=float)
         perturbed_coefficients[i] += epsilon  # slightly disturb the current coefficient
 
-        # Compute the disturbed and original polynomial values at the given times
-        perturbed_function: ndarray = polynomial_sum_at_measuring_distances(
+        # Compute the disturbed and original polynomial values at the given distances
+        perturbed_function: ndarray = evaluate_polynomial_at_measuring_distances(
             distances, perturbed_coefficients
         )
-        original_function: ndarray = polynomial_sum_at_measuring_distances(
+        original_function: ndarray = evaluate_polynomial_at_measuring_distances(
             distances, coefficients
         )
 
         # Calculate the partial derivative coefficients and store it in the
         # Jacobian matrix
+        # jacobian_matrix[:, i] selects the entire column i of the jacobian matrix
+        # The colon (:) indicates all rows and i specifies the column
         jacobian_matrix[:, i] = (perturbed_function - original_function) / epsilon
 
     return jacobian_matrix
@@ -63,16 +65,13 @@ def calculate_covariance_matrix(
         ndarray: The computed covariance matrix for the polynomial coefficients.
     """
 
-    # Compute the Jacobian matrix for the polynomial
     jacobian_matrix: ndarray = calculate_jacobian_matrix(distances, coefficients)
 
     # Construct the weight matrix from the inverse squared errors
     weight_matrix: ndarray = diag(1 / power(delta_shifted_intensities, 2))
 
-    # Compute the fit matrix
     fit_matrix: ndarray = jacobian_matrix.T @ weight_matrix @ jacobian_matrix
 
-    # Invert the fit matrix to get the covariance matrix
     covariance_matrix: ndarray = linalg.inv(fit_matrix)
 
     return covariance_matrix
@@ -98,19 +97,18 @@ def calculate_error_propagation_terms(
         taufactor (float): Scaling factor related to the Doppler-shift model.
 
     Returns:
-        ndarray: The combined error propagation terms for each time point.
+        ndarray: The combined error propagation terms for each distance point.
     """
 
-    calculated_differentiated_polynomial_sum_at_measuring_times = (
-        differentiated_polynomial_sum_at_measuring_distances(  # noqa E501
+    calculated_differentiated_polynomial_sum_at_measuring_distances = (
+        evaluate_differentiated_polynomial_at_measuring_distances(  # noqa E501
             distances,
             coefficients,
         )
     )
 
-    # First summand: Contribution from unshifted intensity errors
-    first_summand: ndarray = power(delta_unshifted_intensities, 2) / power(
-        calculated_differentiated_polynomial_sum_at_measuring_times,
+    gaussian_error_from_unshifted_intensity: ndarray = power(delta_unshifted_intensities, 2) / power(
+        calculated_differentiated_polynomial_sum_at_measuring_distances,
         2,
     )
 
@@ -128,21 +126,19 @@ def calculate_error_propagation_terms(
                 + power(distances, k) * power(distances, l) * covariance_matrix[k, l]
             )
 
-    # Second summand: Contribution from polynomial uncertainties
-    second_summand: ndarray = (
+    gaussian_error_from_polynomial_uncertainties: ndarray = (
         power(unshifted_intensities, 2)
         / power(
-            calculated_differentiated_polynomial_sum_at_measuring_times,
+            calculated_differentiated_polynomial_sum_at_measuring_distances,
             4,
         )
     ) * power(delta_p_j_i_squared, 2)
 
-    # Third summand: Mixed covariance contribution
-    third_summand: ndarray = (
+    error_from_covariance: ndarray = (
         unshifted_intensities * taufactor * delta_p_j_i_squared
-    ) / power(calculated_differentiated_polynomial_sum_at_measuring_times, 3)
+    ) / power(calculated_differentiated_polynomial_sum_at_measuring_distances, 3)
 
+    test = gaussian_error_from_unshifted_intensity + gaussian_error_from_polynomial_uncertainties
+    res = test + error_from_covariance
     # Return the sum of all three contributions
-    result: ndarray = first_summand + second_summand + third_summand
-
-    return result
+    return res

@@ -1,7 +1,7 @@
 import numpy as np
-from napytau.core.tau import optimize_t_hyp
-from napytau.core.tau import optimize_coefficients
-from napytau.core.tau import calculate_tau_i
+from napytau.core.chi import optimize_t_hyp
+from napytau.core.chi import optimize_coefficients
+from napytau.core.tau import calculate_tau_i_values
 from napytau.core.delta_tau import calculate_error_propagation_terms
 from napytau.core.tau_final import calculate_tau_final
 from typing import Tuple, Optional
@@ -46,15 +46,15 @@ def calculate_lifetime(doppler_shifted_intensities: np.ndarray,
     )[0]
 
     # We now calculate the lifetimes tau_i for all measured distances
-    tau_i_values: np.ndarray = calculate_tau_i(doppler_shifted_intensities,
-                                               unshifted_intensities,
-                                               delta_doppler_shifted_intensities,
-                                               delta_unshifted_intensities,
-                                               initial_coefficients,
-                                               distances,
-                                               t_hyp_range,
-                                               weight_factor,
-                                               custom_t_hyp_estimate)
+    tau_i_values: np.ndarray = calculate_tau_i_values(doppler_shifted_intensities,
+                                                      unshifted_intensities,
+                                                      delta_doppler_shifted_intensities,
+                                                      delta_unshifted_intensities,
+                                                      initial_coefficients,
+                                                      distances,
+                                                      t_hyp_range,
+                                                      weight_factor,
+                                                      custom_t_hyp_estimate)
 
     # And we calculate the respective errors for the lifetimes
     delta_tau_i_values: np.ndarray = calculate_error_propagation_terms(
