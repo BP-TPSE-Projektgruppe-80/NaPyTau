@@ -2,6 +2,10 @@ from numpy import ndarray
 from numpy import power
 from numpy import zeros_like
 
+from napytau.core.Exceptions.polynomial_coefficient_error import (
+    PolynomialCoefficientError,
+)
+
 
 def evaluate_polynomial_at_measuring_distances(
     distances: ndarray, coefficients: ndarray
@@ -19,12 +23,13 @@ def evaluate_polynomial_at_measuring_distances(
     Returns:
         ndarray: Array of polynomial values evaluated at the given distance points.
     """
-
     if len(coefficients) == 0:
-        return zeros_like(distances)
+        raise PolynomialCoefficientError(
+            "An empty array of coefficients can not be evaluated."
+        )
 
     # Evaluate the polynomial sum at the given time points
-    sum_at_measuring_distances: ndarray = zeros_like(distances)
+    sum_at_measuring_distances: ndarray = zeros_like(distances, dtype=float)
     for exponent, coefficient in enumerate(coefficients):
         sum_at_measuring_distances += coefficient * power(distances, exponent)
 
@@ -49,7 +54,14 @@ def evaluate_differentiated_polynomial_at_measuring_distances(
         ndarray:
         Array of the derivative values of the polynomial at the given distance points.
     """
-    sum_of_derivative_at_measuring_distances: ndarray = zeros_like(distances)
+    if len(coefficients) == 0:
+        raise PolynomialCoefficientError(
+            "An empty array of coefficients can not be evaluated."
+        )
+
+    sum_of_derivative_at_measuring_distances: ndarray = zeros_like(
+        distances, dtype=float
+    )
     for exponent, coefficient in enumerate(coefficients):
         if exponent > 0:
             sum_of_derivative_at_measuring_distances += (

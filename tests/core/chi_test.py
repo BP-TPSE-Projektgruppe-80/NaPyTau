@@ -3,7 +3,6 @@ from unittest.mock import MagicMock, patch
 from numpy import array
 from numpy import ndarray
 from numpy import testing
-from numpy import mean
 from scipy.optimize import OptimizeResult
 from typing import Tuple
 
@@ -29,7 +28,6 @@ class ChiUnitTest(unittest.TestCase):
         """Can calculate chi for valid data"""
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
-        # Mocked return values of called functions
         polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
             array([5, 15, 57])
         )
@@ -62,7 +60,6 @@ class ChiUnitTest(unittest.TestCase):
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
-            # Expected result
             expected_result: float = 628.3486168
 
             self.assertAlmostEqual(
@@ -180,7 +177,6 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            # Mocked input data
             doppler_shifted_intensities: ndarray = array([])
             unshifted_intensities: ndarray = array([])
             delta_doppler_shifted_intensities: ndarray = array([])
@@ -190,7 +186,6 @@ class ChiUnitTest(unittest.TestCase):
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
-            # Expected result
             expected_result: float = 0
 
             self.assertEqual(
@@ -284,8 +279,8 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-    def test_CanCalculateChiForSingleDatapoint(self):
-        """Can calculate chi for single datapoint"""
+    def test_CanCalculateChiForASingleDatapoint(self):
+        """Can calculate chi for a single datapoint"""
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
@@ -308,7 +303,6 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            # Mocked input data
             doppler_shifted_intensities: ndarray = array([1])
             unshifted_intensities: ndarray = array([2])
             delta_doppler_shifted_intensities: ndarray = array([3])
@@ -318,7 +312,6 @@ class ChiUnitTest(unittest.TestCase):
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
-            # Expected result
             expected_result: float = 1608.69444444
 
             self.assertAlmostEqual(
@@ -412,8 +405,8 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-    def test_CanCalculateChiIfDenominatorIsZero(self):
-        """Can calculate chi if denominator is zero."""
+    def test_CanCalculateChiIfTheDenominatorIsZero(self):
+        """Can calculate chi if the denominator is zero."""
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
@@ -439,7 +432,6 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            # Mocked input data
             doppler_shifted_intensities: ndarray = array([1, 2])
             unshifted_intensities: ndarray = array([3, 4])
             delta_doppler_shifted_intensities: ndarray = array([0, 1])
@@ -449,7 +441,6 @@ class ChiUnitTest(unittest.TestCase):
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
-            # Expected result
             expected_result: float = float("inf")
 
             self.assertAlmostEqual(
@@ -570,7 +561,6 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            # Mocked input data
             doppler_shifted_intensities: ndarray = array([-1, -2])
             unshifted_intensities: ndarray = array([-3, -4])
             delta_doppler_shifted_intensities: ndarray = array([1, 2])
@@ -580,7 +570,6 @@ class ChiUnitTest(unittest.TestCase):
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
-            # Expected result
             expected_result: float = 22.02777778
 
             self.assertAlmostEqual(
@@ -674,8 +663,8 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-    def test_CanCalculateChiForWeightFactorZero(self):
-        """Can calculate chi for weight factor zero"""
+    def test_CanCalculateChiForAWeightFactorOfZero(self):
+        """Can calculate chi for a weight factor of zero"""
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
@@ -701,7 +690,6 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            # Mocked input data
             doppler_shifted_intensities: ndarray = array([1, 2, 3])
             unshifted_intensities: ndarray = array([4, 5, 6])
             delta_doppler_shifted_intensities: ndarray = array([2, 3, 4])
@@ -711,7 +699,6 @@ class ChiUnitTest(unittest.TestCase):
             t_hyp: float = 2.0
             weight_factor: float = 0.0
 
-            # Expected result
             expected_result: float = 205.02777778
 
             self.assertAlmostEqual(
@@ -810,19 +797,18 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return value of called function
-        scipy_optimize_module_mock.minimize.return_value = OptimizeResult(
+        scipy_optimize_module_mock.optimize.minimize.return_value = OptimizeResult(
             x=[2, 3, 1], fun=0.0
         )
 
         with patch.dict(
             "sys.modules",
             {
-                "scipy.optimize": scipy_optimize_module_mock,
+                "scipy": scipy_optimize_module_mock,
             },
         ):
             from napytau.core.chi import optimize_coefficients
 
-            # Mocked input data
             doppler_shifted_intensities: ndarray = array([2, 6])
             unshifted_intensities: ndarray = array([6, 10])
             delta_doppler_shifted_intensities: ndarray = array([1, 1])
@@ -832,7 +818,6 @@ class ChiUnitTest(unittest.TestCase):
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
-            # Expected result
             expected_chi: float = 0.0
             expected_coefficients: ndarray = array([2, 3, 1])
 
@@ -849,18 +834,20 @@ class ChiUnitTest(unittest.TestCase):
                 weight_factor,
             )
 
-            self.assertEqual(actual_chi, expected_chi)
-            testing.assert_array_equal(actual_coefficients, expected_coefficients)
+            self.assertAlmostEqual(actual_chi, expected_chi)
+            testing.assert_array_almost_equal(
+                actual_coefficients, expected_coefficients
+            )
 
-            self.assertEqual(len(scipy_optimize_module_mock.minimize.mock_calls), 1)
+            self.assertEqual(len(scipy_optimize_module_mock.optimize.minimize.mock_calls), 1)
 
             testing.assert_array_equal(
-                scipy_optimize_module_mock.minimize.mock_calls[0].args[1],
+                scipy_optimize_module_mock.optimize.minimize.mock_calls[0].args[1],
                 array([1, 1, 1]),
             )
 
             self.assertEqual(
-                scipy_optimize_module_mock.minimize.mock_calls[0].kwargs["method"],
+                scipy_optimize_module_mock.optimize.minimize.mock_calls[0].kwargs["method"],
                 "L-BFGS-B",
             )
 
@@ -869,20 +856,19 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        scipy_optimize_module_mock.minimize.return_value = OptimizeResult(x=2.0)
+        scipy_optimize_module_mock.optimize.minimize.return_value = OptimizeResult(x=2.0)
 
         numpy_module_mock.mean.return_value = 0
 
         with patch.dict(
             "sys.modules",
             {
-                "scipy.optimize": scipy_optimize_module_mock,
+                "scipy": scipy_optimize_module_mock,
                 "numpy": numpy_module_mock,
             },
         ):
             from napytau.core.chi import optimize_t_hyp
 
-            # Mocked input data
             doppler_shifted_intensities: ndarray = array([2, 6])
             unshifted_intensities: ndarray = array([6, 10])
             delta_doppler_shifted_intensities: ndarray = array([1, 1])
@@ -892,7 +878,6 @@ class ChiUnitTest(unittest.TestCase):
             t_hyp_range: Tuple[float, float] = (-5, 5)
             weight_factor: float = 1.0
 
-            # Expected result
             expected_t_hyp: float = 2.0
 
             actual_t_hyp: float = optimize_t_hyp(
@@ -908,20 +893,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(actual_t_hyp, expected_t_hyp)
 
-            self.assertEqual(len(scipy_optimize_module_mock.minimize.mock_calls), 1)
+            self.assertEqual(len(scipy_optimize_module_mock.optimize.minimize.mock_calls), 1)
 
             self.assertTrue(
-                callable(scipy_optimize_module_mock.minimize.mock_calls[0].args[0]),
+                callable(scipy_optimize_module_mock.optimize.minimize.mock_calls[0].args[0]),
                 """The first argument to minimize should be a callable function""",
             )
 
             self.assertEqual(
-                scipy_optimize_module_mock.minimize.mock_calls[0].kwargs["x0"],
-                mean(t_hyp_range),
+                scipy_optimize_module_mock.optimize.minimize.mock_calls[0].kwargs["x0"],
+                0.0,
             )
 
             self.assertEqual(
-                scipy_optimize_module_mock.minimize.mock_calls[0].kwargs["bounds"],
+                scipy_optimize_module_mock.optimize.minimize.mock_calls[0].kwargs["bounds"],
                 [(t_hyp_range[0], t_hyp_range[1])],
             )
 

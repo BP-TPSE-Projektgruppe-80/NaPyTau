@@ -5,6 +5,10 @@ from numpy import ndarray
 from numpy import array
 from numpy import testing
 
+from napytau.core.Exceptions.polynomial_coefficient_error import (
+    PolynomialCoefficientError,
+)
+
 
 def set_up_mocks() -> MagicMock:
     numpy_module_mock = MagicMock()
@@ -52,7 +56,7 @@ class PolynomialsUnitTest(unittest.TestCase):
 
     @staticmethod
     def test_CanEvaluateAPolynomialAtMeasuringDistancesForEmptyDistanceInput():
-        """Can evaluate a polynomial at measuring distances for empty distances."""
+        """Can evaluate a polynomial at measuring distances for empty distance input."""
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
@@ -79,8 +83,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             )
 
     @staticmethod
-    def test_CanEvaluateAPolynomialAtMeasuringDistancesForSingleDistanceMeasurement():
-        """Can evaluate a polynomial at measuring distances for single distance."""
+    def test_CanEvaluateAPolynomialAtMeasuringDistancesForASingleDistance():
+        """Can evaluate a polynomial at measuring distances for a single distance."""
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
@@ -108,8 +112,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             )
 
     @staticmethod
-    def test_CanEvaluateASingleValuePolynomialAtMeasuringDistances():
-        """Can evaluate a single value polynomial at measuring distances."""
+    def test_CanEvaluateAPolynomialOfDegreeZeroAtMeasuringDistances():
+        """Can evaluate a polynomial of degree zero at measuring distances."""
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
@@ -140,33 +144,19 @@ class PolynomialsUnitTest(unittest.TestCase):
                 expected_result,
             )
 
-    @staticmethod
-    def test_CanEvaluateAnEmptyPolynomialAtMeasuringDistances():
-        """Can evaluate an empty polynomial at measuring distances."""
-        numpy_module_mock = set_up_mocks()
+    def test_EvaluatePolynomialRaisesAPolynomialCoefficientErrorForAnEmptyCoefficientArray(
+        self,
+    ):
+        """Evaluate polynomial raises a polynomial coefficient error for an empty coefficient array."""
 
-        # Mocked return values of called functions
-        numpy_module_mock.zeros_like.return_value = array([0, 0])
+        from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 
-        with patch.dict(
-            "sys.modules",
-            {
-                "numpy": numpy_module_mock,
-            },
-        ):
-            from napytau.core.polynomials import (
-                evaluate_polynomial_at_measuring_distances,
-            )
-
-            distances: ndarray = array([1, 2])
-            coefficients: ndarray = array([])
-            # With an empty coefficients array, the result should be an array of zeros
-            # with the same length as 'distances'
-            expected_result: ndarray = array([0, 0], float)
-            testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(distances, coefficients),
-                expected_result,
-            )
+        distances: ndarray = array([1, 2])
+        coefficients: ndarray = array([])
+        # With an empty coefficients array, the function should throw a polynomial
+        # coefficient error.
+        with self.assertRaises(PolynomialCoefficientError):
+            evaluate_polynomial_at_measuring_distances(distances, coefficients)
 
     @staticmethod
     def test_CanEvaluateAValidDifferentiatedPolynomialAtMeasuringDistances():
@@ -204,7 +194,7 @@ class PolynomialsUnitTest(unittest.TestCase):
 
     @staticmethod
     def test_CanEvaluateADifferentiatedPolynomialAtMeasuringDistancesForEmptyDistanceInput():
-        """Can evaluate a differentiated polynomial at measuring distances for empty distances."""
+        """Can evaluate a differentiated polynomial at measuring distances for empty distance input."""
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
@@ -264,8 +254,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             )
 
     @staticmethod
-    def test_CanEvaluateADifferentiatedSingleValuePolynomialAtMeasuringDistances():
-        """Can evaluate a differentiated single value polynomial at measuring distances."""
+    def test_CanEvaluateADifferentiatedPolynomialOfDegreeZeroAtMeasuringDistances():
+        """Can evaluate a differentiated polynomial of degree zero at measuring distances."""
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
@@ -294,34 +284,21 @@ class PolynomialsUnitTest(unittest.TestCase):
                 expected_result,
             )
 
-    @staticmethod
-    def test_CanEvaluateADifferentiatedEmptyPolynomialAtMeasuringDistances():
-        """Can evaluate a differentiated empty polynomial at measuring distances."""
-        numpy_module_mock = set_up_mocks()
+    def test_EvaluateDifferentiatedPolynomialRaisesAPolynomialCoefficientErrorForAnEmptyCoefficientArray(
+        self,
+    ):
+        """Evaluate differentiated polynomial raises a polynomial coefficient error for an empty coefficient array."""
+        from napytau.core.polynomials import (
+            evaluate_differentiated_polynomial_at_measuring_distances,
+        )
 
-        # Mocked return values of called functions
-        numpy_module_mock.zeros_like.return_value = array([0, 0])
-
-        with patch.dict(
-            "sys.modules",
-            {
-                "numpy": numpy_module_mock,
-            },
-        ):
-            from napytau.core.polynomials import (
-                evaluate_differentiated_polynomial_at_measuring_distances,
-            )
-
-            distances: ndarray = array([1, 2])
-            coefficients: ndarray = array([])
-            # With an empty coefficients array, the result should be an array of zeros
-            # with the same length as 'distances'
-            expected_result: ndarray = array([0, 0])
-            testing.assert_array_equal(
-                evaluate_differentiated_polynomial_at_measuring_distances(
-                    distances, coefficients
-                ),
-                expected_result,
+        distances: ndarray = array([1, 2])
+        coefficients: ndarray = array([])
+        # With an empty coefficients array, the function should throw a polynomial
+        # coefficient error.
+        with self.assertRaises(PolynomialCoefficientError):
+            evaluate_differentiated_polynomial_at_measuring_distances(
+                distances, coefficients
             )
 
 

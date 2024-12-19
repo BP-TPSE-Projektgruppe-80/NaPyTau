@@ -22,7 +22,7 @@ def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
 
 
 class CoreUnitTest(unittest.TestCase):
-    def test_CanCalculateLifetime(self):
+    def test_CanCalculateALifetime(self):
         """Can calculate lifetime"""
         chi_mock, tau_mock, delta_tau_mock, tau_final_mock = set_up_mocks()
 
