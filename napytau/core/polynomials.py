@@ -2,7 +2,7 @@ from numpy import ndarray
 from numpy import power
 from numpy import zeros_like
 
-from napytau.core.Exceptions.polynomial_coefficient_error import (
+from napytau.core.errors.polynomial_coefficient_error import (
     PolynomialCoefficientError,
 )
 

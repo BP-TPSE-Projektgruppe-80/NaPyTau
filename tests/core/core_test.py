@@ -23,7 +23,7 @@ def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
 
 class CoreUnitTest(unittest.TestCase):
     def test_CanCalculateALifetime(self):
-        """Can calculate lifetime"""
+        """Can calculate a lifetime"""
         chi_mock, tau_mock, delta_tau_mock, tau_final_mock = set_up_mocks()
 
         # Mocked return values of called functions
@@ -49,7 +49,6 @@ class CoreUnitTest(unittest.TestCase):
         ):
             from napytau.core.core import calculate_lifetime
 
-            # Mocked input data
             doppler_shifted_intensities: np.ndarray = np.array([2, 6])
             unshifted_intensities: np.ndarray = np.array([6, 10])
             delta_doppler_shifted_intensities: np.ndarray = np.array([1, 1])

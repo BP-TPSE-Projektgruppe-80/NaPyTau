@@ -50,7 +50,6 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            # Mocked input data
             doppler_shifted_intensities: ndarray = array([1, 2, 3])
             unshifted_intensities: ndarray = array([4, 5, 6])
             delta_doppler_shifted_intensities: ndarray = array([2, 3, 4])
@@ -839,7 +838,9 @@ class ChiUnitTest(unittest.TestCase):
                 actual_coefficients, expected_coefficients
             )
 
-            self.assertEqual(len(scipy_optimize_module_mock.optimize.minimize.mock_calls), 1)
+            self.assertEqual(
+                len(scipy_optimize_module_mock.optimize.minimize.mock_calls), 1
+            )
 
             testing.assert_array_equal(
                 scipy_optimize_module_mock.optimize.minimize.mock_calls[0].args[1],
@@ -847,7 +848,9 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                scipy_optimize_module_mock.optimize.minimize.mock_calls[0].kwargs["method"],
+                scipy_optimize_module_mock.optimize.minimize.mock_calls[0].kwargs[
+                    "method"
+                ],
                 "L-BFGS-B",
             )
 
@@ -856,7 +859,9 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        scipy_optimize_module_mock.optimize.minimize.return_value = OptimizeResult(x=2.0)
+        scipy_optimize_module_mock.optimize.minimize.return_value = OptimizeResult(
+            x=2.0
+        )
 
         numpy_module_mock.mean.return_value = 0
 
@@ -893,10 +898,14 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(actual_t_hyp, expected_t_hyp)
 
-            self.assertEqual(len(scipy_optimize_module_mock.optimize.minimize.mock_calls), 1)
+            self.assertEqual(
+                len(scipy_optimize_module_mock.optimize.minimize.mock_calls), 1
+            )
 
             self.assertTrue(
-                callable(scipy_optimize_module_mock.optimize.minimize.mock_calls[0].args[0]),
+                callable(
+                    scipy_optimize_module_mock.optimize.minimize.mock_calls[0].args[0]
+                ),
                 """The first argument to minimize should be a callable function""",
             )
 
@@ -906,7 +915,9 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                scipy_optimize_module_mock.optimize.minimize.mock_calls[0].kwargs["bounds"],
+                scipy_optimize_module_mock.optimize.minimize.mock_calls[0].kwargs[
+                    "bounds"
+                ],
                 [(t_hyp_range[0], t_hyp_range[1])],
             )
 

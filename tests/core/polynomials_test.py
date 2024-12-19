@@ -5,7 +5,7 @@ from numpy import ndarray
 from numpy import array
 from numpy import testing
 
-from napytau.core.Exceptions.polynomial_coefficient_error import (
+from napytau.core.errors.polynomial_coefficient_error import (
     PolynomialCoefficientError,
 )
 

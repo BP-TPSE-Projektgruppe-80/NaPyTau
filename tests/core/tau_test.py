@@ -41,7 +41,6 @@ class TauUnitTest(unittest.TestCase):
         ):
             from napytau.core.tau import calculate_tau_i_values
 
-            # Mocked input data
             doppler_shifted_intensities: ndarray = array([2, 6])
             unshifted_intensities: ndarray = array([6, 10])
             delta_doppler_shifted_intensities: ndarray = array([1, 1])

@@ -26,8 +26,8 @@ def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
 
 class DeltaChiUnitTests(unittest.TestCase):
     @staticmethod
-    def test_canCalculateAJacobianMatrixFromTimesAndCoefficients():
-        """Can calculate Jacobian matrix out of distances and coefficients."""
+    def test_canCalculateAJacobianMatrixFromDistancesAndCoefficients():
+        """Can calculate a Jacobian matrix from distances and coefficients."""
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
@@ -56,8 +56,8 @@ class DeltaChiUnitTests(unittest.TestCase):
                 calculate_jacobian_matrix(distances, coefficients), jacobian_matrix
             )
 
-    def test_canCalculateACovarianceMatrixFromAJacobianMatrixAndAWeightMatrix(self):
-        """Can calculate Covariance matrix out of times and coefficients."""
+    def test_canCalculateACovarianceMatrixFromTimesAndCoefficients(self):
+        """Can calculate a Covariance matrix from times and coefficients."""
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
@@ -165,7 +165,7 @@ class DeltaChiUnitTests(unittest.TestCase):
             )
 
     def test_CanCalculateTheErrorPropagation(self):
-        """Can calculate error propagation"""
+        """Can calculate the error propagation"""
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.side_effect = [
