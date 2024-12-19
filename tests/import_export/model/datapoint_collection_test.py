@@ -54,7 +54,7 @@ class DatapointCollectionUnitTest(unittest.TestCase):
         self.assertEqual(collection[0].distance.value, 12.12)
 
     def test_distinguishesDistancesToAReasonablePrecision(self):
-        """Can distinguish two datapoints based on their distance values to a reasonable precision"""  # noqa E501
+        """Can distinguish two datapoints based on their distance values to a reasonable precision"""
         datapoints = [
             Datapoint(
                 distance=ValueErrorPair(17.1381257194, 0.1),

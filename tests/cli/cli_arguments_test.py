@@ -31,7 +31,7 @@ class CLIArgumentsUnitTest(unittest.TestCase):
         self.assertEqual(cli_args.get_filename(), "test_filename")
 
     def test_canBeConstructedFromANamespaceObjectWithNoHeadlessFlagAndNoFilename(self):
-        """Can be constructed from a Namespace object with no headless flag and no filename"""  # noqa: E501
+        """Can be constructed from a Namespace object with no headless flag and no filename"""
         from napytau.cli.cli_arguments import CLIArguments
 
         raw_args = Namespace(headless=None, filename=None)

@@ -43,7 +43,7 @@ class ParserUnitTest(unittest.TestCase):
                     ("--filename",),
                     {
                         "type": str,
-                        "help": "File to import (only for mockup, not used in real application)",  # noqa: E501
+                        "help": "File to import (only for mockup, not used in real application)",
                     },
                 ),
             )
