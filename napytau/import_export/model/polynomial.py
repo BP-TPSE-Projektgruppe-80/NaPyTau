@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class Polynomial:
     """
     A class to represent a polynomial.
@@ -19,14 +23,6 @@ class Polynomial:
     def get_coefficients(self) -> list[float]:
         return self.coefficients
 
-    def get_degree(self) -> int:
-        return self.degree
-
-    def update(self, coefficients: list[float], degree: int = 2) -> None:
-        if len(coefficients) != degree + 1:
-            raise ValueError(
-                "Number of coefficients must match the degree of the polynomial."
-            )
-
+    def set_coefficients(self, coefficients: list[float]) -> None:
         self.coefficients = coefficients
         self.degree = degree
