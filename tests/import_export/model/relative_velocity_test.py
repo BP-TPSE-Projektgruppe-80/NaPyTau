@@ -10,7 +10,7 @@ class RelativeVelocityUnitTest(unittest.TestCase):
             RelativeVelocity(-0.1)
 
     def test_throwErrorIfGreaterThanOne(self):
-        """A RelativeVelocity should throw an error if the velocity is greater than 1."""  # noqa E501
+        """A RelativeVelocity should throw an error if the velocity is greater than 1."""
         with self.assertRaises(ValueError):
             RelativeVelocity(1.1)
 

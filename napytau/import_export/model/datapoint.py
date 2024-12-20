@@ -22,6 +22,8 @@ class Datapoint:
     unshifted_intensity: Optional[ValueErrorPair[float]] = None
     feeding_shifted_intensity: Optional[ValueErrorPair[float]] = None
     feeding_unshifted_intensity: Optional[ValueErrorPair[float]] = None
+    tau: Optional[ValueErrorPair[float]] = None
+    active: bool = True
 
     def get_distance(self) -> ValueErrorPair[float]:
         return self.distance
@@ -70,3 +72,18 @@ class Datapoint:
     ) -> None:
         self.feeding_shifted_intensity = feeding_shifted_intensity
         self.feeding_unshifted_intensity = feeding_unshifted_intensity
+
+    def get_tau(self) -> ValueErrorPair[float]:
+        if self.tau is None:
+            raise ValueError("Tau was accessed before initialization.")
+
+        return self.tau
+
+    def set_tau(self, tau: ValueErrorPair[float]) -> None:
+        self.tau = tau
+
+    def is_active(self) -> bool:
+        return self.active
+
+    def set_active(self, active: bool) -> None:
+        self.active = active

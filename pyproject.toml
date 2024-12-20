@@ -7,6 +7,8 @@ requires-python = ">=3.12"
 dependencies = [
     "customtkinter>=5.2.2",
     "matplotlib>=3.10.0",
+    "numpy>=2.2.0",
+    "scipy>=1.14.1",
 ]
 
 [build-system]
@@ -18,7 +20,7 @@ packages = ["napytau"]
 
 [tool.tomlscript]
 run= "uv run napytau/main.py"
-test = "uv run pytest -rA"
+test = "uv run pytest -rA tests/{filter: }"
 lint = "uv run ruff check --config ruff.toml"
 lint-fix = "uv run ruff check --config ruff.toml --fix"
 format = "uv run ruff format"
