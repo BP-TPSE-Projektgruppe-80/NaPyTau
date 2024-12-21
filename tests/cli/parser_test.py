@@ -43,10 +43,10 @@ class ParserUnitTest(unittest.TestCase):
                     ("--dataset_format",),
                     {
                         "type": str,
-                        "default": "napatau",
-                        "const": "napatau",
+                        "default": "legacy",
+                        "const": "legacy",
                         "nargs": "?",
-                        "choices": ["napatau"],
+                        "choices": ["legacy"],
                         "help": "Format of the dataset to ingest",
                     },
                 ),
@@ -101,7 +101,7 @@ class ParserUnitTest(unittest.TestCase):
 
             test_args = Namespace(
                 headless=True,
-                dataset_format="napatau",
+                dataset_format="legacy",
                 setup_files_directory="test_directory",
                 fit_file="test_file",
             )
