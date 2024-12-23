@@ -160,7 +160,12 @@ class Graph:
         axes.tick_params(axis="x", colors=self.secondary_color)
         axes.tick_params(axis="y", colors=self.secondary_color)
 
-    def plot_markers(self, x_data: list, y_data: list, distances: list, axes: Axes)-> None:
+    def plot_markers(self,
+                     x_data: list,
+                     y_data: list,
+                     distances: list,
+                     axes: Axes
+                     ) -> None:
         """
         plotting the datapoints with appropriate markers
         :param x_data: x coordinates
@@ -192,7 +197,8 @@ class Graph:
         :return: nothing
         """
 
-        coeffs = np.polyfit(x_data_fit, y_data_fit, len(y_data_fit))  # Calculating coefficients
+        # Calculating coefficients
+        coeffs = np.polyfit(x_data_fit, y_data_fit, len(y_data_fit))
 
         poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
 
@@ -223,8 +229,8 @@ def generate_error_marker_path(error_amount: float) -> Path:
     ]
 
     """
-    After defining coordinates of the shape we need instruction on how to connect each point
-    which each other to create the desired marker shape
+    After defining coordinates of the shape we need instruction on how to connect 
+    each point which each other to create the desired marker shape
     """
 
     instructions = [
