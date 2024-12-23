@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List
 
 import tkinter as tk
 from tkinter import filedialog
