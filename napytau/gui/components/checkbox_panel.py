@@ -38,11 +38,13 @@ class CheckboxPanel:
 
         # Update all checkboxes for the fitting
         for i in range(len(self.parent.datapoints)):
-            x, y = self.parent.datapoints[i]
+
+            i_shi, i_unshi = self.parent.datapoints[i].get_intensity()
+            distance = self.parent.datapoints[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
-                text=f"({x} | {y})",
+                text=f"({distance.value} | {i_shi.value})",
                 variable=customtkinter.IntVar(value=1),
                 command=lambda index=i: self._data_checkbox_fitting_event(index),
             )
@@ -62,6 +64,7 @@ class CheckboxPanel:
             print("[fitting] checkbox with index " + str(index) + " activated.")
         else:
             print("[fitting] checkbox with index " + str(index) + " deactivated.")
+        self.parent.graph.update_plot()
 
     def update_data_checkboxes_calculation(self) -> None:
         """
@@ -75,18 +78,20 @@ class CheckboxPanel:
 
         header_label = customtkinter.CTkLabel(
             self.frame_datapoint_checkboxes,
-            text="Datapoints for tau calculation",
+            text="Tau calculation",
             font=("Arial", 16),
         )
         header_label.grid(row=0, column=1, padx=30, pady=5, sticky="nsew")
 
         # Update all checkboxes for the calculation
         for i in range(len(self.parent.datapoints)):
-            x, y = self.parent.datapoints[i]
+
+            i_shi, i_unshi = self.parent.datapoints[i].get_intensity()
+            distance = self.parent.datapoints[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
-                text=f"({x} | {y})",
+                text=f"({distance.value} | {i_shi.value})",
                 variable=customtkinter.IntVar(value=1),
                 command=lambda index=i: self._data_checkbox_calculation_event(index),
             )
