@@ -74,8 +74,7 @@ class App(customtkinter.CTk):
         # Initialize the menu bar
         self.menu_bar = MenuBar(self, menu_bar_callbacks)
 
-        # Initialize the graph
-        self.graph = Graph(self)
+
 
         # Initialize the checkbox panel
         self.checkbox_panel = CheckboxPanel(self)
@@ -96,6 +95,9 @@ class App(customtkinter.CTk):
                 (10.0, 1.85),
             ]
         )
+
+        # Initialize the graph
+        self.graph = Graph(self)
 
         # Initialize the control panel
         self.control_panel = ControlPanel(self)

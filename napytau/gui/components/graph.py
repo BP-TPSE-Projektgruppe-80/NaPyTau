@@ -18,14 +18,8 @@ if TYPE_CHECKING:
 
 class Graph:
 
-
-
-
     def __init__(self, parent: "App") -> None:
-        """
-        Initializes the graph.
-        :param parent: Parent widget to host the graph.
-        """
+
         self.parent = parent
         self.graph_frame = self.plot(
              customtkinter.get_appearance_mode()
@@ -37,7 +31,7 @@ class Graph:
 
     def update_plot(self) -> None:
         """
-        Updates the graph with the latest tau value and appearance mode.
+        Is called whenever changes on the graphs appearance should occur.
         """
         self.graph_frame = self.plot(
              customtkinter.get_appearance_mode()
@@ -48,19 +42,48 @@ class Graph:
         self.graph_frame.grid_propagate(False)
 
     def plot(self, appearance: str) -> Canvas:
-        """
-        Plot the graph.
-        :param appearance: The appearance mode.
-        :return: The canvas.
-        """
 
-        # Placeholder datapoints:
-        y_data = [2, 4, 5, 7, 8, 9, 11, 15]
-        distances = [1, 2, 3, 4, 5, 6, 7, 8]
-        x_data = [0, 1, 2, 3, 4, 5, 6, 7]
+
+        #Extracting Data:
+        y_data = []
+        x_data = []
+
+        y_data_fit = []
+        x_data_fit = []
+
+        for datapoint in self.parent.datapoints_for_fitting:
+
+            y_data.append(datapoint.coordinates[1])
+            x_data.append(datapoint.coordinates[0])
+
+            #Filtering Data from checked checkboxes
+            if datapoint.is_checked:
+                y_data_fit.append(datapoint.coordinates[1])
+                x_data_fit.append(datapoint.coordinates[0])
+
+        #Placeholder Data:
+
+        distances = [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+        ]
+
 
         # the figure that will contain the plot
-        fig = Figure(figsize=(3, 2), dpi=100, facecolor=Color.WHITE, edgecolor=Color.BLACK)
+        fig = Figure(
+            figsize=(3, 2),
+            dpi=100,
+            facecolor=Color.WHITE,
+            edgecolor=Color.BLACK
+        )
 
         # adding the subplot
         Axes_1 = fig.add_subplot(111)
@@ -73,14 +96,26 @@ class Graph:
 
         # add grid style
         Axes_1.grid(
-            True, which="both", color=self.secondary_color, linestyle="--", linewidth=0.3
+            True,
+            which="both",
+            color=self.secondary_color,
+            linestyle="--",
+            linewidth=0.3
         )
 
         # draw the markers on the axes
-        self.plot_markers(x_data, y_data, distances, Axes_1)
+        self.plot_markers(
+            x_data,
+            y_data,
+            distances,
+            Axes_1
+        )
 
         # draw the fitting curve on the axes
-        self.plot_fitting_curve(x_data, y_data, Axes_1)
+        self.plot_fitting_curve(
+            x_data_fit,
+            y_data_fit,
+            Axes_1)
 
 
         # creating the Tkinter canvas
@@ -147,7 +182,7 @@ class Graph:
                 label=f"Point {index + 1}",
                 color=self.main_marker_color,
             )
-    def plot_fitting_curve(self, x_data: list, y_data: list, axes: Axes)-> None:
+    def plot_fitting_curve(self, x_data_fit: list, y_data_fit: list, axes: Axes)-> None:
 
         """
          plotting fitting curve of datapoints
@@ -157,11 +192,11 @@ class Graph:
         :return: nothing
         """
 
-        coeffs = np.polyfit(x_data, y_data, len(y_data))  # Calculating coefficients
+        coeffs = np.polyfit(x_data_fit, y_data_fit, len(y_data_fit))  # Calculating coefficients
 
         poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
 
-        x_fit = np.linspace(min(x_data), max(x_data), 100)
+        x_fit = np.linspace(min(x_data_fit), max(x_data_fit), 100)
         y_fit = poly(x_fit)
 
         #plot the curve
@@ -172,7 +207,9 @@ class Graph:
 
 def generate_error_marker_path(error_amount: float) -> Path:
 
-    """Create a path to describe how an error marker should be drawn around a data point"""
+    """
+    Create a path to describe how an error marker should be drawn around a data point
+    """
 
     y_coord = error_amount / 2   #marker shape length depends on error amount
 

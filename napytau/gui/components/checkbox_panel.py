@@ -62,6 +62,7 @@ class CheckboxPanel:
             print("[fitting] checkbox with index " + str(index) + " activated.")
         else:
             print("[fitting] checkbox with index " + str(index) + " deactivated.")
+        self.parent.graph.update_plot()
 
     def update_data_checkboxes_calculation(self) -> None:
         """
