@@ -86,16 +86,26 @@ class App(customtkinter.CTk):
         self.update_data_checkboxes(
             [
 
-                create_dummy_datapoint(ValueErrorPair(1.0, 0.3), ValueErrorPair(5.0, 1.0)),
-                create_dummy_datapoint(ValueErrorPair(2.0, 0.3), ValueErrorPair(1.0, 2.0)),
-                create_dummy_datapoint(ValueErrorPair(3.0, 0.3), ValueErrorPair(3.0, 3.0)),
-                create_dummy_datapoint(ValueErrorPair(4.0, 0.3), ValueErrorPair(9.0, 4.0)),
-                create_dummy_datapoint(ValueErrorPair(5.0, 0.3), ValueErrorPair(7.0, 5.0)),
-                create_dummy_datapoint(ValueErrorPair(6.0, 0.3), ValueErrorPair(2.0, 6.0)),
-                create_dummy_datapoint(ValueErrorPair(7.0, 0.3), ValueErrorPair(1.0, 7.0)),
-                create_dummy_datapoint(ValueErrorPair(8.0, 0.3), ValueErrorPair(10.0, 8.0)),
-                create_dummy_datapoint(ValueErrorPair(9.0, 0.3), ValueErrorPair(5.0, 9.0)),
-                create_dummy_datapoint(ValueErrorPair(10.0, 0.3), ValueErrorPair(4.0, 10.0)),
+                create_dummy_datapoint(ValueErrorPair(1.0, 0.3),
+                                       ValueErrorPair(5.0, 1.0)),
+                create_dummy_datapoint(ValueErrorPair(2.0, 0.3),
+                                       ValueErrorPair(1.0, 2.0)),
+                create_dummy_datapoint(ValueErrorPair(3.0, 0.3),
+                                       ValueErrorPair(3.0, 3.0)),
+                create_dummy_datapoint(ValueErrorPair(4.0, 0.3),
+                                       ValueErrorPair(9.0, 4.0)),
+                create_dummy_datapoint(ValueErrorPair(5.0, 0.3),
+                                       ValueErrorPair(7.0, 5.0)),
+                create_dummy_datapoint(ValueErrorPair(6.0, 0.3),
+                                       ValueErrorPair(2.0, 6.0)),
+                create_dummy_datapoint(ValueErrorPair(7.0, 0.3),
+                                       ValueErrorPair(1.0, 7.0)),
+                create_dummy_datapoint(ValueErrorPair(8.0, 0.3),
+                                       ValueErrorPair(10.0, 8.0)),
+                create_dummy_datapoint(ValueErrorPair(9.0, 0.3),
+                                       ValueErrorPair(5.0, 9.0)),
+                create_dummy_datapoint(ValueErrorPair(10.0, 0.3),
+                                       ValueErrorPair(4.0, 10.0)),
 
 
             ]

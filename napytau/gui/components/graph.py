@@ -62,7 +62,7 @@ class Graph:
                 y_data_fit.append(datapoint.get_shifted_intensity_value())
                 x_data_fit.append(datapoint.get_distance_value())
 
-    
+
         # the figure that will contain the plot
         fig = Figure(
             figsize=(3, 2),
