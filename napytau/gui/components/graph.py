@@ -43,40 +43,26 @@ class Graph:
 
     def plot(self, appearance: str) -> Canvas:
 
-
         #Extracting Data:
-        y_data = []
-        x_data = []
+        y_data: list[float] = []
+        x_data: list[float] = []
+        error_data: list[float] = []
 
-        y_data_fit = []
-        x_data_fit = []
+        y_data_fit: list[float] = []
+        x_data_fit: list[float] = []
 
         for datapoint in self.parent.datapoints_for_fitting:
 
-            y_data.append(datapoint.coordinates[1])
-            x_data.append(datapoint.coordinates[0])
+            y_data.append(datapoint.get_shifted_intensity_value())
+            x_data.append(datapoint.get_distance_value())
+            error_data.append(datapoint.get_shifted_intensity_error())
 
             #Filtering Data from checked checkboxes
             if datapoint.is_checked:
-                y_data_fit.append(datapoint.coordinates[1])
-                x_data_fit.append(datapoint.coordinates[0])
+                y_data_fit.append(datapoint.get_shifted_intensity_value())
+                x_data_fit.append(datapoint.get_distance_value())
 
-        #Placeholder Data:
-
-        distances = [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10
-        ]
-
-
+    
         # the figure that will contain the plot
         fig = Figure(
             figsize=(3, 2),
@@ -107,7 +93,7 @@ class Graph:
         self.plot_markers(
             x_data,
             y_data,
-            distances,
+            error_data,
             Axes_1
         )
 
@@ -163,7 +149,7 @@ class Graph:
     def plot_markers(self,
                      x_data: list,
                      y_data: list,
-                     distances: list,
+                     error_data: list,
                      axes: Axes
                      ) -> None:
         """
@@ -176,8 +162,8 @@ class Graph:
         """
         for index in range(len(y_data)):
             # Generate marker and compute dynamic markersize
-            marker = generate_marker(generate_error_marker_path(distances[index]))
-            size = distances[index] * 5  # Scale markersize based on distance
+            marker = generate_marker(generate_error_marker_path(error_data[index]))
+            size = error_data[index] * 5  # Scale markersize based on distance
             axes.plot(
                 x_data[index],
                 y_data[index],
