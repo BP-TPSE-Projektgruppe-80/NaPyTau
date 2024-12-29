@@ -14,6 +14,8 @@ from napytau.util.model.value_error_pair import ValueErrorPair
 
 
 class LegacyFactory:
+    """A factory class for creating datasets from raw data stored in the Legacy format."""
+
     @staticmethod
     def create_dataset(raw_dataset: RawLegacyData) -> DataSet:
         return DataSet(
