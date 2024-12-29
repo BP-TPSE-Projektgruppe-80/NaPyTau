@@ -1,3 +1,4 @@
+import json
 from pathlib import PurePath
 from re import compile as compile_regex
 from typing import Optional, List
@@ -11,6 +12,7 @@ from napytau.import_export.crawler.legacy_setup_files import LegacySetupFiles
 from napytau.import_export.factory.legacy.raw_legacy_setup_data import (
     RawLegacySetupData,
 )
+from napytau.import_export.factory.napytau.napytau_factory import NapyTauFactory
 from napytau.import_export.model.dataset import DataSet
 from napytau.import_export.reader.file_reader import FileReader
 
@@ -34,7 +36,7 @@ def import_legacy_format_from_files(
     read from this path instead of the directory.
     """
 
-    file_crawler = _configure_file_crawler(fit_file_path)
+    file_crawler = _configure_file_crawler_for_legacy_format(fit_file_path)
 
     setup_file_bundles: List[LegacySetupFiles] = file_crawler.crawl(directory_path)
 
@@ -53,7 +55,9 @@ def import_legacy_format_from_files(
     )
 
 
-def _configure_file_crawler(fit_file_path: Optional[PurePath]) -> FileCrawler:
+def _configure_file_crawler_for_legacy_format(
+    fit_file_path: Optional[PurePath],
+) -> FileCrawler:
     if fit_file_path:
         file_crawler = FileCrawler(
             [
@@ -89,3 +93,28 @@ def read_legacy_setup_data_into_data_set(
     setup_data = FileReader.read_rows(setup_file_path)
 
     return LegacyFactory.enrich_dataset(dataset, RawLegacySetupData(setup_data))
+
+def import_napytau_format_from_files(
+    directory_path: PurePath,
+) -> List[DataSet]:
+    """
+    Ingests a dataset from the NapyTau format. The directory path will be
+    recursively searched for the following files:
+    - napytau.json
+    """
+
+    file_crawler = FileCrawler(
+        [compile_regex(".*.napytau.json")],
+        lambda files: files[0],
+    )
+
+    napytau_file_paths = file_crawler.crawl(directory_path)
+
+    return list(
+        map(
+            lambda napytau_file_path: NapyTauFactory.create_dataset(
+                json.loads(FileReader.read_text(napytau_file_path))
+            ),
+            napytau_file_paths,
+        )
+    )

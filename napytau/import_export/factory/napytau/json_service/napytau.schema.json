@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NapytauPersistedData",
+  "description": "Research data conforming to the Napytau schema",
+  "type": "object",
+  "properties": {
+    "relativeVelocity": {
+      "type": "number",
+      "description": "The relative velocity of the particles measured in the experiment",
+      "minimum": 0,
+      "exclusiveMaximum": 1
+    },
+    "relativeVelocityError": {
+      "type": "number",
+      "description": "The error in the relative velocity of the particles measured in the experiment",
+      "minimum": 0,
+      "exclusiveMaximum": 1
+    },
+    "dataPoints": {
+      "type": "array",
+      "description": "The data points measured in the experiment",
+      "items": {
+        "type": "object",
+        "properties": {
+          "distance": {
+            "type": "number",
+            "description": "The distance between the particles at the time of the data point",
+            "minimum": 0
+          },
+          "distanceError": {
+            "type": "number",
+            "description": "The error in the distance between the particles at the time of the data point",
+            "minimum": 0
+          },
+          "calibration": {
+            "type": "number",
+            "description": "The calibration factor for the data point",
+            "minimum": 0
+          },
+          "calibrationError": {
+            "type": "number",
+            "description": "The error in the calibration factor for the data point",
+            "minimum": 0
+          },
+          "shiftedIntensity": {
+            "type": "number",
+            "description": "The measured shifted intensity of the data point",
+            "minimum": 0
+          },
+          "shiftedIntensityError": {
+            "type": "number",
+            "description": "The error in the measured shifted intensity of the data point",
+            "minimum": 0
+          },
+          "unshiftedIntensity": {
+            "type": "number",
+            "description": "The measured unshifted intensity of the data point",
+            "minimum": 0
+          },
+          "unshiftedIntensityError": {
+            "type": "number",
+            "description": "The error in the measured unshifted intensity of the data point",
+            "minimum": 0
+          },
+          "feedingShiftedIntensity": {
+            "type": "number",
+            "description": "The measured feeding shifted intensity of the data point",
+            "minimum": 0
+          },
+          "feedingShiftedIntensityError": {
+            "type": "number",
+            "description": "The error in the measured feeding shifted intensity of the data point",
+            "minimum": 0
+          },
+          "feedingUnshiftedIntensity": {
+            "type": "number",
+            "description": "The measured feeding unshifted intensity of the data point",
+            "minimum": 0
+          },
+          "feedingUnshiftedIntensityError": {
+            "type": "number",
+            "description": "The error in the measured feeding unshifted intensity of the data point",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "distance",
+          "distanceError",
+          "calibration",
+          "calibrationError",
+          "shiftedIntensity",
+          "shiftedIntensityError",
+          "unshiftedIntensity",
+          "unshiftedIntensityError"
+        ]
+      }
+    },
+    "setups": {
+      "type": "array",
+      "description": "A list of setups previously configured in Napytau",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the setup"
+          },
+          "tauFactor": {
+            "type": "number",
+            "description": "The tau factor of the setup",
+            "minimum": 0
+          },
+          "tauFactorError": {
+            "type": "number",
+            "description": "The error in the tau factor of the setup",
+            "minimum": 0
+          },
+          "polynomialCount": {
+            "type": "number",
+            "description": "The polynomial count of the setup",
+            "minimum": 0
+          },
+          "datapointSetups": {
+            "type": "array",
+            "description": "Setup data for each datapoint of the experiment",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tau": {
+                  "type": "number",
+                  "description": "The calculated tau of the data point",
+                  "minimum": 0
+                },
+                "tauError": {
+                  "type": "number",
+                  "description": "The error in the calculated tau of the data point",
+                  "minimum": 0
+                },
+                "active": {
+                  "type": "boolean",
+                  "description": "Whether the data point is active or not"
+                }
+              },
+              "required": [
+                "tau",
+                "tauError",
+                "active"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name",
+          "tauFactor",
+          "tauFactorError",
+          "polynomialCount",
+          "datapointSetups"
+        ]
+      }
+    }
+  },
+  "required": [
+    "relativeVelocity",
+    "relativeVelocityError",
+    "dataPoints"
+  ]
+}
