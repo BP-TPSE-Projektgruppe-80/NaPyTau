@@ -1,8 +1,8 @@
 from typing import List
 
-from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
-    NapytauFormatJsonService,
-)
+from napytau.import_export.factory.napytau.json_service\
+    .napytau_format_json_service import NapytauFormatJsonService
+from napytau.import_export.import_export_error import ImportExportError
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.import_export.model.dataset import DataSet
@@ -19,11 +19,11 @@ class NapyTauFactory:
                 raw_json_data["relativeVelocity"],
                 raw_json_data["relativeVelocityError"],
             ),
-            NapyTauFactory.parse_datapoints(raw_json_data["datapoints"]),
+            NapyTauFactory._parse_datapoints(raw_json_data["datapoints"]),
         )
 
     @staticmethod
-    def parse_datapoints(raw_datapoints: List[dict]) -> DatapointCollection:
+    def _parse_datapoints(raw_datapoints: List[dict]) -> DatapointCollection:
         datapoints = []
         for raw_datapoint in raw_datapoints:
             distance = ValueErrorPair(
@@ -68,3 +68,35 @@ class NapyTauFactory:
             )
 
         return DatapointCollection(datapoints)
+
+    @staticmethod
+    def enrich_dataset(
+        setup_name: str, dataset: DataSet, raw_json_data: dict
+    ) -> DataSet:
+        NapytauFormatJsonService.validate_against_schema(raw_json_data)
+
+        setups = raw_json_data["setups"]
+        setup = next((setup for setup in setups if setup["name"] == setup_name), None)
+
+        if setup is None:
+            raise ImportExportError(f"Setup '{setup_name}' not found in json data.")
+
+        dataset.set_tau_factor(setup["tauFactor"])
+
+        dataset.set_polynomial_count(setup["polynomialCount"])
+
+        for datapoint_setup in setup["datapointSetups"]:
+            datapoint = dataset.get_datapoints().get_datapoint_by_distance(
+                datapoint_setup["distance"]
+            )
+
+            datapoint.set_tau(
+                ValueErrorPair(
+                    datapoint_setup["tau"],
+                    datapoint_setup["tauError"],
+                )
+            )
+
+            datapoint.set_active(datapoint_setup["active"])
+
+        return dataset
