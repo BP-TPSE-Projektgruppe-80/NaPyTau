@@ -10,14 +10,14 @@ class CLIArguments:
     dataset_format: str
     data_files_directory: str
     fit_file_path: Optional[str]
-    setup_file_path: Optional[str]
+    setup_identifier: Optional[str]
 
     def __init__(self, raw_args: Namespace):
         self.headless = coalesce(raw_args.headless, False)
         self.dataset_format = raw_args.dataset_format
         self.data_files_directory = coalesce(raw_args.data_files_directory, getcwd())
         self.fit_file_path = raw_args.fit_file
-        self.setup_file_path = raw_args.setup_file
+        self.setup_identifier = raw_args.setup_identifier
 
     def is_headless(self) -> bool:
         return self.headless
@@ -31,5 +31,5 @@ class CLIArguments:
     def get_fit_file_path(self) -> Optional[str]:
         return self.fit_file_path
 
-    def get_setup_file_path(self) -> Optional[str]:
-        return self.setup_file_path
+    def get_setup_identifier(self) -> Optional[str]:
+        return self.setup_identifier
