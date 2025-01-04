@@ -1,11 +1,13 @@
 from typing import List
 
-from napytau.import_export.factory.napytau.json_service\
-    .napytau_format_json_service import NapytauFormatJsonService
+from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
+    NapytauFormatJsonService,
+)
 from napytau.import_export.import_export_error import ImportExportError
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 from napytau.util.model.value_error_pair import ValueErrorPair
 
 
@@ -16,8 +18,8 @@ class NapyTauFactory:
 
         return DataSet(
             ValueErrorPair(
-                raw_json_data["relativeVelocity"],
-                raw_json_data["relativeVelocityError"],
+                RelativeVelocity(raw_json_data["relativeVelocity"]),
+                RelativeVelocity(raw_json_data["relativeVelocityError"]),
             ),
             NapyTauFactory._parse_datapoints(raw_json_data["datapoints"]),
         )
@@ -88,13 +90,6 @@ class NapyTauFactory:
         for datapoint_setup in setup["datapointSetups"]:
             datapoint = dataset.get_datapoints().get_datapoint_by_distance(
                 datapoint_setup["distance"]
-            )
-
-            datapoint.set_tau(
-                ValueErrorPair(
-                    datapoint_setup["tau"],
-                    datapoint_setup["tauError"],
-                )
             )
 
             datapoint.set_active(datapoint_setup["active"])
