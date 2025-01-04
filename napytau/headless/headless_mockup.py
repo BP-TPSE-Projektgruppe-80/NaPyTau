@@ -94,11 +94,6 @@ def init(cli_arguments: CLIArguments) -> None:
             print("Dataset:")
             print(f"  Velocity: {dataset.relative_velocity.value.get_velocity()}")
             print(f"  Velocity Error: {dataset.relative_velocity.error.get_velocity()}")
-            print(f"  Velocity: {dataset.relative_velocity.value.get_velocity()}")
-            print(
-                f"  Velocity Error: {dataset.relative_velocity.error.get_velocity()}"
-                # noqa: E501
-            )
             print(f"  Tau factor: {dataset.get_tau_factor()}")
             print(f"  Polynomial count: {dataset.get_polynomial_count()}")
 
