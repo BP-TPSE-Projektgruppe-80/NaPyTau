@@ -168,7 +168,8 @@ _SCHEMA = """
   "required": [
     "relativeVelocity",
     "relativeVelocityError",
-    "datapoints"
+    "datapoints",
+    "setups"
   ]
 }
 """

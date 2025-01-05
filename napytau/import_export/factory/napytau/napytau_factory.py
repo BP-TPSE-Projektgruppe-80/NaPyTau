@@ -75,17 +75,7 @@ class NapyTauFactory:
         return DatapointCollection(datapoints)
 
     @staticmethod
-    def enrich_dataset(
-        setup_name: str, dataset: DataSet, raw_json_data: dict
-    ) -> DataSet:
-        NapytauFormatJsonService.validate_against_schema(raw_json_data)
-
-        setups = raw_json_data["setups"]
-        setup = next((setup for setup in setups if setup["name"] == setup_name), None)
-
-        if setup is None:
-            raise ImportExportError(f"Setup '{setup_name}' not found in json data.")
-
+    def enrich_dataset(dataset: DataSet, setup: dict) -> DataSet:
         dataset.set_tau_factor(setup["tauFactor"])
 
         dataset.set_polynomial_count(setup["polynomialCount"])

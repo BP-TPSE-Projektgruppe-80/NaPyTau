@@ -162,7 +162,6 @@ def read_napytau_setup_data_into_data_set(
         )
 
     return NapyTauFactory.enrich_dataset(
-        setup_name,
         dataset,
         raw_setup_data,
     )
