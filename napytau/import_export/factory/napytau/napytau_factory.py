@@ -3,7 +3,6 @@ from typing import List
 from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (  # noqa E501
     NapytauFormatJsonService,
 )
-from napytau.import_export.import_export_error import ImportExportError
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.import_export.model.dataset import DataSet
