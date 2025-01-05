@@ -46,7 +46,7 @@ class ParserUnitTest(unittest.TestCase):
                         "default": "legacy",
                         "const": "legacy",
                         "nargs": "?",
-                        "choices": ["legacy"],
+                        "choices": ["legacy", "napytau"],
                         "help": "Format of the dataset to ingest",
                     },
                 ),

@@ -12,13 +12,13 @@ _SCHEMA = """
   "properties": {
     "relativeVelocity": {
       "type": "number",
-      "description": "The relative velocity of the particles measured in the experiment",
+      "description": "The relative velocity of the particles",
       "minimum": 0,
       "exclusiveMaximum": 1
     },
     "relativeVelocityError": {
       "type": "number",
-      "description": "The error in the relative velocity of the particles measured in the experiment",
+      "description": "The error in the relative velocity of the particles",
       "minimum": 0,
       "exclusiveMaximum": 1
     },
@@ -30,12 +30,12 @@ _SCHEMA = """
         "properties": {
           "distance": {
             "type": "number",
-            "description": "The distance of the particles at the time of the data point",
+            "description": "The distance of the particles",
             "minimum": 0
           },
           "distanceError": {
             "type": "number",
-            "description": "The error in the distance between the particles at the time of the data point",
+            "description": "The error in the distance between the particles",
             "minimum": 0
           },
           "calibration": {
@@ -50,32 +50,33 @@ _SCHEMA = """
           },
           "shiftedIntensity": {
             "type": "number",
-            "description": "The measured shifted intensity of the data point",
+            "description": "The shifted intensity of the data point",
             "minimum": 0
           },
           "shiftedIntensityError": {
             "type": "number",
-            "description": "The error in the measured shifted intensity of the data point",
+            "description": "The error in the shifted intensity of the data point",
             "minimum": 0
           },
           "unshiftedIntensity": {
             "type": "number",
-            "description": "The measured unshifted intensity of the data point",
+            "description": "The unshifted intensity of the data point",
             "minimum": 0
           },
           "unshiftedIntensityError": {
             "type": "number",
-            "description": "The error in the measured unshifted intensity of the data point",
+            "description": "The error in the unshifted intensity of the data point",
             "minimum": 0
           },
           "feedingShiftedIntensity": {
             "type": "number",
-            "description": "The measured feeding shifted intensity of the data point",
+            "description": "The feeding shifted intensity of the data point",
             "minimum": 0
           },
           "feedingShiftedIntensityError": {
             "type": "number",
-            "description": "The error in the measured feeding shifted intensity of the data point",
+            "description": "The error in the feeding shifted intensity
+             of the data point",
             "minimum": 0
           },
           "feedingUnshiftedIntensity": {
@@ -85,7 +86,8 @@ _SCHEMA = """
           },
           "feedingUnshiftedIntensityError": {
             "type": "number",
-            "description": "The error in the measured feeding unshifted intensity of the data point",
+            "description": "The error in the feeding unshifted intensity
+             of the data point",
             "minimum": 0
           }
         },
@@ -129,7 +131,8 @@ _SCHEMA = """
               "properties": {
                 "distance": {
                   "type": "number",
-                  "description": "The distance of the particles at the time of the data point",
+                  "description": "The distance of the particles at the 
+                  time of the data point",
                   "minimum": 0
                 },
                 "active": {
@@ -184,7 +187,7 @@ class NapytauFormatJsonService:
         except json.JSONDecodeError as e:
             raise ImportExportError(f"Provided json data could not be parsed: {e}")
 
-        return json_data
+        return dict(json_data)
 
     @staticmethod
     def validate_against_schema(json_data: dict) -> bool:
