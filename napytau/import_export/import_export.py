@@ -11,7 +11,7 @@ from napytau.import_export.crawler.legacy_setup_files import LegacySetupFiles
 from napytau.import_export.factory.legacy.raw_legacy_setup_data import (
     RawLegacySetupData,
 )
-from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
+from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (  # noqa E501
     NapytauFormatJsonService,
 )
 from napytau.import_export.factory.napytau.napytau_factory import NapyTauFactory

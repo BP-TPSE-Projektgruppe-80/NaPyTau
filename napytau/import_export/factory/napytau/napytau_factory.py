@@ -1,6 +1,6 @@
 from typing import List
 
-from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
+from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (  # noqa E501
     NapytauFormatJsonService,
 )
 from napytau.import_export.import_export_error import ImportExportError

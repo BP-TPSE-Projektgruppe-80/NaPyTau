@@ -71,7 +71,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
-                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock,  # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -101,7 +101,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
-                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock,  # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -133,7 +133,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
-                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock,  # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -171,7 +171,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
-                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock,  # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -232,7 +232,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
-                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock,  # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -301,7 +301,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
-                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock,  # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -356,7 +356,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
-                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock,  # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -399,7 +399,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
-                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock,  # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
