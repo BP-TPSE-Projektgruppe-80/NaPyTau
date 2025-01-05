@@ -17,6 +17,7 @@ def set_up_mocks() -> (
     MagicMock,
     MagicMock,
     MagicMock,
+    MagicMock,
 ):
     legacy_factory_module_mock = MagicMock()
     legacy_factory_mock = MagicMock()
@@ -38,11 +39,17 @@ def set_up_mocks() -> (
     regex_module_mock = MagicMock()
     compile_regex_mock = MagicMock()
     regex_module_mock.compile = compile_regex_mock
+    napytau_format_json_service_module_mock = MagicMock()
+    napytau_format_json_service_mock = MagicMock()
+    napytau_format_json_service_module_mock.NapytauFormatJsonService = (
+        napytau_format_json_service_mock
+    )
     return (
         legacy_factory_module_mock,
         file_crawler_module_mock,
         file_reader_module_mock,
         regex_module_mock,
+        napytau_format_json_service_module_mock,
     )
 
 
@@ -54,6 +61,7 @@ class IngestUnitTest(unittest.TestCase):
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
+            naptau_format_json_service_module_mock,
         ) = set_up_mocks()
         regex_module_mock.compile = lambda x: x
         with patch.dict(
@@ -63,6 +71,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -82,6 +91,7 @@ class IngestUnitTest(unittest.TestCase):
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
+            naptau_format_json_service_module_mock,
         ) = set_up_mocks()
         regex_module_mock.compile = lambda x: x
         with patch.dict(
@@ -91,6 +101,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -113,6 +124,7 @@ class IngestUnitTest(unittest.TestCase):
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
+            naptau_format_json_service_module_mock,
         ) = set_up_mocks()
         with patch.dict(
             "sys.modules",
@@ -121,6 +133,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -137,6 +150,7 @@ class IngestUnitTest(unittest.TestCase):
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
+            naptau_format_json_service_module_mock,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
@@ -157,6 +171,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -190,6 +205,7 @@ class IngestUnitTest(unittest.TestCase):
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
+            naptau_format_json_service_module_mock,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
@@ -216,6 +232,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -257,6 +274,7 @@ class IngestUnitTest(unittest.TestCase):
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
+            naptau_format_json_service_module_mock,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
@@ -283,6 +301,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -327,6 +346,7 @@ class IngestUnitTest(unittest.TestCase):
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
+            naptau_format_json_service_module_mock,
         ) = set_up_mocks()
 
         with patch.dict(
@@ -336,6 +356,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (
@@ -366,6 +387,7 @@ class IngestUnitTest(unittest.TestCase):
             file_crawler_module_mock,
             file_reader_module_mock,
             regex_module_mock,
+            naptau_format_json_service_module_mock,
         ) = set_up_mocks()
 
         file_reader_module_mock.FileReader.read_rows.return_value = ["row1", "row2"]
@@ -377,6 +399,7 @@ class IngestUnitTest(unittest.TestCase):
                 "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
                 "napytau.import_export.reader.file_reader": file_reader_module_mock,
                 "re": regex_module_mock,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock, # noqa: E501,
             },
         ):
             from napytau.import_export.import_export import (

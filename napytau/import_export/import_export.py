@@ -126,6 +126,7 @@ def import_napytau_format_from_files(
         )
     )
 
+
 def _map_raw_napytau_data(napytau_file_path: PurePath) -> Tuple[DataSet, List[dict]]:
     json_data = NapytauFormatJsonService.parse_json_data(
         FileReader.read_text(napytau_file_path)
@@ -135,6 +136,7 @@ def _map_raw_napytau_data(napytau_file_path: PurePath) -> Tuple[DataSet, List[di
         NapyTauFactory.create_dataset(json_data),
         json_data["setups"],
     )
+
 
 def read_napytau_setup_data_into_data_set(
     dataset: DataSet, raw_setups_data: List[dict], setup_name: str
