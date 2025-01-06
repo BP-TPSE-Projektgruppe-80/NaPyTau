@@ -2,22 +2,19 @@ from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 from napytau.core.polynomials import (
     evaluate_differentiated_polynomial_at_measuring_distances,
 )  # noqa E501
-from numpy import ndarray
-from numpy import sum
-from numpy import mean
-from numpy import power
+import numpy as np
 from scipy import optimize
 from scipy.optimize import OptimizeResult
 from typing import Tuple
 
 
 def chi_squared_fixed_t(
-    doppler_shifted_intensities: ndarray,
-    unshifted_intensities: ndarray,
-    delta_doppler_shifted_intensities: ndarray,
-    delta_unshifted_intensities: ndarray,
-    coefficients: ndarray,
-    distances: ndarray,
+    doppler_shifted_intensities: np.ndarray,
+    unshifted_intensities: np.ndarray,
+    delta_doppler_shifted_intensities: np.ndarray,
+    delta_unshifted_intensities: np.ndarray,
+    coefficients: np.ndarray,
+    distances: np.ndarray,
     t_hyp: float,
     weight_factor: float,
 ) -> float:
@@ -47,14 +44,14 @@ def chi_squared_fixed_t(
     """
 
     # Compute the difference between Doppler-shifted intensities and polynomial model
-    shifted_intensity_difference: ndarray = (
+    shifted_intensity_difference: np.ndarray = (
         doppler_shifted_intensities
         - evaluate_polynomial_at_measuring_distances(distances, coefficients)
     ) / delta_doppler_shifted_intensities
 
     # Compute the difference between unshifted intensities and
     # scaled derivative of the polynomial model
-    unshifted_intensity_difference: ndarray = (
+    unshifted_intensity_difference: np.ndarray = (
         unshifted_intensities
         - (
             t_hyp
@@ -66,23 +63,23 @@ def chi_squared_fixed_t(
 
     # combine the weighted sum of squared differences
     result: float = sum(
-        (power(shifted_intensity_difference, 2))
-        + (weight_factor * (power(unshifted_intensity_difference, 2)))
+        (np.power(shifted_intensity_difference, 2))
+        + (weight_factor * (np.power(unshifted_intensity_difference, 2)))
     )
 
     return result
 
 
 def optimize_coefficients(
-    doppler_shifted_intensities: ndarray,
-    unshifted_intensities: ndarray,
-    delta_doppler_shifted_intensities: ndarray,
-    delta_unshifted_intensities: ndarray,
-    initial_coefficients: ndarray,
-    distances: ndarray,
+    doppler_shifted_intensities: np.ndarray,
+    unshifted_intensities: np.ndarray,
+    delta_doppler_shifted_intensities: np.ndarray,
+    delta_unshifted_intensities: np.ndarray,
+    initial_coefficients: np.ndarray,
+    distances: np.ndarray,
     t_hyp: float,
     weight_factor: float,
-) -> Tuple[ndarray, float]:
+) -> Tuple[np.ndarray, float]:
     """
     Optimizes the polynomial coefficients to minimize the chi-squared function.
 
@@ -132,12 +129,12 @@ def optimize_coefficients(
 
 
 def optimize_t_hyp(
-    doppler_shifted_intensities: ndarray,
-    unshifted_intensities: ndarray,
-    delta_doppler_shifted_intensities: ndarray,
-    delta_unshifted_intensities: ndarray,
-    initial_coefficients: ndarray,
-    distances: ndarray,
+    doppler_shifted_intensities: np.ndarray,
+    unshifted_intensities: np.ndarray,
+    delta_doppler_shifted_intensities: np.ndarray,
+    delta_unshifted_intensities: np.ndarray,
+    initial_coefficients: np.ndarray,
+    distances: np.ndarray,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
 ) -> float:
@@ -181,7 +178,7 @@ def optimize_t_hyp(
         chi_squared_t_hyp,
         # Initial guess for t_hyp. Startíng with the mean reduces likelihood of
         # biasing the optimization process toward one boundary.
-        x0=mean(t_hyp_range),
+        x0=np.mean(t_hyp_range),
         bounds=[(t_hyp_range[0], t_hyp_range[1])],
     )
 
