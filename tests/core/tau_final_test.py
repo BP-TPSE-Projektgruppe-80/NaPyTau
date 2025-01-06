@@ -1,7 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from numpy import ndarray
-from numpy import array
+import numpy as np
 
 
 def set_up_mocks() -> MagicMock:
@@ -18,7 +17,7 @@ class TauFinalUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.return_value: ndarray = array([1, 4])
+        numpy_module_mock.power.return_value: np.ndarray = np.array([1, 4])
         numpy_module_mock.sum.side_effect = [3, 1.25, 1.25]
         numpy_module_mock.sqrt.return_value: float = 0.894427191
 
@@ -30,8 +29,8 @@ class TauFinalUnitTest(unittest.TestCase):
         ):
             from napytau.core.tau_final import calculate_tau_final
 
-            tau_i: ndarray = array([2, 4])
-            delta_tau_i: ndarray = array([1, 2])
+            tau_i: np.ndarray = np.array([2, 4])
+            delta_tau_i: np.ndarray = np.array([1, 2])
 
             tau_final: (float, float) = calculate_tau_final(tau_i, delta_tau_i)
 
@@ -46,7 +45,7 @@ class TauFinalUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.return_value: ndarray = array([])
+        numpy_module_mock.power.return_value: np.ndarray = np.array([])
         numpy_module_mock.sum.side_effect = [0, 0, 0, 0]
         numpy_module_mock.sqrt.return_value: float = 0
 
@@ -58,8 +57,8 @@ class TauFinalUnitTest(unittest.TestCase):
         ):
             from napytau.core.tau_final import calculate_tau_final
 
-            tau_i: ndarray = array([])
-            delta_tau_i: ndarray = array([])
+            tau_i:np.ndarray = np.array([])
+            delta_tau_i: np.ndarray = np.array([])
 
             tau_final: (float, float) = calculate_tau_final(tau_i, delta_tau_i)
 

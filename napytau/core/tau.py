@@ -3,21 +3,22 @@ from napytau.core.chi import optimize_coefficients
 from napytau.core.polynomials import (
     evaluate_differentiated_polynomial_at_measuring_distances,
 )  # noqa E501
-from numpy import ndarray
+
+import numpy as np
 from typing import Tuple, Optional
 
 
 def calculate_tau_i_values(
-    doppler_shifted_intensities: ndarray,
-    unshifted_intensities: ndarray,
-    delta_doppler_shifted_intensities: ndarray,
-    delta_unshifted_intensities: ndarray,
-    initial_coefficients: ndarray,
-    distances: ndarray,
+    doppler_shifted_intensities: np.ndarray,
+    unshifted_intensities: np.ndarray,
+    delta_doppler_shifted_intensities: np.ndarray,
+    delta_unshifted_intensities: np.ndarray,
+    initial_coefficients: np.ndarray,
+    distances: np.ndarray,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
     custom_t_hyp_estimate: Optional[float],
-) -> ndarray:
+) -> np.ndarray:
     """
     Calculates the decay times (tau_i) based on the provided
     intensities and time points.
@@ -61,7 +62,7 @@ def calculate_tau_i_values(
         )
 
     # optimize the polynomial coefficients with the optimized t_hyp
-    optimized_coefficients: ndarray = (
+    optimized_coefficients: np.ndarray = (
         optimize_coefficients(
             doppler_shifted_intensities,
             unshifted_intensities,
@@ -75,7 +76,7 @@ def calculate_tau_i_values(
     )[0]
 
     # calculate decay times using the optimized coefficients
-    tau_i_values: ndarray = (
+    tau_i_values: np.ndarray = (
         unshifted_intensities
         / evaluate_differentiated_polynomial_at_measuring_distances(
             distances, optimized_coefficients

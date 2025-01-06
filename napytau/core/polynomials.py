@@ -1,6 +1,4 @@
-from numpy import ndarray
-from numpy import power
-from numpy import zeros_like
+import numpy as np
 
 from napytau.core.errors.polynomial_coefficient_error import (
     PolynomialCoefficientError,
@@ -8,8 +6,8 @@ from napytau.core.errors.polynomial_coefficient_error import (
 
 
 def evaluate_polynomial_at_measuring_distances(
-    distances: ndarray, coefficients: ndarray
-) -> ndarray:
+    distances: np.ndarray, coefficients: np.ndarray
+) -> np.ndarray:
     """
     Computes the sum of a polynomial evaluated at given distance points.
 
@@ -29,16 +27,16 @@ def evaluate_polynomial_at_measuring_distances(
         )
 
     # Evaluate the polynomial sum at the given time points
-    sum_at_measuring_distances: ndarray = zeros_like(distances, dtype=float)
+    sum_at_measuring_distances: np.ndarray = np.zeros_like(distances, dtype=float)
     for exponent, coefficient in enumerate(coefficients):
-        sum_at_measuring_distances += coefficient * power(distances, exponent)
+        sum_at_measuring_distances += coefficient * np.power(distances, exponent)
 
     return sum_at_measuring_distances
 
 
 def evaluate_differentiated_polynomial_at_measuring_distances(
-    distances: ndarray, coefficients: ndarray
-) -> ndarray:
+    distances: np.ndarray, coefficients: np.ndarray
+) -> np.ndarray:
     """
     Computes the sum of the derivative of a polynomial evaluated
     at given distance points.
@@ -59,13 +57,13 @@ def evaluate_differentiated_polynomial_at_measuring_distances(
             "An empty array of coefficients can not be evaluated."
         )
 
-    sum_of_derivative_at_measuring_distances: ndarray = zeros_like(
+    sum_of_derivative_at_measuring_distances: np.ndarray = np.zeros_like(
         distances, dtype=float
     )
     for exponent, coefficient in enumerate(coefficients):
         if exponent > 0:
             sum_of_derivative_at_measuring_distances += (
-                exponent * coefficient * power(distances, (exponent - 1))
+                exponent * coefficient * np.power(distances, (exponent - 1))
             )
 
     return sum_of_derivative_at_measuring_distances
