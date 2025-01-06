@@ -86,7 +86,11 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [np.array([1]), np.array([2]), np.array([4])]
+        numpy_module_mock.power.side_effect = [
+            np.array([1]),
+            np.array([2]),
+            np.array([4]),
+        ]
         numpy_module_mock.zeros_like.return_value = np.array([0])
 
         with patch.dict(
@@ -274,7 +278,7 @@ class PolynomialsUnitTest(unittest.TestCase):
             coefficients: np.ndarray = np.array([5])
             # The differentiated polynomial should be: 0
             # All values should therefore be 0
-            expected_result:np.ndarray = np.array([0, 0, 0])
+            expected_result: np.ndarray = np.array([0, 0, 0])
             np.testing.assert_array_equal(
                 evaluate_differentiated_polynomial_at_measuring_distances(
                     distances, coefficients

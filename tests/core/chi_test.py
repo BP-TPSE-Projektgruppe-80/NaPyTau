@@ -289,7 +289,10 @@ class ChiUnitTest(unittest.TestCase):
         )
 
         numpy_module_mock.sum.return_value = 1608.69444444
-        numpy_module_mock.power.side_effect = [np.array([348.44444444]), np.array([1260.25])]
+        numpy_module_mock.power.side_effect = [
+            np.array([348.44444444]),
+            np.array([1260.25]),
+        ]
 
         with patch.dict(
             "sys.modules",
