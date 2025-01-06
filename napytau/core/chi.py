@@ -62,7 +62,7 @@ def chi_squared_fixed_t(
     ) / delta_unshifted_intensities
 
     # combine the weighted sum of squared differences
-    result: float = sum(
+    result: float = np.sum(
         (np.power(shifted_intensity_difference, 2))
         + (weight_factor * (np.power(unshifted_intensity_difference, 2)))
     )
