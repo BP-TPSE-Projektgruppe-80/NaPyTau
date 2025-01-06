@@ -5,7 +5,9 @@ from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 import numpy as np
 
 
-def calculate_jacobian_matrix(distances: np.ndarray, coefficients: np.ndarray) -> np.ndarray:
+def calculate_jacobian_matrix(
+    distances: np.ndarray, coefficients: np.ndarray
+) -> np.ndarray:
     """
     calculated the jacobian matrix for a set of polynomial coefficients taking
     different distances into account.
@@ -48,7 +50,9 @@ def calculate_jacobian_matrix(distances: np.ndarray, coefficients: np.ndarray) -
 
 
 def calculate_covariance_matrix(
-    delta_shifted_intensities: np.ndarray, distances: np.ndarray, coefficients: np.ndarray
+    delta_shifted_intensities: np.ndarray,
+    distances: np.ndarray,
+    coefficients: np.ndarray,
 ) -> np.ndarray:
     """
     Computes the covariance matrix for the polynomial coefficients using the
@@ -122,7 +126,9 @@ def calculate_error_propagation_terms(
         for l in range(len(coefficients)):  # noqa E741
             delta_p_j_i_squared = (
                 delta_p_j_i_squared
-                + np.power(distances, k) * np.power(distances, l) * covariance_matrix[k, l]
+                + np.power(distances, k)
+                * np.power(distances, l)
+                * covariance_matrix[k, l]
             )
 
     gaussian_error_from_polynomial_uncertainties: np.ndarray = (

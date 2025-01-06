@@ -57,7 +57,7 @@ class TauFinalUnitTest(unittest.TestCase):
         ):
             from napytau.core.tau_final import calculate_tau_final
 
-            tau_i:np.ndarray = np.array([])
+            tau_i: np.ndarray = np.array([])
             delta_tau_i: np.ndarray = np.array([])
 
             tau_final: (float, float) = calculate_tau_final(tau_i, delta_tau_i)
