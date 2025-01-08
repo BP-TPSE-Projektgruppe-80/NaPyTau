@@ -42,19 +42,25 @@ class TauFinalUnitTest(unittest.TestCase):
 
             self.assertEqual(len(numpy_module_mock.power.mock_calls), 1)
 
-            np.testing.assert_array_equal(numpy_module_mock.power.mock_calls[0].args[0], np.array([1, 2]))
+            np.testing.assert_array_equal(
+                numpy_module_mock.power.mock_calls[0].args[0], np.array([1, 2])
+            )
 
             self.assertEqual(numpy_module_mock.power.mock_calls[0].args[1], 2)
 
             self.assertEqual(len(numpy_module_mock.sum.mock_calls), 3)
 
-            np.testing.assert_array_equal(numpy_module_mock.sum.mock_calls[0].args[0], np.array([2, 1]))
+            np.testing.assert_array_equal(
+                numpy_module_mock.sum.mock_calls[0].args[0], np.array([2, 1])
+            )
 
-            np.testing.assert_array_equal(numpy_module_mock.sum.mock_calls[1].args[0],
-                                          np.array([1, 0.25]))
+            np.testing.assert_array_equal(
+                numpy_module_mock.sum.mock_calls[1].args[0], np.array([1, 0.25])
+            )
 
-            np.testing.assert_array_equal(numpy_module_mock.sum.mock_calls[2].args[0],
-                                          np.array([1, 0.25]))
+            np.testing.assert_array_equal(
+                numpy_module_mock.sum.mock_calls[2].args[0], np.array([1, 0.25])
+            )
 
             self.assertEqual(len(numpy_module_mock.sqrt.mock_calls), 1)
 
