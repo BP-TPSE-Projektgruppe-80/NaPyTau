@@ -61,7 +61,7 @@ def main() -> None:
     # os.system(f"git push origin {branch_name}")
 
     print(
-        f"Done! Branch {branch_name} created! Please create a pull request to merge the changes." # noqa E501
+        f"Done! Branch {branch_name} created! Please create a pull request to merge the changes."  # noqa E501
     )
 
 

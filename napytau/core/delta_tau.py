@@ -10,7 +10,7 @@ from numpy import power
 from numpy import linalg
 
 
-def calculate_jacobian_matrix(distances: ndarray, coefficients: ndarray) -> ndarray:
+def calculate_jacobian_matrix(distances: ndarray, relative_velocity: float, coefficients: ndarray) -> ndarray:
     """
     calculated the jacobian matrix for a set of polynomial coefficients taking
     different distances into account.
@@ -18,6 +18,7 @@ def calculate_jacobian_matrix(distances: ndarray, coefficients: ndarray) -> ndar
     safes them in jacobian matrix
     Args:
         distances (ndarray): Array of distance points.
+        relative_velocity (float): Velocity, relative to the speed of light
         coefficients (ndarray): Array of polynomial coefficients.
 
     Returns:
@@ -37,10 +38,10 @@ def calculate_jacobian_matrix(distances: ndarray, coefficients: ndarray) -> ndar
 
         # Compute the disturbed and original polynomial values at the given distances
         perturbed_function: ndarray = evaluate_polynomial_at_measuring_distances(
-            distances, perturbed_coefficients
+            distances, relative_velocity, perturbed_coefficients
         )
         original_function: ndarray = evaluate_polynomial_at_measuring_distances(
-            distances, coefficients
+            distances, relative_velocity, coefficients
         )
 
         # Calculate the partial derivative coefficients and store it in the
@@ -53,7 +54,7 @@ def calculate_jacobian_matrix(distances: ndarray, coefficients: ndarray) -> ndar
 
 
 def calculate_covariance_matrix(
-    delta_shifted_intensities: ndarray, distances: ndarray, coefficients: ndarray
+    delta_shifted_intensities: ndarray, distances: ndarray, relative_velocity: float, coefficients: ndarray
 ) -> ndarray:
     """
     Computes the covariance matrix for the polynomial coefficients using the
@@ -61,13 +62,14 @@ def calculate_covariance_matrix(
     Args:
         delta_shifted_intensities (ndarray): Errors in the shifted intensities.
         distances (ndarray): Array of distance points.
+        relative_velocity (float): Velocity, relative to the speed of light
         coefficients (ndarray): Array of polynomial coefficients.
 
     Returns:
         ndarray: The computed covariance matrix for the polynomial coefficients.
     """
 
-    jacobian_matrix: ndarray = calculate_jacobian_matrix(distances, coefficients)
+    jacobian_matrix: ndarray = calculate_jacobian_matrix(distances, relative_velocity, coefficients)
 
     # Construct the weight matrix from the inverse squared errors
     weight_matrix: ndarray = diag(1 / power(delta_shifted_intensities, 2))
@@ -84,6 +86,7 @@ def calculate_error_propagation_terms(
     delta_shifted_intensities: ndarray,
     delta_unshifted_intensities: ndarray,
     distances: ndarray,
+    relative_velocity: float,
     coefficients: ndarray,
     taufactor: float,
 ) -> ndarray:
@@ -95,6 +98,7 @@ def calculate_error_propagation_terms(
         delta_shifted_intensities (ndarray): Errors in the shifted intensities.
         delta_unshifted_intensities (ndarray): Errors in the unshifted intensities.
         distances (ndarray): Array of distance points.
+        relative_velocity (float): Velocity, relative to the speed of light
         coefficients (ndarray): Array of polynomial coefficients.
         taufactor (float): Scaling factor related to the Doppler-shift model.
 
@@ -105,6 +109,7 @@ def calculate_error_propagation_terms(
     calculated_differentiated_polynomial_sum_at_measuring_distances = (
         evaluate_differentiated_polynomial_at_measuring_distances(  # noqa E501
             distances,
+            relative_velocity,
             coefficients,
         )
     )
@@ -119,7 +124,7 @@ def calculate_error_propagation_terms(
     # Initialize the polynomial uncertainty term for second term
     delta_p_j_i_squared: ndarray = zeros(len(distances))
     covariance_matrix: ndarray = calculate_covariance_matrix(
-        delta_shifted_intensities, distances, coefficients
+        delta_shifted_intensities, distances, relative_velocity, coefficients
     )
 
     # Calculate the polynomial uncertainty contributions

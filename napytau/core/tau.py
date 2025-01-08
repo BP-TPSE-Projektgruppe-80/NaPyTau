@@ -14,6 +14,7 @@ def calculate_tau_i_values(
     delta_unshifted_intensities: ndarray,
     initial_coefficients: ndarray,
     distances: ndarray,
+    relative_velocity: float,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
     custom_t_hyp_estimate: Optional[float],
@@ -35,6 +36,8 @@ def calculate_tau_i_values(
         Initial guess for the polynomial coefficients
         distances (ndarray):
         Array of distance points corresponding to measurements
+        relative_velocity (float):
+        Velocity, relative to the speed of light
         t_hyp_range (tuple):
         Range for hypothesis optimization (min, max)
         weight_factor (float):
@@ -56,6 +59,7 @@ def calculate_tau_i_values(
             delta_unshifted_intensities,
             initial_coefficients,
             distances,
+            relative_velocity,
             t_hyp_range,
             weight_factor,
         )
@@ -69,6 +73,7 @@ def calculate_tau_i_values(
             delta_unshifted_intensities,
             initial_coefficients,
             distances,
+            relative_velocity,
             t_hyp,
             weight_factor,
         )
@@ -78,7 +83,7 @@ def calculate_tau_i_values(
     tau_i_values: ndarray = (
         unshifted_intensities
         / evaluate_differentiated_polynomial_at_measuring_distances(
-            distances, optimized_coefficients
+            distances, relative_velocity, optimized_coefficients
         )
     )
 

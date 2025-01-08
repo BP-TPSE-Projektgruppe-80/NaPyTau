@@ -14,11 +14,15 @@ def calculate_lifetime(
     delta_unshifted_intensities: np.ndarray,
     initial_coefficients: np.ndarray,
     distances: np.ndarray,
+    relative_velocity: float,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
     custom_t_hyp_estimate: Optional[float],
 ) -> Tuple[float, float]:
-    t_hyp: float = 0
+    """
+    Docstring missing. To be implemented with issue #44.
+    """
+
     # If a custom t_hyp is given, we will use it for the further calculations
     # If no custom t_hyp is given, we will use the optimal taufactor instead
     if custom_t_hyp_estimate is not None:
@@ -31,6 +35,7 @@ def calculate_lifetime(
             delta_unshifted_intensities,
             initial_coefficients,
             distances,
+            relative_velocity,
             t_hyp_range,
             weight_factor,
         )
@@ -44,6 +49,7 @@ def calculate_lifetime(
             delta_unshifted_intensities,
             initial_coefficients,
             distances,
+            relative_velocity,
             t_hyp,
             weight_factor,
         )
@@ -57,6 +63,7 @@ def calculate_lifetime(
         delta_unshifted_intensities,
         initial_coefficients,
         distances,
+        relative_velocity,
         t_hyp_range,
         weight_factor,
         custom_t_hyp_estimate,
@@ -68,6 +75,7 @@ def calculate_lifetime(
         delta_doppler_shifted_intensities,
         delta_unshifted_intensities,
         distances,
+        relative_velocity,
         optimized_coefficients,
         t_hyp,
     )

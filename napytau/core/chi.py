@@ -18,6 +18,7 @@ def chi_squared_fixed_t(
     delta_unshifted_intensities: ndarray,
     coefficients: ndarray,
     distances: ndarray,
+    relative_velocity: float,
     t_hyp: float,
     weight_factor: float,
 ) -> float:
@@ -37,6 +38,8 @@ def chi_squared_fixed_t(
         Polynomial coefficients for fitting
         distances (ndarray):
         Array of distance points
+        relative_velocity (float):
+        Velocity, relative to the speed of light
         t_hyp (float):
         Hypothesis value for the scaling factor
         weight_factor (float):
@@ -49,7 +52,7 @@ def chi_squared_fixed_t(
     # Compute the difference between Doppler-shifted intensities and polynomial model
     shifted_intensity_difference: ndarray = (
         doppler_shifted_intensities
-        - evaluate_polynomial_at_measuring_distances(distances, coefficients)
+        - evaluate_polynomial_at_measuring_distances(distances, relative_velocity, coefficients)
     ) / delta_doppler_shifted_intensities
 
     # Compute the difference between unshifted intensities and
@@ -59,7 +62,7 @@ def chi_squared_fixed_t(
         - (
             t_hyp
             * evaluate_differentiated_polynomial_at_measuring_distances(
-                distances, coefficients
+                distances, relative_velocity, coefficients
             )
         )
     ) / delta_unshifted_intensities
@@ -80,6 +83,7 @@ def optimize_coefficients(
     delta_unshifted_intensities: ndarray,
     initial_coefficients: ndarray,
     distances: ndarray,
+    relative_velocity: float,
     t_hyp: float,
     weight_factor: float,
 ) -> Tuple[ndarray, float]:
@@ -99,6 +103,8 @@ def optimize_coefficients(
         Initial guess for the polynomial coefficients
         distances (ndarray):
         Array of distance points
+        relative_velocity (float):
+        Velocity, relative to the speed of light
         t_hyp (float):
         Hypothesis value for the scaling factor
         weight_factor (float):
@@ -114,6 +120,7 @@ def optimize_coefficients(
         delta_unshifted_intensities,
         coefficients,
         distances,
+        relative_velocity,
         t_hyp,
         weight_factor,
     )
@@ -138,6 +145,7 @@ def optimize_t_hyp(
     delta_unshifted_intensities: ndarray,
     initial_coefficients: ndarray,
     distances: ndarray,
+    relative_velocity: float,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
 ) -> float:
@@ -157,6 +165,8 @@ def optimize_t_hyp(
         Initial guess for the polynomial coefficients
         distances (ndarray):
         Array of distance points
+        relative_velocity (float):
+        Velocity, relative to the speed of light
         t_hyp_range (tuple):
         Range for t_hyp optimization (min, max)
         weight_factor (float):
@@ -171,8 +181,9 @@ def optimize_t_hyp(
         unshifted_intensities,
         delta_doppler_shifted_intensities,
         delta_unshifted_intensities,
-        distances,
         initial_coefficients,
+        distances,
+        relative_velocity,
         t_hyp,
         weight_factor,
     )[1]

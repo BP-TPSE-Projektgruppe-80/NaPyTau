@@ -4,10 +4,13 @@ from unittest.mock import MagicMock, patch
 from numpy import ndarray
 from numpy import array
 from numpy import testing
+import numpy as np
 
 from napytau.core.errors.polynomial_coefficient_error import (
     PolynomialCoefficientError,
 )
+from napytau.core.polynomials import calculate_times_from_distances_and_relative_velocity
+from scipy.constants import speed_of_light
 
 
 def set_up_mocks() -> MagicMock:
@@ -19,6 +22,15 @@ def set_up_mocks() -> MagicMock:
 
 
 class PolynomialsUnitTest(unittest.TestCase):
+    def test_canCalculateTimesFromDistancesAndRelativeVelocities(self):
+        """Can calculate times from distances and relative velocities"""
+        distances: np.ndarray = np.array([1, 2])
+        relative_velocity: float = 0.000001
+
+        expected_times: np.ndarray = np.array([0.003335640952, 0.006671281904])
+
+        np.testing.assert_array_almost_equal(calculate_times_from_distances_and_relative_velocity(distances, relative_velocity), expected_times)
+
     @staticmethod
     def test_CanEvaluateAValidPolynomialAtMeasuringDistances():
         """Can evaluate a valid polynomial at measuring distances."""
