@@ -1,5 +1,6 @@
 import os
 
+
 def main() -> None:
     with open("pyproject.toml", "r") as config_file:
         lines = config_file.readlines()
@@ -18,6 +19,7 @@ def main() -> None:
         os.system(f"git push origin {version}")
 
         print(f"Done! Tagged version {version}!")
+
 
 if __name__ == "__main__":
     main()
