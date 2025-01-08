@@ -40,6 +40,26 @@ class TauFinalUnitTest(unittest.TestCase):
             self.assertAlmostEqual(tau_final[0], expected_tau_final)
             self.assertAlmostEqual(tau_final[1], expected_uncertainty)
 
+            self.assertEqual(len(numpy_module_mock.power.mock_calls), 1)
+
+            np.testing.assert_array_equal(numpy_module_mock.power.mock_calls[0].args[0], np.array([1, 2]))
+
+            self.assertEqual(numpy_module_mock.power.mock_calls[0].args[1], 2)
+
+            self.assertEqual(len(numpy_module_mock.sum.mock_calls), 3)
+
+            np.testing.assert_array_equal(numpy_module_mock.sum.mock_calls[0].args[0], np.array([2, 1]))
+
+            np.testing.assert_array_equal(numpy_module_mock.sum.mock_calls[1].args[0],
+                                          np.array([1, 0.25]))
+
+            np.testing.assert_array_equal(numpy_module_mock.sum.mock_calls[2].args[0],
+                                          np.array([1, 0.25]))
+
+            self.assertEqual(len(numpy_module_mock.sqrt.mock_calls), 1)
+
+            self.assertEqual(numpy_module_mock.sqrt.mock_calls[0].args[0], 0.8)
+
     def test_calculateTauFinalForEmptyInput(self):
         """Calculate tau_final for empty input."""
         numpy_module_mock = set_up_mocks()
