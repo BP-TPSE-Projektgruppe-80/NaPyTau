@@ -24,9 +24,9 @@ def calculate_tau_final(
     weights: np.ndarray = 1 / np.power(delta_tau_i_values, 2)
 
     # Calculate the weighted mean of tau_i
-    weighted_mean: float = sum(weights * tau_i_values) / sum(weights)
+    weighted_mean: float = np.sum(weights * tau_i_values) / np.sum(weights)
 
     # Calculate the uncertainty of the weighted mean
-    uncertainty: float = np.sqrt(1 / sum(weights))
+    uncertainty: float = np.sqrt(1 / np.sum(weights))
 
     return weighted_mean, uncertainty
