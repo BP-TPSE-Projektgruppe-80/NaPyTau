@@ -30,7 +30,7 @@ class Graph:
 
     def update_plot(self) -> None:
         """
-        Is called whenever changes on the graphs appearance should occur.
+        Is called whenever the graph needs to be re-rendered.
         """
         self.graph_frame = self.plot(
              customtkinter.get_appearance_mode()
