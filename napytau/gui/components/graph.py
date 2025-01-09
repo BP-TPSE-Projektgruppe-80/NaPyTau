@@ -11,7 +11,6 @@ import numpy as np
 from napytau.gui.model.color import Color
 
 
-
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
