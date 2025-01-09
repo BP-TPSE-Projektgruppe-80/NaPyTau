@@ -71,7 +71,7 @@ class Graph:
         )
 
         # adding the subplot
-        Axes_1 = fig.add_subplot(111)
+        axes_1 = fig.add_subplot(111)
 
         # set colors according to appearance mode
         self.set_colors(appearance)
