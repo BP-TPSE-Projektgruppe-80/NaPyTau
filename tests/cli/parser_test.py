@@ -29,7 +29,7 @@ class ParserUnitTest(unittest.TestCase):
             from napytau.cli.parser import parse_cli_arguments
 
             parse_cli_arguments()
-            self.assertEqual(len(argument_parser_mock.add_argument.mock_calls), 2)
+            self.assertEqual(len(argument_parser_mock.add_argument.mock_calls), 5)
             self.assertEqual(
                 argument_parser_mock.add_argument.mock_calls[0],
                 (
@@ -40,10 +40,47 @@ class ParserUnitTest(unittest.TestCase):
             self.assertEqual(
                 argument_parser_mock.add_argument.mock_calls[1],
                 (
-                    ("--filename",),
+                    ("--dataset_format",),
                     {
                         "type": str,
-                        "help": "File to import (only for mockup, not used in real application)",  # noqa: E501
+                        "default": "napatau",
+                        "const": "napatau",
+                        "nargs": "?",
+                        "choices": ["napatau"],
+                        "help": "Format of the dataset to ingest",
+                    },
+                ),
+            )
+
+            self.assertEqual(
+                argument_parser_mock.add_argument.mock_calls[2],
+                (
+                    ("--data_files_directory",),
+                    {
+                        "type": str,
+                        "help": "Path to the directory containing either data files or subdirectories with data files",
+                    },
+                ),
+            )
+
+            self.assertEqual(
+                argument_parser_mock.add_argument.mock_calls[3],
+                (
+                    ("--fit_file",),
+                    {
+                        "type": str,
+                        "help": "Path to a fit file to use instead of the one found in the setup files",  # noqa E501
+                    },
+                ),
+            )
+
+            self.assertEqual(
+                argument_parser_mock.add_argument.mock_calls[4],
+                (
+                    ("--setup_file",),
+                    {
+                        "type": str,
+                        "help": "Path to a setup file to load",
                     },
                 ),
             )
@@ -62,7 +99,12 @@ class ParserUnitTest(unittest.TestCase):
         ):
             from napytau.cli.parser import parse_cli_arguments
 
-            test_args = Namespace(headless=True, filename="test_filename")
+            test_args = Namespace(
+                headless=True,
+                dataset_format="napatau",
+                setup_files_directory="test_directory",
+                fit_file="test_file",
+            )
             argument_parser_mock.parse_args.return_value = test_args
             cli_arguments_module_mock.CLIArguments.return_value = MagicMock()
             parse_cli_arguments()
