@@ -1,6 +1,6 @@
 import tkinter as tk
 
-import napytau.gui.app as App
+from napytau.gui.app import App
 
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
