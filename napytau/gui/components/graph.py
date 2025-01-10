@@ -1,15 +1,18 @@
 from tkinter import Canvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.path import Path
-from matplotlib.markers import MarkerStyle
+
 from matplotlib.axes import Axes
+import matplotlib.pyplot as plt
 import customtkinter
 from typing import TYPE_CHECKING
 import numpy as np
 
 from napytau.gui.model.color import Color
+from napytau.import_export.model.datapoint import Datapoint
 
+from napytau.gui.model.marker_factory import generate_marker
+from napytau.gui.model.marker_factory import generate_error_marker_path
 
 
 if TYPE_CHECKING:
@@ -31,7 +34,7 @@ class Graph:
 
     def update_plot(self) -> None:
         """
-        Is called whenever changes on the graphs appearance should occur.
+        Is called whenever the graph needs to be re-rendered.
         """
         self.graph_frame = self.plot(
              customtkinter.get_appearance_mode()
@@ -44,23 +47,23 @@ class Graph:
     def plot(self, appearance: str) -> Canvas:
 
         #Extracting Data:
-        y_data: list[float] = []
-        x_data: list[float] = []
-        error_data: list[float] = []
+        shifted_intensities: list[float] = []
+        shifted_intensity_errors: list[float] = []
+        distances: list[float] = []
 
-        y_data_fit: list[float] = []
-        x_data_fit: list[float] = []
+        shifted_intensities_fit: list[float] = []
+        distances_fit: list[float] = []
 
         for datapoint in self.parent.datapoints_for_fitting:
 
-            y_data.append(datapoint.get_shifted_intensity_value())
-            x_data.append(datapoint.get_distance_value())
-            error_data.append(datapoint.get_shifted_intensity_error())
+            shifted_intensities.append(datapoint.get_shifted_intensity_value())
+            distances.append(datapoint.get_distance_value())
+            shifted_intensity_errors.append(datapoint.get_shifted_intensity_error())
 
             #Filtering Data from checked checkboxes
             if datapoint.is_checked:
-                y_data_fit.append(datapoint.get_shifted_intensity_value())
-                x_data_fit.append(datapoint.get_distance_value())
+                shifted_intensities_fit.append(datapoint.get_shifted_intensity_value())
+                distances_fit.append(datapoint.get_distance_value())
 
 
         # the figure that will contain the plot
@@ -72,16 +75,17 @@ class Graph:
         )
 
         # adding the subplot
-        Axes_1 = fig.add_subplot(111)
+        axes_1 = fig.add_subplot(111)
+        fig.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9)
 
         # set colors according to appearance mode
         self.set_colors(appearance)
 
         # apply colors onto figure and axes
-        self.apply_coloring(fig, Axes_1)
+        self.apply_coloring(fig, axes_1)
 
         # add grid style
-        Axes_1.grid(
+        axes_1.grid(
             True,
             which="both",
             color=self.secondary_color,
@@ -91,25 +95,25 @@ class Graph:
 
         # draw the markers on the axes
         self.plot_markers(
-            x_data,
-            y_data,
-            error_data,
-            Axes_1
+            distances,
+            shifted_intensities,
+            shifted_intensity_errors,
+            axes_1
         )
 
         # draw the fitting curve on the axes
         self.plot_fitting_curve(
-            x_data_fit,
-            y_data_fit,
-            Axes_1)
+            distances_fit,
+            shifted_intensities_fit,
+            axes_1)
 
 
         # creating the Tkinter canvas
         # containing the Matplotlib figure
-        canvas = FigureCanvasTkAgg(fig, master=self.parent)
-        canvas.draw()
+        self.canvas = FigureCanvasTkAgg(fig, master=self.parent)
+        self.canvas.draw()
 
-        return canvas.get_tk_widget()
+        return self.canvas.get_tk_widget()
 
     def set_colors(self, appearance: str) -> None:
 
@@ -117,16 +121,12 @@ class Graph:
             self.main_color = Color.WHITE
             self.secondary_color = Color.BLACK
             self.main_marker_color = Color.DARK_GREEN
-            #.
-            #.
-            #.
+
         else:
             self.main_color = Color.DARK_GRAY
             self.secondary_color = Color.WHITE
             self.main_marker_color = Color.LIGHT_GREEN
-            #.
-            #.
-            #.
+
 
 
     def apply_coloring(self, figure: Figure, axes: Axes) -> None:
@@ -147,9 +147,10 @@ class Graph:
         axes.tick_params(axis="y", colors=self.secondary_color)
 
     def plot_markers(self,
-                     x_data: list,
-                     y_data: list,
-                     error_data: list,
+                     distances: list,
+                     shifted_intensities: list,
+                     shifted_intensity_errors: list,
+
                      axes: Axes
                      ) -> None:
         """
@@ -160,20 +161,20 @@ class Graph:
         :param axes: the axes on which to draw the markers
         :return: nothing
         """
-        for index in range(len(y_data)):
+        for index in range(len(shifted_intensities)):
             # Generate marker and compute dynamic markersize
-            marker = generate_marker(generate_error_marker_path(error_data[index]))
-            size = error_data[index] * 5  # Scale markersize based on distance
+            marker = generate_marker(generate_error_marker_path(shifted_intensity_errors[index]))
+            size = shifted_intensity_errors[index] * 5  # Scale markersize based on distance
             axes.plot(
-                x_data[index],
-                y_data[index],
+                distances[index],
+                shifted_intensities[index],
                 marker=marker,
                 linestyle="None",
                 markersize=size,
                 label=f"Point {index + 1}",
                 color=self.main_marker_color,
             )
-    def plot_fitting_curve(self, x_data_fit: list, y_data_fit: list, axes: Axes)-> None:
+    def plot_fitting_curve(self, distances_fit: list, shifted_intensities_fit: list, axes: Axes)-> None:
 
         """
          plotting fitting curve of datapoints
@@ -184,11 +185,11 @@ class Graph:
         """
 
         # Calculating coefficients
-        coeffs = np.polyfit(x_data_fit, y_data_fit, len(y_data_fit))
+        coeffs = np.polyfit(distances_fit, shifted_intensities_fit, len(shifted_intensities_fit))
 
         poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
 
-        x_fit = np.linspace(min(x_data_fit), max(x_data_fit), 100)
+        x_fit = np.linspace(min(distances_fit), max(distances_fit), 100)
         y_fit = poly(x_fit)
 
         #plot the curve
@@ -197,43 +198,6 @@ class Graph:
         )
 
 
-def generate_error_marker_path(error_amount: float) -> Path:
 
-    """
-    Create a path to describe how an error marker should be drawn around a data point
-    """
-
-    y_coord = error_amount / 2   #marker shape length depends on error amount
-
-    verts = [               #Defines coordinates for the markers shape like this:
-        (-0.5, y_coord),    #        *--*--*        (-0.5, y)---(0, y)---(0.5, y)
-        (0.5, y_coord),     #           |                          |
-        (0, y_coord),       #           |                        (0,0)
-        (0, -y_coord),      #           |                          |
-        (-0.5, -y_coord),   #        *--*--*       (-0.5, -y)---(0, -y)---(0.5, -y)
-        (0.5, -y_coord),
-    ]
-
-    """
-    After defining coordinates of the shape we need instruction on how to connect 
-    each point which each other to create the desired marker shape
-    """
-
-    instructions = [
-        Path.MOVETO,        #Move "pen" to point (first coord in 'verts' -> (-0.5, -y))
-        Path.LINETO,        #Draw line towards second coord in 'verts' (0.5, -y)
-        Path.MOVETO,        #Move "pen" to third point in 'verts'
-        Path.LINETO,        #Draw line to fourth point in 'verts'
-        Path.MOVETO,        #Move pen....
-        Path.LINETO,        #Draw...
-    ]
-
-    return Path(verts, instructions)
-
-
-
-def generate_marker(path: Path) -> MarkerStyle:
-    """Creates new marker for the given path."""
-    return MarkerStyle(path)
 
 

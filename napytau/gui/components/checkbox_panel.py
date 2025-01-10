@@ -39,12 +39,12 @@ class CheckboxPanel:
         # Update all checkboxes for the fitting
         for i in range(len(self.parent.datapoints)):
 
-            i_shi, i_unshi = self.parent.datapoints[i].get_intensity()
+            shifted_intensity, unshifted_intensity = self.parent.datapoints[i].get_intensity()
             distance = self.parent.datapoints[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
-                text=f"({distance.value} | {i_shi.value})",
+                text=f"({distance.value} | {shifted_intensity.value})",
                 variable=customtkinter.IntVar(value=1),
                 command=lambda index=i: self._data_checkbox_fitting_event(index),
             )
@@ -86,12 +86,12 @@ class CheckboxPanel:
         # Update all checkboxes for the calculation
         for i in range(len(self.parent.datapoints)):
 
-            i_shi, i_unshi = self.parent.datapoints[i].get_intensity()
+            shifted_intensity, unshifted_intensity = self.parent.datapoints[i].get_intensity()
             distance = self.parent.datapoints[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
-                text=f"({distance.value} | {i_shi.value})",
+                text=f"({distance.value} | {shifted_intensity.value})",
                 variable=customtkinter.IntVar(value=1),
                 command=lambda index=i: self._data_checkbox_calculation_event(index),
             )

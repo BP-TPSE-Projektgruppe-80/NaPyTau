@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import filedialog
 
 import customtkinter
+from matplotlib.backend_bases import NavigationToolbar2
 
 from napytau.cli.cli_arguments import CLIArguments
 
@@ -15,6 +16,8 @@ from napytau.gui.components.menu_bar import MenuBar
 from napytau.gui.model.checkbox_datapoint import CheckboxDataPoint
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.util.model.value_error_pair import ValueErrorPair
+
+from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
 # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_appearance_mode("System")
@@ -51,15 +54,19 @@ class App(customtkinter.CTk):
         - Control area in row 1, column 1
         - Information area in row 2, column 0 to 1
         """
-        self.grid_rowconfigure((0, 2), weight=1)  # Three rows
-        self.grid_columnconfigure((0, 1), weight=1)  # Two columns
+        rows: int = 3
+        columns: int = 2
+
+
+        self.grid_rowconfigure((0, rows-1), weight=1)  # Three rows
+        self.grid_columnconfigure((0, columns-1), weight=1)  # Two columns
 
         # Weights are adjusted
-        self.grid_rowconfigure(0, weight=10)
+        self.grid_rowconfigure(0, weight=2)
         self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=1)
-        self.grid_columnconfigure(0, weight=10)
-        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=5)
+        self.grid_columnconfigure(1, weight=0)
 
         # Define menu bar callback functions
         menu_bar_callbacks = {
@@ -114,6 +121,10 @@ class App(customtkinter.CTk):
         # Initialize the graph
         self.graph = Graph(self)
 
+        self.create_toolbar()
+
+
+
         # Initialize the control panel
         self.control_panel = ControlPanel(self)
 
@@ -163,6 +174,7 @@ class App(customtkinter.CTk):
         customtkinter.set_appearance_mode(self.menu_bar.appearance_mode.get())
 
         self.graph.update_plot()
+        self.create_toolbar()
 
     def select_number_of_polynomials(self) -> None:
         """
@@ -200,6 +212,14 @@ class App(customtkinter.CTk):
 
         self.checkbox_panel.update_data_checkboxes_fitting()
         self.checkbox_panel.update_data_checkboxes_calculation()
+
+    def create_toolbar(self):
+        toolbar_frame = tk.Frame(self)
+        toolbar_frame.config(bg="white")
+        toolbar_frame.grid(row=0, column=0, sticky="new")  # Use grid for the frame
+        toolbar = NavigationToolbar2Tk(self.graph.canvas, toolbar_frame)
+        #toolbar.config(bg="white")# Pack inside the frame
+        toolbar.update()
 
 """
 Function for testing purposes only!
