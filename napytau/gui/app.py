@@ -174,7 +174,7 @@ class App(customtkinter.CTk):
         customtkinter.set_appearance_mode(self.menu_bar.appearance_mode.get())
 
         self.graph.update_plot()
-        self.create_toolbar()
+
 
     def select_number_of_polynomials(self) -> None:
         """

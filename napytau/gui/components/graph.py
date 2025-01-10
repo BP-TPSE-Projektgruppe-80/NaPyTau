@@ -43,6 +43,7 @@ class Graph:
             row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew"
         )
         self.graph_frame.grid_propagate(False)
+        self.parent.create_toolbar()
 
     def plot(self, appearance: str) -> Canvas:
 
