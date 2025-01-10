@@ -59,8 +59,8 @@ class CheckboxPanel:
         """
         self.parent.datapoints_for_fitting[
             index
-        ].is_checked = not self.parent.datapoints_for_fitting[index].is_checked
-        if self.parent.datapoints_for_fitting[index].is_checked:
+        ].active = not self.parent.datapoints_for_fitting[index].active
+        if self.parent.datapoints_for_fitting[index].active:
             print("[fitting] checkbox with index " + str(index) + " activated.")
         else:
             print("[fitting] checkbox with index " + str(index) + " deactivated.")
@@ -106,8 +106,8 @@ class CheckboxPanel:
         """
         self.parent.datapoints_for_calculation[
             index
-        ].is_checked = not self.parent.datapoints_for_calculation[index].is_checked
-        if self.parent.datapoints_for_calculation[index].is_checked:
+        ].active = not self.parent.datapoints_for_calculation[index].active
+        if self.parent.datapoints_for_calculation[index].active:
             print("[calculation] checkbox with index " + str(index) + " activated.")
         else:
             print("[calculation] checkbox with index " + str(index) + " deactivated.")

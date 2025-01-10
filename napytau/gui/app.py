@@ -35,8 +35,8 @@ class App(customtkinter.CTk):
 
         # Datapoints
         self.datapoints: List[Datapoint] = []
-        self.datapoints_for_fitting: List[CheckboxDataPoint] = []
-        self.datapoints_for_calculation: List[CheckboxDataPoint] = []
+        self.datapoints_for_fitting: List[Datapoint] = []
+        self.datapoints_for_calculation: List[Datapoint] = []
 
         # values
         self.tau = tk.IntVar()
@@ -207,8 +207,8 @@ class App(customtkinter.CTk):
         self.datapoints = new_datapoints.copy()
 
         for point in new_datapoints:
-            self.datapoints_for_fitting.append(CheckboxDataPoint(point, True))
-            self.datapoints_for_calculation.append(CheckboxDataPoint(point, True))
+            self.datapoints_for_fitting.append(point)
+            self.datapoints_for_calculation.append(point)
 
         self.checkbox_panel.update_data_checkboxes_fitting()
         self.checkbox_panel.update_data_checkboxes_calculation()

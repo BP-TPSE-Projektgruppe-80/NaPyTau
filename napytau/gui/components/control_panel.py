@@ -1,6 +1,6 @@
 import tkinter as tk
 import customtkinter
-from napytau.core.logic_mockup import logic
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -68,4 +68,4 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         entry_value = self.parent.tau.get()
 
-        self.label.configure(text=f"Result: {logic(entry_value)}")
+        #self.label.configure(text=f"Result: {logic(entry_value)}")

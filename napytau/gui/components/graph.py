@@ -8,12 +8,14 @@ import customtkinter
 from typing import TYPE_CHECKING
 import numpy as np
 
-from napytau.gui.model.checkbox_datapoint import CheckboxDataPoint
-from napytau.gui.model.color import Color
-from napytau.gui.model.checkbox_datapoint import get_checked_datapoints, get_distances, get_shifted_intensities
 
+from napytau.gui.model.color import Color
 from napytau.gui.model.marker_factory import generate_marker
 from napytau.gui.model.marker_factory import generate_error_marker_path
+
+from napytau.import_export.model.datapoint import Datapoint
+from napytau.import_export.model.datapoint import get_checked_datapoints, get_distances, get_shifted_intensities
+
 
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
@@ -125,7 +127,7 @@ class Graph:
         axes.tick_params(axis="y", colors=self.secondary_color)
 
     def plot_markers(self,
-                     datapoints: list[CheckboxDataPoint],
+                     datapoints: list[Datapoint],
                      axes: Axes
                      ) -> None:
         """
@@ -139,11 +141,11 @@ class Graph:
         index: int = 0
         for datapoint in datapoints:
             # Generate marker and compute dynamic markersize
-            marker = generate_marker(generate_error_marker_path(datapoint.get_shifted_intensity_error()))
-            size = datapoint.get_shifted_intensity_error() * 5  # Scale markersize based on distance
+            marker = generate_marker(generate_error_marker_path(datapoint.get_intensity()[0].error))
+            size = datapoint.get_intensity()[0].error * 5  # Scale markersize based on distance
             axes.plot(
-                datapoint.get_distance_value(),
-                datapoint.get_shifted_intensity_value(),
+                datapoint.get_distance().value,
+                datapoint.get_intensity()[0].value,
                 marker=marker,
                 linestyle="None",
                 markersize=size,
@@ -152,7 +154,7 @@ class Graph:
             )
             index = index + 1
 
-    def plot_fitting_curve(self, datapoints: list[CheckboxDataPoint], axes: Axes)-> None:
+    def plot_fitting_curve(self, datapoints: list[Datapoint], axes: Axes)-> None:
 
         """
          plotting fitting curve of datapoints
@@ -163,7 +165,7 @@ class Graph:
         """
 
         #Extracting distance values / intensities of checked datapoints
-        checked_datapoints: list[CheckboxDataPoint] = get_checked_datapoints(datapoints)
+        checked_datapoints: list[Datapoint] = get_checked_datapoints(datapoints)
 
         checked_distances: list[float] = get_distances(checked_datapoints)
         checked_shifted_intensities: list[float] = get_shifted_intensities(checked_datapoints)
