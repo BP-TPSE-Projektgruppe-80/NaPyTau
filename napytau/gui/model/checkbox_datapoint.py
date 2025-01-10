@@ -27,3 +27,33 @@ class CheckboxDataPoint:
 
     def get_shifted_intensity_error(self) -> float:
         return self.data.get_intensity()[0].error
+
+
+
+def get_checked_datapoints( datapoints: list[CheckboxDataPoint]) -> list[CheckboxDataPoint]:
+
+    checked_datapoints: list[CheckboxDataPoint] = []
+    for datapoint in datapoints:
+        if datapoint.is_checked:
+            checked_datapoints.append(datapoint)
+
+    return checked_datapoints
+
+
+
+def get_distances( datapoints: list[CheckboxDataPoint]) -> list[float]:
+
+    distances = []
+    for datapoint in datapoints:
+        distances.append(datapoint.get_distance_value())
+
+    return distances
+
+def get_shifted_intensities( datapoints: list[CheckboxDataPoint]) -> list[float]:
+
+    intensities = []
+    for datapoint in datapoints:
+        intensities.append(datapoint.get_shifted_intensity_value())
+
+    return intensities
+

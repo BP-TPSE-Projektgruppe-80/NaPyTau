@@ -8,8 +8,9 @@ import customtkinter
 from typing import TYPE_CHECKING
 import numpy as np
 
+from napytau.gui.model.checkbox_datapoint import CheckboxDataPoint
 from napytau.gui.model.color import Color
-from napytau.import_export.model.datapoint import Datapoint
+from napytau.gui.model.checkbox_datapoint import get_checked_datapoints, get_distances, get_shifted_intensities
 
 from napytau.gui.model.marker_factory import generate_marker
 from napytau.gui.model.marker_factory import generate_error_marker_path
@@ -45,26 +46,6 @@ class Graph:
 
     def plot(self, appearance: str) -> Canvas:
 
-        #Extracting Data:
-        shifted_intensities: list[float] = []
-        shifted_intensity_errors: list[float] = []
-        distances: list[float] = []
-
-        shifted_intensities_fit: list[float] = []
-        distances_fit: list[float] = []
-
-        for datapoint in self.parent.datapoints_for_fitting:
-
-            shifted_intensities.append(datapoint.get_shifted_intensity_value())
-            distances.append(datapoint.get_distance_value())
-            shifted_intensity_errors.append(datapoint.get_shifted_intensity_error())
-
-            #Filtering Data from checked checkboxes
-            if datapoint.is_checked:
-                shifted_intensities_fit.append(datapoint.get_shifted_intensity_value())
-                distances_fit.append(datapoint.get_distance_value())
-
-
         # the figure that will contain the plot
         fig = Figure(
             figsize=(3, 2),
@@ -94,16 +75,13 @@ class Graph:
 
         # draw the markers on the axes
         self.plot_markers(
-            distances,
-            shifted_intensities,
-            shifted_intensity_errors,
+            self.parent.datapoints_for_fitting,
             axes_1
         )
 
         # draw the fitting curve on the axes
         self.plot_fitting_curve(
-            distances_fit,
-            shifted_intensities_fit,
+            self.parent.datapoints_for_fitting,
             axes_1)
 
 
@@ -146,10 +124,7 @@ class Graph:
         axes.tick_params(axis="y", colors=self.secondary_color)
 
     def plot_markers(self,
-                     distances: list,
-                     shifted_intensities: list,
-                     shifted_intensity_errors: list,
-
+                     datapoints: list[CheckboxDataPoint],
                      axes: Axes
                      ) -> None:
         """
@@ -160,20 +135,23 @@ class Graph:
         :param axes: the axes on which to draw the markers
         :return: nothing
         """
-        for index in range(len(shifted_intensities)):
+        index: int = 0
+        for datapoint in datapoints:
             # Generate marker and compute dynamic markersize
-            marker = generate_marker(generate_error_marker_path(shifted_intensity_errors[index]))
-            size = shifted_intensity_errors[index] * 5  # Scale markersize based on distance
+            marker = generate_marker(generate_error_marker_path(datapoint.get_shifted_intensity_error()))
+            size = datapoint.get_shifted_intensity_error() * 5  # Scale markersize based on distance
             axes.plot(
-                distances[index],
-                shifted_intensities[index],
+                datapoint.get_distance_value(),
+                datapoint.get_shifted_intensity_value(),
                 marker=marker,
                 linestyle="None",
                 markersize=size,
                 label=f"Point {index + 1}",
                 color=self.main_marker_color,
             )
-    def plot_fitting_curve(self, distances_fit: list, shifted_intensities_fit: list, axes: Axes)-> None:
+            index = index + 1
+
+    def plot_fitting_curve(self, datapoints: list[CheckboxDataPoint], axes: Axes)-> None:
 
         """
          plotting fitting curve of datapoints
@@ -183,19 +161,28 @@ class Graph:
         :return: nothing
         """
 
+        #Extracting distance values / intensities of checked datapoints
+        checked_datapoints: list[CheckboxDataPoint] = get_checked_datapoints(datapoints)
+
+        checked_distances: list[float] = get_distances(checked_datapoints)
+        checked_shifted_intensities: list[float] = get_shifted_intensities(checked_datapoints)
+
         # Calculating coefficients
-        coeffs = np.polyfit(distances_fit, shifted_intensities_fit, len(shifted_intensities_fit))
+        coeffs = np.polyfit(checked_distances,
+                            checked_shifted_intensities,
+                            len(checked_datapoints))
 
         poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
 
-        x_fit = np.linspace(min(distances_fit), max(distances_fit), 100)
+        x_fit = np.linspace(min(checked_distances),
+                            max(checked_distances),
+                            100)
         y_fit = poly(x_fit)
 
         #plot the curve
         axes.plot(
             x_fit, y_fit, color="red", linestyle="--", linewidth="0.6"
         )
-
 
 
 
