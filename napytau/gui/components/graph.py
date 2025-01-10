@@ -7,7 +7,7 @@ import customtkinter
 from typing import TYPE_CHECKING
 import numpy as np
 
-
+from napytau.gui.components.Toolbar import Toolbar
 from napytau.gui.model.color import Color
 from napytau.gui.model.marker_factory import generate_marker
 from napytau.gui.model.marker_factory import generate_error_marker_path
@@ -46,7 +46,7 @@ class Graph:
             row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew"
         )
         self.graph_frame.grid_propagate(False)
-        self.parent.create_toolbar()
+        self.parent.toolbar = Toolbar(self.parent)
 
     def plot(self, appearance: str) -> Canvas:
 

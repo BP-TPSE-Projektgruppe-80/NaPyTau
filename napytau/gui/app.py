@@ -13,10 +13,11 @@ from napytau.gui.components.control_panel import ControlPanel
 from napytau.gui.components.graph import Graph
 from napytau.gui.components.logger import Logger
 from napytau.gui.components.menu_bar import MenuBar
+from napytau.gui.components.Toolbar import Toolbar
+
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.util.model.value_error_pair import ValueErrorPair
 
-from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
 # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_appearance_mode("System")
@@ -120,9 +121,7 @@ class App(customtkinter.CTk):
         # Initialize the graph
         self.graph = Graph(self)
 
-        self.create_toolbar()
-
-
+        self.toolbar = Toolbar(self)
 
         # Initialize the control panel
         self.control_panel = ControlPanel(self)
@@ -212,13 +211,7 @@ class App(customtkinter.CTk):
         self.checkbox_panel.update_data_checkboxes_fitting()
         self.checkbox_panel.update_data_checkboxes_calculation()
 
-    def create_toolbar(self) -> None:
-        toolbar_frame = tk.Frame(self)
-        toolbar_frame.config(bg="white")
-        toolbar_frame.grid(row=0, column=0, sticky="new")  # Use grid for the frame
-        toolbar = NavigationToolbar2Tk(self.graph.canvas, toolbar_frame)
-        #toolbar.config(bg="white")# Pack inside the frame
-        toolbar.update()
+
 
 """
 Function for testing purposes only!
