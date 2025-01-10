@@ -1,10 +1,12 @@
 import tkinter as tk
 
+import napytau.gui.app as App
+
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
 
 class Toolbar():
-    def __init__(self, parent,) -> None:
+    def __init__(self, parent: App) -> None:
         self.parent = parent
 
         #Create frame to hold Toolbar

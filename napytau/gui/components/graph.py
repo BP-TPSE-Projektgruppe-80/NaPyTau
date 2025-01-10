@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 class Graph:
 
-    def __init__(self, parent: "App") -> None:
+    def __init__(self, parent: App) -> None:
 
         self.parent = parent
         self.graph_frame = self.plot(
