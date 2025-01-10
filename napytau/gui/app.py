@@ -16,6 +16,7 @@ from napytau.gui.components.menu_bar import MenuBar
 from napytau.gui.components.Toolbar import Toolbar
 
 from napytau.import_export.model.datapoint import Datapoint
+from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.util.model.value_error_pair import ValueErrorPair
 
 
@@ -34,9 +35,9 @@ class App(customtkinter.CTk):
         super().__init__()
 
         # Datapoints
-        self.datapoints: List[Datapoint] = []
-        self.datapoints_for_fitting: List[Datapoint] = []
-        self.datapoints_for_calculation: List[Datapoint] = []
+        self.datapoints: DatapointCollection = DatapointCollection([])
+        self.datapoints_for_fitting: DatapointCollection = DatapointCollection([])
+        self.datapoints_for_calculation: DatapointCollection = DatapointCollection([])
 
         # values
         self.tau = tk.IntVar()
@@ -202,11 +203,11 @@ class App(customtkinter.CTk):
         Call this method if there are new datapoints.
         :param new_datapoints: The new list of datapoints.
         """
-        self.datapoints = new_datapoints.copy()
+        self.datapoints = DatapointCollection(new_datapoints)
 
         for point in new_datapoints:
-            self.datapoints_for_fitting.append(point)
-            self.datapoints_for_calculation.append(point)
+            self.datapoints_for_fitting.add_datapoint(point)
+            self.datapoints_for_calculation.add_datapoint(point)
 
         self.checkbox_panel.update_data_checkboxes_fitting()
         self.checkbox_panel.update_data_checkboxes_calculation()

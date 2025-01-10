@@ -13,9 +13,7 @@ from napytau.gui.model.marker_factory import generate_marker
 from napytau.gui.model.marker_factory import generate_error_marker_path
 
 from napytau.import_export.model.datapoint import Datapoint
-from napytau.import_export.model.datapoint import (get_checked_datapoints,
-                                                   get_distances,
-                                                   get_shifted_intensities)
+from napytau.import_export.model.datapoint_collection import DatapointCollection
 
 
 if TYPE_CHECKING:
@@ -85,7 +83,7 @@ class Graph:
 
         # draw the fitting curve on the axes
         self.plot_fitting_curve(
-            self.parent.datapoints_for_fitting,
+            DatapointCollection(self.parent.datapoints_for_fitting),
             axes_1)
 
 
@@ -161,7 +159,8 @@ class Graph:
             )
             index = index + 1
 
-    def plot_fitting_curve(self, datapoints: list[Datapoint],
+    def plot_fitting_curve(self,
+                           datapoints: DatapointCollection,
                            axes: Axes)-> None:
 
         """
@@ -173,14 +172,23 @@ class Graph:
         """
 
         #Extracting distance values / intensities of checked datapoints
-        checked_datapoints: list[Datapoint] = get_checked_datapoints(datapoints)
+        checked_datapoints: DatapointCollection = (
+            datapoints.get_active_datapoints()
+        )
 
-        checked_distances: list[float] = (
-            get_distances(checked_datapoints)
-        )
-        checked_shifted_intensities: list[float] = (
-            get_shifted_intensities(checked_datapoints)
-        )
+
+
+        checked_distances: list[float] = [
+            valueErrorPair.value
+            for valueErrorPair in checked_datapoints.get_distances()
+        ]
+
+
+        checked_shifted_intensities: list[float] = [
+            valueErrorPair.value
+            for valueErrorPair in checked_datapoints.get_shifted_intensities()
+        ]
+
 
         # Calculating coefficients
         coeffs = np.polyfit(checked_distances,

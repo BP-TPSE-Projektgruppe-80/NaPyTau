@@ -89,30 +89,3 @@ class Datapoint:
         self.active = active
 
 
-def get_checked_datapoints( datapoints: list[Datapoint]) -> list[Datapoint]:
-
-    checked_datapoints: list[Datapoint] = []
-    for datapoint in datapoints:
-        if datapoint.active:
-            checked_datapoints.append(datapoint)
-
-    return checked_datapoints
-
-
-
-def get_distances( datapoints: list[Datapoint]) -> list[float]:
-
-    distances = []
-    for datapoint in datapoints:
-        distances.append(datapoint.get_distance().value)
-
-    return distances
-
-def get_shifted_intensities( datapoints: list[Datapoint]) -> list[float]:
-
-    intensities = []
-    for datapoint in datapoints:
-        intensities.append(datapoint.get_intensity()[0].value)
-
-    return intensities
-
