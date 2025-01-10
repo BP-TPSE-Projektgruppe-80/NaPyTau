@@ -14,7 +14,6 @@ from napytau.import_export.model.datapoint import Datapoint
 from napytau.gui.model.marker_factory import generate_marker
 from napytau.gui.model.marker_factory import generate_error_marker_path
 
-
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
