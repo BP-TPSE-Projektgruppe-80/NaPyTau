@@ -4,7 +4,7 @@ from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
 
 class Toolbar():
-    def __init__(self, parent,):
+    def __init__(self, parent,) -> None:
         self.parent = parent
 
         #Create frame to hold Toolbar

@@ -83,7 +83,7 @@ class Graph:
 
         # draw the fitting curve on the axes
         self.plot_fitting_curve(
-            DatapointCollection(self.parent.datapoints_for_fitting),
+            self.parent.datapoints_for_fitting,
             axes_1)
 
 
@@ -126,7 +126,7 @@ class Graph:
         axes.tick_params(axis="y", colors=self.secondary_color)
 
     def plot_markers(self,
-                     datapoints: list[Datapoint],
+                     datapoints: DatapointCollection,
                      axes: Axes
                      ) -> None:
         """
