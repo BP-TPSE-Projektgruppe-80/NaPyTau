@@ -3,7 +3,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from matplotlib.axes import Axes
-import matplotlib.pyplot as plt
 import customtkinter
 from typing import TYPE_CHECKING
 import numpy as np
@@ -14,7 +13,9 @@ from napytau.gui.model.marker_factory import generate_marker
 from napytau.gui.model.marker_factory import generate_error_marker_path
 
 from napytau.import_export.model.datapoint import Datapoint
-from napytau.import_export.model.datapoint import get_checked_datapoints, get_distances, get_shifted_intensities
+from napytau.import_export.model.datapoint import (get_checked_datapoints,
+                                                   get_distances,
+                                                   get_shifted_intensities)
 
 
 if TYPE_CHECKING:
@@ -141,8 +142,14 @@ class Graph:
         index: int = 0
         for datapoint in datapoints:
             # Generate marker and compute dynamic markersize
-            marker = generate_marker(generate_error_marker_path(datapoint.get_intensity()[0].error))
-            size = datapoint.get_intensity()[0].error * 5  # Scale markersize based on distance
+            marker = generate_marker(
+                generate_error_marker_path(
+                    datapoint.get_intensity()[0].error
+                )
+            )
+
+            # Scale markersize based on distance
+            size = datapoint.get_intensity()[0].error * 5
             axes.plot(
                 datapoint.get_distance().value,
                 datapoint.get_intensity()[0].value,
@@ -154,7 +161,8 @@ class Graph:
             )
             index = index + 1
 
-    def plot_fitting_curve(self, datapoints: list[Datapoint], axes: Axes)-> None:
+    def plot_fitting_curve(self, datapoints: list[Datapoint],
+                           axes: Axes)-> None:
 
         """
          plotting fitting curve of datapoints
@@ -167,8 +175,12 @@ class Graph:
         #Extracting distance values / intensities of checked datapoints
         checked_datapoints: list[Datapoint] = get_checked_datapoints(datapoints)
 
-        checked_distances: list[float] = get_distances(checked_datapoints)
-        checked_shifted_intensities: list[float] = get_shifted_intensities(checked_datapoints)
+        checked_distances: list[float] = (
+            get_distances(checked_datapoints)
+        )
+        checked_shifted_intensities: list[float] = (
+            get_shifted_intensities(checked_datapoints)
+        )
 
         # Calculating coefficients
         coeffs = np.polyfit(checked_distances,

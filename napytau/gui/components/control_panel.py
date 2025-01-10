@@ -66,6 +66,6 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         Starts the main calculation.
         """
-        entry_value = self.parent.tau.get()
+        #entry_value = self.parent.tau.get()
 
         #self.label.configure(text=f"Result: {logic(entry_value)}")

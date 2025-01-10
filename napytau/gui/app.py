@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import filedialog
 
 import customtkinter
-from matplotlib.backend_bases import NavigationToolbar2
+
 
 from napytau.cli.cli_arguments import CLIArguments
 
@@ -13,7 +13,6 @@ from napytau.gui.components.control_panel import ControlPanel
 from napytau.gui.components.graph import Graph
 from napytau.gui.components.logger import Logger
 from napytau.gui.components.menu_bar import MenuBar
-from napytau.gui.model.checkbox_datapoint import CheckboxDataPoint
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.util.model.value_error_pair import ValueErrorPair
 

@@ -39,7 +39,9 @@ class CheckboxPanel:
         # Update all checkboxes for the fitting
         for i in range(len(self.parent.datapoints)):
 
-            shifted_intensity, unshifted_intensity = self.parent.datapoints[i].get_intensity()
+            shifted_intensity, unshifted_intensity = (
+                self.parent.datapoints[i].get_intensity()
+            )
             distance = self.parent.datapoints[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
@@ -86,7 +88,9 @@ class CheckboxPanel:
         # Update all checkboxes for the calculation
         for i in range(len(self.parent.datapoints)):
 
-            shifted_intensity, unshifted_intensity = self.parent.datapoints[i].get_intensity()
+            shifted_intensity, unshifted_intensity = (
+                self.parent.datapoints[i].get_intensity()
+            )
             distance = self.parent.datapoints[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
