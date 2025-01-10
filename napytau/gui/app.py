@@ -212,7 +212,7 @@ class App(customtkinter.CTk):
         self.checkbox_panel.update_data_checkboxes_fitting()
         self.checkbox_panel.update_data_checkboxes_calculation()
 
-    def create_toolbar(self):
+    def create_toolbar(self) -> None:
         toolbar_frame = tk.Frame(self)
         toolbar_frame.config(bg="white")
         toolbar_frame.grid(row=0, column=0, sticky="new")  # Use grid for the frame
