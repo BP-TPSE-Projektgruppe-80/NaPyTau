@@ -122,7 +122,7 @@ class App(customtkinter.CTk):
         # Initialize the graph
         self.graph: Graph = Graph(self)
 
-        self.toolbar: Toolbar = Toolbar(self)
+        self.toolbar: Toolbar = Toolbar(self, self.graph.canvas)
 
         # Initialize the control panel
         self.control_panel = ControlPanel(self)

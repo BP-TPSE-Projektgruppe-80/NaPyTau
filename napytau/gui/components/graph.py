@@ -32,18 +32,7 @@ class Graph:
         )
         self.graph_frame.grid_propagate(False)
 
-    def update_plot(self) -> None:
-        """
-        Is called whenever the graph needs to be re-rendered.
-        """
-        self.graph_frame = self.plot(
-             customtkinter.get_appearance_mode()
-        )
-        self.graph_frame.grid(
-            row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew"
-        )
-        self.graph_frame.grid_propagate(False)
-        self.parent.toolbar = Toolbar(self.parent)
+
 
     def plot(self, appearance: str) -> Canvas:
 
@@ -92,6 +81,19 @@ class Graph:
         self.canvas.draw()
 
         return self.canvas.get_tk_widget()
+
+    def update_plot(self) -> None:
+        """
+        Is called whenever the graph needs to be re-rendered.
+        """
+        self.graph_frame = self.plot(
+             customtkinter.get_appearance_mode()
+        )
+        self.graph_frame.grid(
+            row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew"
+        )
+        self.graph_frame.grid_propagate(False)
+        self.parent.toolbar = Toolbar(self.parent, self.canvas)
 
     def set_colors(self, appearance: str) -> None:
 
