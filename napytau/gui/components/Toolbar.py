@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
+    from napytau.gui.components.graph import Graph
 
 
 class Toolbar:
@@ -25,7 +26,9 @@ class Toolbar:
 
         #Create Toolbar
 
-        toolbar = NavigationToolbar2Tk(self.parent.graph.canvas,
+        graph: Graph = self.parent.graph
+
+        toolbar = NavigationToolbar2Tk(graph.canvas,
                                        toolbar_frame)
         #Adjust background color
         toolbar.config(bg=self.parent.graph.main_color)
