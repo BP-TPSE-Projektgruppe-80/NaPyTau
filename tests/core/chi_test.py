@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
-import numpy.testing
+import numpy.testing as nptest
 import scipy as sp
 from typing import Tuple
 
@@ -81,14 +81,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([0, 1, 2])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -102,14 +102,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([0, 1, 2])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -121,7 +121,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 (np.array([4.64, 52.80555556, 570.90306122])),
             )
@@ -131,22 +131,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([-2, -4.33333333, -13.5])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([-0.8, -5.83333333, -19.71428571])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -207,14 +207,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -228,14 +228,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -247,7 +247,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 np.array([]),
             )
@@ -257,22 +257,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -336,14 +336,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([2])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -357,14 +357,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([2])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -376,7 +376,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 (np.array([1608.69444444])),
             )
@@ -386,22 +386,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([-18.66666667])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([-35.5])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -465,14 +465,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([0, 1])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -486,14 +486,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([0, 1])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -505,7 +505,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 (np.array([float("inf"), 1465])),
             )
@@ -515,22 +515,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([-float("inf"), -13])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([-float("inf"), -36])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -594,14 +594,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([0, 1])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -615,14 +615,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([0, 1])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -634,7 +634,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 (np.array([18.77777778, 3.25])),
             )
@@ -644,22 +644,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([4, 1.5])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([1.66666667, 1])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -723,14 +723,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([0, 1, 2])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -744,14 +744,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([0, 1, 2])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -763,7 +763,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 (np.array([4, 18.77777778, 182.25])),
             )
@@ -773,22 +773,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([-2, -4.33333333, -13.5])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([-0.8, -5.83333333, -19.71428571])),
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -836,7 +836,7 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertAlmostEqual(actual_chi, expected_chi)
-            np.testing.assert_array_almost_equal(
+            nptest.assert_array_almost_equal(
                 actual_coefficients, expected_coefficients
             )
 
@@ -844,7 +844,7 @@ class ChiUnitTest(unittest.TestCase):
                 len(scipy_optimize_module_mock.optimize.minimize.mock_calls), 1
             )
 
-            np.testing.assert_array_equal(
+            nptest.assert_array_equal(
                 scipy_optimize_module_mock.optimize.minimize.mock_calls[0].args[1],
                 np.array([1, 1, 1]),
             )
