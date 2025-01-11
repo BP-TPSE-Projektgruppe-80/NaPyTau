@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
+import numpy.testing
 import scipy as sp
 from typing import Tuple
 
@@ -797,8 +798,8 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return value of called function
-        scipy_optimize_module_mock.optimize.minimize.return_value = sp.optimize.OptimizeResult(
-            x=[2, 3, 1], fun=0.0
+        scipy_optimize_module_mock.optimize.minimize.return_value = (
+            sp.optimize.OptimizeResult(x=[2, 3, 1], fun=0.0)
         )
 
         with patch.dict(
@@ -860,8 +861,8 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        scipy_optimize_module_mock.optimize.minimize.return_value = sp.optimize.OptimizeResult(
-            x=2.0
+        scipy_optimize_module_mock.optimize.minimize.return_value = (
+            sp.optimize.OptimizeResult(x=2.0)
         )
 
         numpy_module_mock.mean.return_value = 0
