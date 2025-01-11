@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
 
-class Toolbar():
+class Toolbar:
     def __init__(self, parent: "App") -> None:
         self.parent = parent
 
