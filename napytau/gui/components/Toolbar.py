@@ -1,12 +1,15 @@
 import tkinter as tk
 
-from napytau.gui.app import App
 
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from napytau.gui.app import App  # Import only for the type checking.
 
 
 class Toolbar():
-    def __init__(self, parent: App) -> None:
+    def __init__(self, parent: "App") -> None:
         self.parent = parent
 
         #Create frame to hold Toolbar
@@ -27,3 +30,4 @@ class Toolbar():
         #Adjust background color
         toolbar.config(bg=self.parent.graph.main_color)
         toolbar.update()
+
