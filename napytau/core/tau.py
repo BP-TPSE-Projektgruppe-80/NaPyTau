@@ -3,7 +3,6 @@ from napytau.core.chi import optimize_coefficients
 from napytau.core.polynomials import (
     evaluate_differentiated_polynomial_at_measuring_distances,
 )  # noqa E501
-
 import numpy as np
 from typing import Tuple, Optional
 

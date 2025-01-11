@@ -1,11 +1,9 @@
 import unittest
 from unittest.mock import MagicMock, patch
-
-import numpy as np
-
 from napytau.core.errors.polynomial_coefficient_error import (
     PolynomialCoefficientError,
 )
+import numpy as np
 
 
 def set_up_mocks() -> MagicMock:

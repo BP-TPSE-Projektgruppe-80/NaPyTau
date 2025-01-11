@@ -3,8 +3,7 @@ from napytau.core.polynomials import (
     evaluate_differentiated_polynomial_at_measuring_distances,
 )  # noqa E501
 import numpy as np
-from scipy import optimize
-from scipy.optimize import OptimizeResult
+import scipy as sp
 from typing import Tuple
 
 
@@ -115,7 +114,7 @@ def optimize_coefficients(
         weight_factor,
     )
 
-    result: OptimizeResult = optimize.minimize(
+    result: sp.optimize.OptimizeResult = sp.optimize.minimize(
         chi_squared,
         initial_coefficients,
         # Optimization method for bounded optimization. It minimizes a scalar function
@@ -174,7 +173,7 @@ def optimize_t_hyp(
         weight_factor,
     )[1]
 
-    result: OptimizeResult = optimize.minimize(
+    result: sp.optimize.OptimizeResult = sp.optimize.minimize(
         chi_squared_t_hyp,
         # Initial guess for t_hyp. Startíng with the mean reduces likelihood of
         # biasing the optimization process toward one boundary.

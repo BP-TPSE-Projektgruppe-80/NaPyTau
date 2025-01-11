@@ -1,8 +1,7 @@
-import numpy as np
-
 from napytau.core.errors.polynomial_coefficient_error import (
     PolynomialCoefficientError,
 )
+import numpy as np
 
 
 def evaluate_polynomial_at_measuring_distances(
