@@ -1,6 +1,6 @@
 from napytau.core.polynomials import (
     evaluate_differentiated_polynomial_at_measuring_distances,
-)  # noqa E501
+)
 from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 import numpy as np
 
