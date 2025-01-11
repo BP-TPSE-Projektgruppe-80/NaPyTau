@@ -1,19 +1,17 @@
 from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 from napytau.core.polynomials import (
     evaluate_differentiated_polynomial_at_measuring_distances,
-)  # noqa E501
+)
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.util.adjust_datapoint_collection_to_suit_numpy import get_values_from_value_error_pair_list, get_errors_from_value_error_pair_list
 import numpy as np
 import scipy as sp
 from typing import Tuple
 
 
 def chi_squared_fixed_t(
-    doppler_shifted_intensities: np.ndarray,
-    unshifted_intensities: np.ndarray,
-    delta_doppler_shifted_intensities: np.ndarray,
-    delta_unshifted_intensities: np.ndarray,
+    datapoints: DatapointCollection,
     coefficients: np.ndarray,
-    distances: np.ndarray,
     t_hyp: float,
     weight_factor: float,
 ) -> float:
@@ -21,18 +19,10 @@ def chi_squared_fixed_t(
     Computes the chi-squared value for a given hypothesis t_hyp
 
     Args:
-        doppler_shifted_intensities (ndarray):
-        Array of Doppler-shifted intensity measurements
-        unshifted_intensities (ndarray):
-        Array of unshifted intensity measurements
-        delta_doppler_shifted_intensities (ndarray):
-        Uncertainties in Doppler-shifted intensities
-        delta_unshifted_intensities (ndarray):
-        Uncertainties in unshifted intensities
+        datapoints (DatapointCollection):
+        Datapoints for fitting, consisting of distances and intensities
         coefficients (ndarray):
         Polynomial coefficients for fitting
-        distances (ndarray):
-        Array of distance points
         t_hyp (float):
         Hypothesis value for the scaling factor
         weight_factor (float):
@@ -44,21 +34,21 @@ def chi_squared_fixed_t(
 
     # Compute the difference between Doppler-shifted intensities and polynomial model
     shifted_intensity_difference: np.ndarray = (
-        doppler_shifted_intensities
-        - evaluate_polynomial_at_measuring_distances(distances, coefficients)
-    ) / delta_doppler_shifted_intensities
+        get_values_from_value_error_pair_list(datapoints.get_shifted_intensities())
+        - evaluate_polynomial_at_measuring_distances(get_values_from_value_error_pair_list(datapoints.get_distances()), coefficients)
+    ) / get_errors_from_value_error_pair_list(datapoints.get_shifted_intensities())
 
     # Compute the difference between unshifted intensities and
     # scaled derivative of the polynomial model
     unshifted_intensity_difference: np.ndarray = (
-        unshifted_intensities
+        get_values_from_value_error_pair_list(datapoints.get_unshifted_intensities())
         - (
             t_hyp
             * evaluate_differentiated_polynomial_at_measuring_distances(
-                distances, coefficients
+                get_values_from_value_error_pair_list(datapoints.get_distances()), coefficients
             )
         )
-    ) / delta_unshifted_intensities
+    ) / get_errors_from_value_error_pair_list(datapoints.get_unshifted_intensities())
 
     # combine the weighted sum of squared differences
     result: float = np.sum(
