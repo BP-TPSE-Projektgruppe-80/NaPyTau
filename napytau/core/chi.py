@@ -59,12 +59,8 @@ def chi_squared_fixed_t(
 
 
 def optimize_coefficients(
-    doppler_shifted_intensities: np.ndarray,
-    unshifted_intensities: np.ndarray,
-    delta_doppler_shifted_intensities: np.ndarray,
-    delta_unshifted_intensities: np.ndarray,
+    datapoints: DatapointCollection,
     initial_coefficients: np.ndarray,
-    distances: np.ndarray,
     t_hyp: float,
     weight_factor: float,
 ) -> Tuple[np.ndarray, float]:
@@ -72,18 +68,10 @@ def optimize_coefficients(
     Optimizes the polynomial coefficients to minimize the chi-squared function.
 
     Args:
-        doppler_shifted_intensities (ndarray):
-        Array of Doppler-shifted intensity measurements
-        unshifted_intensities (ndarray):
-        Array of unshifted intensity measurements
-        delta_doppler_shifted_intensities (ndarray):
-        Uncertainties in Doppler-shifted intensities
-        delta_unshifted_intensities (ndarray):
-        Uncertainties in unshifted intensities
+        datapoints (DatapointCollection):
+        Datapoints for fitting, consisting of distances and intensities
         initial_coefficients (ndarray):
         Initial guess for the polynomial coefficients
-        distances (ndarray):
-        Array of distance points
         t_hyp (float):
         Hypothesis value for the scaling factor
         weight_factor (float):
@@ -93,12 +81,12 @@ def optimize_coefficients(
         tuple: Optimized coefficients (ndarray) and minimized chi-squared value (float).
     """
     chi_squared = lambda coefficients: chi_squared_fixed_t(
-        doppler_shifted_intensities,
-        unshifted_intensities,
-        delta_doppler_shifted_intensities,
-        delta_unshifted_intensities,
+        datapoints.get_shifted_intensities().get_values(),
+        datapoints.get_unshifted_intensities().get_values(),
+        datapoints.get_shifted_intensities().get_errors(),
+        datapoints.get_unshifted_intensities().get_errors(),
         coefficients,
-        distances,
+        datapoints.get_distances().get_values(),
         t_hyp,
         weight_factor,
     )
@@ -117,12 +105,8 @@ def optimize_coefficients(
 
 
 def optimize_t_hyp(
-    doppler_shifted_intensities: np.ndarray,
-    unshifted_intensities: np.ndarray,
-    delta_doppler_shifted_intensities: np.ndarray,
-    delta_unshifted_intensities: np.ndarray,
+    datapoints: DatapointCollection,
     initial_coefficients: np.ndarray,
-    distances: np.ndarray,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
 ) -> float:
@@ -130,18 +114,10 @@ def optimize_t_hyp(
     Optimizes the hypothesis value t_hyp to minimize the chi-squared function.
 
     Parameters:
-        doppler_shifted_intensities (ndarray):
-        Array of Doppler-shifted intensity measurements
-        unshifted_intensities (ndarray):
-        Array of unshifted intensity measurements
-        delta_doppler_shifted_intensities (ndarray):
-        Uncertainties in Doppler-shifted intensities
-        delta_unshifted_intensities (ndarray):
-        Uncertainties in unshifted intensities
+        datapoints (DatapointCollection):
+        Datapoints for fitting, consisting of distances and intensities
         initial_coefficients (ndarray):
         Initial guess for the polynomial coefficients
-        distances (ndarray):
-        Array of distance points
         t_hyp_range (tuple):
         Range for t_hyp optimization (min, max)
         weight_factor (float):
@@ -152,11 +128,11 @@ def optimize_t_hyp(
     """
 
     chi_squared_t_hyp = lambda t_hyp: optimize_coefficients(
-        doppler_shifted_intensities,
-        unshifted_intensities,
-        delta_doppler_shifted_intensities,
-        delta_unshifted_intensities,
-        distances,
+        datapoints.get_shifted_intensities().get_values(),
+        datapoints.get_unshifted_intensities().get_values(),
+        datapoints.get_shifted_intensities().get_errors(),
+        datapoints.get_unshifted_intensities().get_errors(),
+        datapoints.get_distances().get_values(),
         initial_coefficients,
         t_hyp,
         weight_factor,
