@@ -51,19 +51,40 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         Create the timescale widget.
         """
+        min_timescale = 0.01
+        max_timescale = 100.0
+
         frame = customtkinter.CTkFrame(self)
 
+        timescale_entry = customtkinter.StringVar(value=str(self.timescale.get()))
+
+        # TODO: Print errors to the logger later on.
+        def update_timescale() -> None:
+            try:
+                value = float(timescale_entry.get())
+                if min_timescale <= value <= max_timescale:
+                    self.timescale.set(value)
+                    print(f"Timescale set to: {value}")
+                else:
+                    print(f"Error: Value out of valid range ({min_timescale:.2f}"
+                          f" - {max_timescale:.2f}).")
+            except ValueError:
+                print("Error: Invalid input value, please enter a number.")
+
+        def sync_entry_with_slider(value : float) -> None:
+            timescale_entry.set(f"{value:.2f}")
+
         button = customtkinter.CTkButton(frame, text="t [ps]",
-                                         command=self.timescale_button_event)
+                                         command=update_timescale)
         button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-        entry = customtkinter.CTkEntry(frame, textvariable=self.timescale,
+        entry = customtkinter.CTkEntry(frame, textvariable=timescale_entry,
                                        justify="right", width=80)
         entry.grid(row=0, column=1, padx=5, pady=5, sticky="e")
 
-        slider = customtkinter.CTkSlider(frame, from_=0.01, to=100.0,
+        slider = customtkinter.CTkSlider(frame, from_=min_timescale, to=max_timescale,
                                          variable=self.timescale,
-                                         command=self.timescale_slider_event)
+                                         command=sync_entry_with_slider)
         slider.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
         frame.columnconfigure(0, weight=1)
