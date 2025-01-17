@@ -18,5 +18,5 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
-  logo: /ressources/logo.jpg
-  favicon: /ressources/favicon.ico
+  logo: ressources/logo.jpg
+  favicon: ressources/favicon.ico
