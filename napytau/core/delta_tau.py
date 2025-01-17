@@ -1,16 +1,13 @@
 from napytau.core.polynomials import (
     evaluate_differentiated_polynomial_at_measuring_distances,
-)  # noqa E501
+)
 from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
-from numpy import array
-from numpy import ndarray
-from numpy import zeros
-from numpy import diag
-from numpy import power
-from numpy import linalg
+import numpy as np
 
 
-def calculate_jacobian_matrix(distances: ndarray, coefficients: ndarray) -> ndarray:
+def calculate_jacobian_matrix(
+    distances: np.ndarray, coefficients: np.ndarray
+) -> np.ndarray:
     """
     calculated the jacobian matrix for a set of polynomial coefficients taking
     different distances into account.
@@ -26,20 +23,20 @@ def calculate_jacobian_matrix(distances: ndarray, coefficients: ndarray) -> ndar
     """
 
     # initializes the jacobian matrix
-    jacobian_matrix: ndarray = zeros((len(distances), len(coefficients)))
+    jacobian_matrix: np.ndarray = np.zeros((len(distances), len(coefficients)))
 
     epsilon: float = 1e-8  # small disturbance value
 
     # Loop over each coefficient and calculate the partial derivative
     for i in range(len(coefficients)):
-        perturbed_coefficients: ndarray = array(coefficients, dtype=float)
+        perturbed_coefficients: np.ndarray = np.array(coefficients, dtype=float)
         perturbed_coefficients[i] += epsilon  # slightly disturb the current coefficient
 
         # Compute the disturbed and original polynomial values at the given distances
-        perturbed_function: ndarray = evaluate_polynomial_at_measuring_distances(
+        perturbed_function: np.ndarray = evaluate_polynomial_at_measuring_distances(
             distances, perturbed_coefficients
         )
-        original_function: ndarray = evaluate_polynomial_at_measuring_distances(
+        original_function: np.ndarray = evaluate_polynomial_at_measuring_distances(
             distances, coefficients
         )
 
@@ -53,8 +50,10 @@ def calculate_jacobian_matrix(distances: ndarray, coefficients: ndarray) -> ndar
 
 
 def calculate_covariance_matrix(
-    delta_shifted_intensities: ndarray, distances: ndarray, coefficients: ndarray
-) -> ndarray:
+    delta_shifted_intensities: np.ndarray,
+    distances: np.ndarray,
+    coefficients: np.ndarray,
+) -> np.ndarray:
     """
     Computes the covariance matrix for the polynomial coefficients using the
     jacobian matrix and a weight matrix derived from the shifted intensities' errors.
@@ -67,26 +66,26 @@ def calculate_covariance_matrix(
         ndarray: The computed covariance matrix for the polynomial coefficients.
     """
 
-    jacobian_matrix: ndarray = calculate_jacobian_matrix(distances, coefficients)
+    jacobian_matrix: np.ndarray = calculate_jacobian_matrix(distances, coefficients)
 
     # Construct the weight matrix from the inverse squared errors
-    weight_matrix: ndarray = diag(1 / power(delta_shifted_intensities, 2))
+    weight_matrix: np.ndarray = np.diag(1 / np.power(delta_shifted_intensities, 2))
 
-    fit_matrix: ndarray = jacobian_matrix.T @ weight_matrix @ jacobian_matrix
+    fit_matrix: np.ndarray = jacobian_matrix.T @ weight_matrix @ jacobian_matrix
 
-    covariance_matrix: ndarray = linalg.inv(fit_matrix)
+    covariance_matrix: np.ndarray = np.linalg.inv(fit_matrix)
 
     return covariance_matrix
 
 
 def calculate_error_propagation_terms(
-    unshifted_intensities: ndarray,
-    delta_shifted_intensities: ndarray,
-    delta_unshifted_intensities: ndarray,
-    distances: ndarray,
-    coefficients: ndarray,
+    unshifted_intensities: np.ndarray,
+    delta_shifted_intensities: np.ndarray,
+    delta_unshifted_intensities: np.ndarray,
+    distances: np.ndarray,
+    coefficients: np.ndarray,
     taufactor: float,
-) -> ndarray:
+) -> np.ndarray:
     """
     creates the error propagation term for the polynomial coefficients.
     combining direct errors, polynomial uncertainties, and mixed covariance terms.
@@ -109,16 +108,16 @@ def calculate_error_propagation_terms(
         )
     )
 
-    gaussian_error_from_unshifted_intensity: ndarray = power(
+    gaussian_error_from_unshifted_intensity: np.ndarray = np.power(
         delta_unshifted_intensities, 2
-    ) / power(
+    ) / np.power(
         calculated_differentiated_polynomial_sum_at_measuring_distances,
         2,
     )
 
     # Initialize the polynomial uncertainty term for second term
-    delta_p_j_i_squared: ndarray = zeros(len(distances))
-    covariance_matrix: ndarray = calculate_covariance_matrix(
+    delta_p_j_i_squared: np.ndarray = np.zeros(len(distances))
+    covariance_matrix: np.ndarray = calculate_covariance_matrix(
         delta_shifted_intensities, distances, coefficients
     )
 
@@ -127,25 +126,27 @@ def calculate_error_propagation_terms(
         for l in range(len(coefficients)):  # noqa E741
             delta_p_j_i_squared = (
                 delta_p_j_i_squared
-                + power(distances, k) * power(distances, l) * covariance_matrix[k, l]
+                + np.power(distances, k)
+                * np.power(distances, l)
+                * covariance_matrix[k, l]
             )
 
-    gaussian_error_from_polynomial_uncertainties: ndarray = (
-        power(unshifted_intensities, 2)
-        / power(
+    gaussian_error_from_polynomial_uncertainties: np.ndarray = (
+        np.power(unshifted_intensities, 2)
+        / np.power(
             calculated_differentiated_polynomial_sum_at_measuring_distances,
             4,
         )
-    ) * power(delta_p_j_i_squared, 2)
+    ) * np.power(delta_p_j_i_squared, 2)
 
-    error_from_covariance: ndarray = (
+    error_from_covariance: np.ndarray = (
         unshifted_intensities * taufactor * delta_p_j_i_squared
-    ) / power(calculated_differentiated_polynomial_sum_at_measuring_distances, 3)
+    ) / np.power(calculated_differentiated_polynomial_sum_at_measuring_distances, 3)
 
-    interim_result: ndarray = (
+    interim_result: np.ndarray = (
         gaussian_error_from_unshifted_intensity
         + gaussian_error_from_polynomial_uncertainties
     )
-    errors: ndarray = interim_result + error_from_covariance
+    errors: np.ndarray = interim_result + error_from_covariance
     # Return the sum of all three contributions
     return errors

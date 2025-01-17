@@ -1,8 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from numpy import ndarray
-from numpy import array
-from numpy import testing
+import numpy as np
 from typing import Tuple
 
 
@@ -23,12 +21,12 @@ class TauUnitTest(unittest.TestCase):
         chi_mock, polynomials_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        chi_mock.optimize_coefficients.return_value: Tuple[ndarray, float] = (
-            array([2, 3, 1]),
+        chi_mock.optimize_coefficients.return_value: Tuple[np.ndarray, float] = (
+            np.array([2, 3, 1]),
             0,
         )
         chi_mock.optimize_t_hyp.return_value: float = 2.0
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value: ndarray = array(
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value: np.ndarray = np.array(
             [2, 6]
         )
 
@@ -41,19 +39,19 @@ class TauUnitTest(unittest.TestCase):
         ):
             from napytau.core.tau import calculate_tau_i_values
 
-            doppler_shifted_intensities: ndarray = array([2, 6])
-            unshifted_intensities: ndarray = array([6, 10])
-            delta_doppler_shifted_intensities: ndarray = array([1, 1])
-            delta_unshifted_intensities: ndarray = array([1, 1])
-            initial_coefficients: ndarray = array([1, 1, 1])
-            distances: ndarray = array([0, 1])
+            doppler_shifted_intensities: np.ndarray = np.array([2, 6])
+            unshifted_intensities: np.ndarray = np.array([6, 10])
+            delta_doppler_shifted_intensities: np.ndarray = np.array([1, 1])
+            delta_unshifted_intensities: np.ndarray = np.array([1, 1])
+            initial_coefficients: np.ndarray = np.array([1, 1, 1])
+            distances: np.ndarray = np.array([0, 1])
             t_hyp_range: (float, float) = (-5, 5)
             weight_factor: float = 1.0
 
             # Expected result
-            expected_tau: ndarray = array([3, 1.6666667])
+            expected_tau: np.ndarray = np.array([3, 1.6666667])
 
-            testing.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 calculate_tau_i_values(
                     doppler_shifted_intensities,
                     unshifted_intensities,
@@ -70,34 +68,34 @@ class TauUnitTest(unittest.TestCase):
 
             self.assertEqual(len(chi_mock.optimize_coefficients.mock_calls), 1)
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_coefficients.mock_calls[0].args[0],
-                (array([2, 6])),
+                (np.array([2, 6])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_coefficients.mock_calls[0].args[1],
-                (array([6, 10])),
+                (np.array([6, 10])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_coefficients.mock_calls[0].args[2],
-                (array([1, 1])),
+                (np.array([1, 1])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_coefficients.mock_calls[0].args[3],
-                (array([1, 1])),
+                (np.array([1, 1])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_coefficients.mock_calls[0].args[4],
-                (array([1, 1, 1])),
+                (np.array([1, 1, 1])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_coefficients.mock_calls[0].args[5],
-                (array([0, 1])),
+                (np.array([0, 1])),
             )
 
             self.assertEqual(
@@ -109,34 +107,34 @@ class TauUnitTest(unittest.TestCase):
 
             self.assertEqual(len(chi_mock.optimize_t_hyp.mock_calls), 1)
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_t_hyp.mock_calls[0].args[0],
-                (array([2, 6])),
+                (np.array([2, 6])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_t_hyp.mock_calls[0].args[1],
-                (array([6, 10])),
+                (np.array([6, 10])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_t_hyp.mock_calls[0].args[2],
-                (array([1, 1])),
+                (np.array([1, 1])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_t_hyp.mock_calls[0].args[3],
-                (array([1, 1])),
+                (np.array([1, 1])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_t_hyp.mock_calls[0].args[4],
-                (array([1, 1, 1])),
+                (np.array([1, 1, 1])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 chi_mock.optimize_t_hyp.mock_calls[0].args[5],
-                (array([0, 1])),
+                (np.array([0, 1])),
             )
 
             self.assertEqual(
@@ -153,16 +151,16 @@ class TauUnitTest(unittest.TestCase):
                 1,
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (array([0, 1])),
+                (np.array([0, 1])),
             )
 
-            testing.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
-                (array([2, 3, 1])),
+                (np.array([2, 3, 1])),
             )

@@ -1,10 +1,10 @@
-import numpy as np
 from napytau.core.chi import optimize_t_hyp
 from napytau.core.chi import optimize_coefficients
 from napytau.core.tau import calculate_tau_i_values
 from napytau.core.delta_tau import calculate_error_propagation_terms
 from napytau.core.tau_final import calculate_tau_final
 from typing import Tuple, Optional
+import numpy as np
 
 
 def calculate_lifetime(
