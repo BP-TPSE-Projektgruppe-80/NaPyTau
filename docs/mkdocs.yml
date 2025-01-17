@@ -1,0 +1,22 @@
+site_name: NapyTau Documentation
+theme:
+  name: material
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: Light
+      primary: lavender
+      accent: pink
+
+    - scheme: slate
+      toggle:
+          icon: material/weather-night
+          name: Dark
+      primary: slate
+      accent: pink
+  font:
+    text: Roboto
+    code: Roboto Mono
+  logo: /ressources/logo.jpg
+  favicon: /ressources/favicon.ico
