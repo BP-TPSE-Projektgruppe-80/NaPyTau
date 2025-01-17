@@ -1,6 +1,5 @@
 import tkinter as tk
 import customtkinter
-from napytau.core.logic_mockup import logic
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -17,7 +16,8 @@ class ControlPanel(customtkinter.CTkFrame):
         self.parent = parent
 
         # Main area for buttons and controls
-        self.grid(row=1, column=1, columnspan=2, padx=10, pady=10, sticky="nsew")
+        self.grid(row=1, column=1, rowspan=2, padx=(0, 10), pady=(10, 10),
+                  sticky="nsew")
         self.grid_rowconfigure((0, 1), weight=1)
         self.grid_propagate(True)
 
@@ -68,4 +68,4 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         entry_value = self.parent.tau.get()
 
-        self.label.configure(text=f"Result: {logic(entry_value)}")
+        self.label.configure(text=f"Result: {entry_value}")
