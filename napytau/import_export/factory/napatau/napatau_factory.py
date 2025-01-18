@@ -1,6 +1,11 @@
 from typing import List, Optional, Tuple
 
-from napytau.import_export.dataset_factory.raw_napatau_data import RawNapatauData
+from napytau.import_export.factory.napatau.raw_napatau_data import RawNapatauData
+
+from napytau.import_export.factory.napatau.raw_napatau_setup_data import (
+    RawNapatauSetupData,
+)
+from napytau.import_export.import_export_error import ImportExportError
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.import_export.model.dataset import DataSet
@@ -8,12 +13,12 @@ from napytau.import_export.model.relative_velocity import RelativeVelocity
 from napytau.util.model.value_error_pair import ValueErrorPair
 
 
-class NapatauDatasetFactory:
+class NapatauFactory:
     @staticmethod
     def create_dataset(raw_dataset: RawNapatauData) -> DataSet:
         return DataSet(
-            NapatauDatasetFactory.parse_velocity(raw_dataset.velocity_rows),
-            NapatauDatasetFactory.parse_datapoints(
+            NapatauFactory.parse_velocity(raw_dataset.velocity_rows),
+            NapatauFactory.parse_datapoints(
                 raw_dataset.distance_rows,
                 raw_dataset.calibration_rows,
                 raw_dataset.fit_rows,
@@ -60,10 +65,10 @@ class NapatauDatasetFactory:
     ) -> DatapointCollection:
         datapoints = DatapointCollection([])
         for distance_row in distance_rows:
-            distance = NapatauDatasetFactory.parse_distance_row(distance_row)
+            distance = NapatauFactory.parse_distance_row(distance_row)
             datapoints.add_datapoint(Datapoint(distance))
         for calibration_row in calibration_rows:
-            (distance_index, calibration) = NapatauDatasetFactory.parse_calibration_row(
+            (distance_index, calibration) = NapatauFactory.parse_calibration_row(
                 calibration_row
             )
             datapoint = datapoints.get_datapoint_by_distance(distance_index)
@@ -75,7 +80,7 @@ class NapatauDatasetFactory:
                 unshifted_intensity,
                 feeding_shifted_intensity,
                 feeding_unshifted_intensity,
-            ) = NapatauDatasetFactory.parse_fit_row(fit_row)
+            ) = NapatauFactory.parse_fit_row(fit_row)
             datapoint = datapoints.get_datapoint_by_distance(distance_index)
             datapoint.set_intensity(shifted_intensity, unshifted_intensity)
             if (
@@ -183,3 +188,98 @@ class NapatauDatasetFactory:
                 feeding_unshifted_intensity, feeding_unshifted_intensity_error
             ),
         )
+
+    @staticmethod
+    def enrich_dataset(
+        dataset: DataSet, raw_setup_data: RawNapatauSetupData
+    ) -> DataSet:
+        try:
+            datapoint_count = len(dataset.datapoints)
+            tau_row = raw_setup_data.napsetup_rows[0]
+            datapoint_active_rows = raw_setup_data.napsetup_rows[
+                1 : (datapoint_count + 1)
+            ]
+            polynomial_count_row = raw_setup_data.napsetup_rows[datapoint_count + 1]
+            sampling_points_row = raw_setup_data.napsetup_rows[
+                datapoint_count + 2 : len(raw_setup_data.napsetup_rows)
+            ]
+        except IndexError as e:
+            raise ImportExportError(
+                "The provided Napatau setup file is not formatted correctly. Please check the file."  # noqa E501
+            ) from e
+
+        try:
+            dataset.set_tau_factor(NapatauFactory.parse_tau_factor(tau_row))
+        except ValueError as e:
+            raise ImportExportError(
+                "The tau factor provided in the Napatau setup file is not formatted correctly. Please check the file."  # noqa E501
+            ) from e
+
+        try:
+            for distance, active in NapatauFactory.parse_datapoint_active_rows(
+                datapoint_active_rows,
+                dataset.get_datapoints().get_distances(),
+            ):
+                dataset.datapoints.get_datapoint_by_distance(distance).set_active(
+                    active
+                )
+        except ValueError as e:
+            raise ImportExportError(
+                "The active rows provided in the Napatau setup file are not formatted correctly. Please check the file."  # noqa E501
+            ) from e
+
+        try:
+            dataset.set_polynomial_count(
+                NapatauFactory.parse_polynomial_count(polynomial_count_row)
+            )
+        except ValueError as e:
+            raise ImportExportError(
+                "The polynomial count provided in the Napatau setup file is not formatted correctly. Please check the file."  # noqa E501
+            ) from e
+
+        try:
+            dataset.set_sampling_points(
+                NapatauFactory.parse_sampling_points(sampling_points_row)
+            )
+        except ValueError as e:
+            raise ImportExportError(
+                "The sampling points provided in the Napatau setup file are not formatted correctly. Please check the file."  # noqa E501
+            ) from e
+
+        return dataset
+
+    @staticmethod
+    def parse_tau_factor(tau_row: str) -> float:
+        split_row = tau_row.split()
+
+        return float(split_row[0])
+
+    @staticmethod
+    def parse_datapoint_active_rows(
+        active_rows: List[str],
+        distances: List[ValueErrorPair[float]],
+    ) -> List[Tuple[float, bool]]:
+        active_datapoints = []
+        for index, active_row in enumerate(active_rows):
+            split_row = active_row.split()
+            active = bool(int(split_row[0]))
+            distance = distances[index].value
+
+            active_datapoints.append((distance, active))
+
+        return active_datapoints
+
+    @staticmethod
+    def parse_polynomial_count(polynomial_count_row: str) -> int:
+        split_row = polynomial_count_row.split()
+
+        return int(split_row[0])
+
+    @staticmethod
+    def parse_sampling_points(sampling_points_row: List[str]) -> List[float]:
+        sampling_points = []
+        for sampling_point_row in sampling_points_row:
+            split_row = sampling_point_row.split()
+            sampling_points.append(float(split_row[0]))
+
+        return sampling_points

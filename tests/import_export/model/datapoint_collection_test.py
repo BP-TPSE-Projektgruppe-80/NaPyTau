@@ -54,7 +54,7 @@ class DatapointCollectionUnitTest(unittest.TestCase):
         self.assertEqual(collection[0].distance.value, 12.12)
 
     def test_distinguishesDistancesToAReasonablePrecision(self):
-        """Can distinguish two datapoints based on their distance values to a reasonable precision"""  # noqa E501
+        """Can distinguish two datapoints based on their distance values to a reasonable precision"""
         datapoints = [
             Datapoint(
                 distance=ValueErrorPair(17.1381257194, 0.1),
@@ -287,6 +287,53 @@ class DatapointCollectionUnitTest(unittest.TestCase):
         self.assertEqual(
             collection.get_feeding_unshifted_intensities(),
             [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
+        )
+
+    def test_canRetrieveTaus(self):
+        """Can retrieve taus"""
+        collection = DatapointCollection(
+            [
+                Datapoint(
+                    distance=ValueErrorPair(12.12, 0.1),
+                    tau=ValueErrorPair(1.0, 0.1),
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.13, 0.1),
+                    tau=ValueErrorPair(2.0, 0.1),
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.14, 0.1),
+                ),
+            ]
+        )
+
+        self.assertEqual(
+            collection.get_taus(),
+            [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
+        )
+
+    def test_canRetrieveActiveDatapoints(self):
+        """Can retrieve active datapoints"""
+        collection = DatapointCollection(
+            [
+                Datapoint(
+                    distance=ValueErrorPair(12.12, 0.1),
+                    active=True,
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.13, 0.1),
+                    active=False,
+                ),
+                Datapoint(
+                    distance=ValueErrorPair(12.14, 0.1),
+                    active=True,
+                ),
+            ]
+        )
+
+        self.assertEqual(
+            list(collection.get_active_datapoints().as_dict().values()),
+            [collection.elements[hash(12.12)], collection.elements[hash(12.14)]],
         )
 
 

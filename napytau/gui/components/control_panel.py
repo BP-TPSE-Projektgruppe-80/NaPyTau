@@ -1,3 +1,4 @@
+import tkinter as tk
 import customtkinter
 from typing import TYPE_CHECKING
 
@@ -8,7 +9,7 @@ if TYPE_CHECKING:
 class ControlPanel(customtkinter.CTkFrame):
     def __init__(self, parent: "App"):
         """
-        The panel with all the control needed.
+        The panel with all the controls, inputs etc.
         :param parent: Parent widget to host the control panel.
         """
         super().__init__(parent, corner_radius=10)
