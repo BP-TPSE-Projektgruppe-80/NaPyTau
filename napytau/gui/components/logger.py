@@ -8,6 +8,7 @@ from napytau.gui.model.log_message_type import LogMessageType
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
+
 class Logger(customtkinter.CTkFrame):
     def __init__(self, parent: "App") -> None:
         """
@@ -17,8 +18,9 @@ class Logger(customtkinter.CTkFrame):
         super().__init__(parent, height=10, corner_radius=10)
         self.parent = parent
 
-        self.grid(row=2, column=0, columnspan=1, padx=(10, 10), pady=(10, 10),
-                  sticky="ew")
+        self.grid(
+            row=2, column=0, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="ew"
+        )
         self.grid_propagate(False)
 
         self.scrollable_frame = customtkinter.CTkScrollableFrame(self, height=40)
@@ -57,7 +59,7 @@ class Logger(customtkinter.CTkFrame):
             text=message_type.value + " " + message,
             fg_color="transparent",
             text_color=color,
-            anchor="w"
+            anchor="w",
         )
         message_label.pack(fill="x", padx=5, pady=0)
 

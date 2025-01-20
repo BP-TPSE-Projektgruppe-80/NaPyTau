@@ -8,7 +8,7 @@ import numpy as np
 
 def calculate_jacobian_matrix(
     datapoints: DatapointCollection,
-    coefficients: np.ndarray
+    coefficients: np.ndarray,
 ) -> np.ndarray:
     """
     calculated the jacobian matrix for a set of polynomial coefficients taking
@@ -26,7 +26,9 @@ def calculate_jacobian_matrix(
     """
 
     # initializes the jacobian matrix
-    jacobian_matrix: np.ndarray = np.zeros((len(datapoints.get_distances().get_values()), len(coefficients)))
+    jacobian_matrix: np.ndarray = np.zeros(
+        (len(datapoints.get_distances().get_values()), len(coefficients))
+    )
 
     epsilon: float = 1e-8  # small disturbance value
 
@@ -71,7 +73,9 @@ def calculate_covariance_matrix(
     jacobian_matrix: np.ndarray = calculate_jacobian_matrix(datapoints, coefficients)
 
     # Construct the weight matrix from the inverse squared errors
-    weight_matrix: np.ndarray = np.diag(1 / np.power(datapoints.get_shifted_intensities().get_errors(), 2))
+    weight_matrix: np.ndarray = np.diag(
+        1 / np.power(datapoints.get_shifted_intensities().get_errors(), 2)
+    )
 
     fit_matrix: np.ndarray = jacobian_matrix.T @ weight_matrix @ jacobian_matrix
 
@@ -100,7 +104,7 @@ def calculate_error_propagation_terms(
 
     calculated_differentiated_polynomial_sum_at_measuring_distances = (
         evaluate_differentiated_polynomial_at_measuring_distances(  # noqa E501
-            datapoints.get_distances().get_values(),
+            datapoints,
             coefficients,
         )
     )
@@ -113,9 +117,11 @@ def calculate_error_propagation_terms(
     )
 
     # Initialize the polynomial uncertainty term for second term
-    delta_p_j_i_squared: np.ndarray = np.zeros(len(datapoints.get_distances().get_values()))
+    delta_p_j_i_squared: np.ndarray = np.zeros(
+        len(datapoints.get_distances().get_values())
+    )
     covariance_matrix: np.ndarray = calculate_covariance_matrix(
-        datapoints,coefficients
+        datapoints, coefficients
     )
 
     # Calculate the polynomial uncertainty contributions
@@ -137,7 +143,9 @@ def calculate_error_propagation_terms(
     ) * np.power(delta_p_j_i_squared, 2)
 
     error_from_covariance: np.ndarray = (
-        datapoints.get_unshifted_intensities().get_values() * taufactor * delta_p_j_i_squared
+        datapoints.get_unshifted_intensities().get_values()
+        * taufactor
+        * delta_p_j_i_squared
     ) / np.power(calculated_differentiated_polynomial_sum_at_measuring_distances, 3)
 
     interim_result: np.ndarray = (

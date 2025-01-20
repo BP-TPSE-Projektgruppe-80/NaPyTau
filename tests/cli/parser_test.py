@@ -71,7 +71,7 @@ class ParserUnitTest(unittest.TestCase):
                     {
                         "type": str,
                         "help": """Path to a fit file to use instead of the one found in the setup files,
-        only relevant for legacy format"""
+        only relevant for legacy format""",
                     },
                 ),
             )

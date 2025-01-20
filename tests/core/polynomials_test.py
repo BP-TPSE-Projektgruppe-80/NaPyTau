@@ -44,11 +44,28 @@ class PolynomialsUnitTest(unittest.TestCase):
             )
 
             # Test for a simple quadratic polynomial: 2 + 3x + 4x^2
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(0, 2), ValueErrorPair(4, 5)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(0, 3), ValueErrorPair(5, 6)),
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(0, 4), ValueErrorPair(6, 7)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             coefficients: np.ndarray = np.array([2, 3, 4])
             # At x = 1: 2 + 3(1) + 4(1^2) = 9
             # At x = 2: 2 + 3(2) + 4(2^2) = 2 + 6 + 16 = 24
@@ -78,11 +95,28 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_polynomial_at_measuring_distances,
             )
 
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(0, 2), ValueErrorPair(4, 5)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(0, 3), ValueErrorPair(5, 6)),
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(0, 4), ValueErrorPair(6, 7)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             coefficients: np.ndarray = np.array([2, 3, 4])
             # With an empty input array, the result should also be an empty array
             expected_result: np.ndarray = np.array([])
@@ -114,9 +148,16 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_polynomial_at_measuring_distances,
             )
 
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(0, 4), ValueErrorPair(6, 7)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             coefficients: np.ndarray = np.array([1, 2])
             # Polynomial: f(x) = 1 + 2x
             # At x = 2: 1 + 2(2) = 5
@@ -149,11 +190,28 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_polynomial_at_measuring_distances,
             )
 
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(0, 2), ValueErrorPair(4, 5)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(0, 3), ValueErrorPair(5, 6)),
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(0, 4), ValueErrorPair(6, 7)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             coefficients: np.ndarray = np.array([5])
             # Constant polynomial: f(x) = 5
             # All values should be 5
@@ -170,10 +228,22 @@ class PolynomialsUnitTest(unittest.TestCase):
 
         from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 
-        datapoints = DatapointCollection([
-            Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(0, 3), ValueErrorPair(5, 6)),
-            Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(0, 4), ValueErrorPair(6, 7)),
-        ])
+        datapoints = DatapointCollection(
+            [
+                Datapoint(
+                    ValueErrorPair(1, 0.16),
+                    None,
+                    ValueErrorPair(0, 3),
+                    ValueErrorPair(5, 6),
+                ),
+                Datapoint(
+                    ValueErrorPair(2, 0.16),
+                    None,
+                    ValueErrorPair(0, 4),
+                    ValueErrorPair(6, 7),
+                ),
+            ]
+        )
         coefficients: np.ndarray = np.array([])
         # With an empty coefficients array, the function should throw a polynomial
         # coefficient error.
@@ -200,11 +270,28 @@ class PolynomialsUnitTest(unittest.TestCase):
             )
 
             # Test for a simple quadratic polynomial: 2 + 3x + 4x^2
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(0, 2), ValueErrorPair(4, 5)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(0, 3), ValueErrorPair(5, 6)),
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(0, 4), ValueErrorPair(6, 7)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             coefficients: np.ndarray = np.array([2, 3, 4])
             # The differentiated polynomial should be: 3 + 8x
             # At x = 1: 3 + 8(1) = 3 + 8 = 11
@@ -237,11 +324,28 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_differentiated_polynomial_at_measuring_distances,
             )
 
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(0, 2), ValueErrorPair(4, 5)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(0, 3), ValueErrorPair(5, 6)),
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(0, 4), ValueErrorPair(6, 7)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             coefficients: np.ndarray = np.array([2, 3, 4])
             # With an empty input array, the result should also be an empty array
             expected_result: np.ndarray = np.array([])
@@ -271,9 +375,16 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_differentiated_polynomial_at_measuring_distances,
             )
 
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(0, 4), ValueErrorPair(6, 7)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             coefficients: np.ndarray = np.array([1, 2])
             # The differentiated polynomial should be: 2
             # At x = 2: 2
@@ -304,11 +415,28 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_differentiated_polynomial_at_measuring_distances,
             )
 
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(0, 2), ValueErrorPair(4, 5)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(0, 3), ValueErrorPair(5, 6)),
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(0, 4), ValueErrorPair(6, 7)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             coefficients: np.ndarray = np.array([5])
             # The differentiated polynomial should be: 0
             # All values should therefore be 0
@@ -328,10 +456,22 @@ class PolynomialsUnitTest(unittest.TestCase):
             evaluate_differentiated_polynomial_at_measuring_distances,
         )
 
-        datapoints = DatapointCollection([
-            Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(0, 3), ValueErrorPair(5, 6)),
-            Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(0, 4), ValueErrorPair(6, 7)),
-        ])
+        datapoints = DatapointCollection(
+            [
+                Datapoint(
+                    ValueErrorPair(1, 0.16),
+                    None,
+                    ValueErrorPair(0, 3),
+                    ValueErrorPair(5, 6),
+                ),
+                Datapoint(
+                    ValueErrorPair(2, 0.16),
+                    None,
+                    ValueErrorPair(0, 4),
+                    ValueErrorPair(6, 7),
+                ),
+            ]
+        )
         coefficients: np.ndarray = np.array([])
         # With an empty coefficients array, the function should throw a polynomial
         # coefficient error.

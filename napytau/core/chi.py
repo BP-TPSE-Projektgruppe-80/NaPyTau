@@ -34,7 +34,7 @@ def chi_squared_fixed_t(
     # Compute the difference between Doppler-shifted intensities and polynomial model
     shifted_intensity_difference: np.ndarray = (
         datapoints.get_shifted_intensities().get_values()
-        - evaluate_polynomial_at_measuring_distances(datapoints.get_distances().get_values(), coefficients)
+        - evaluate_polynomial_at_measuring_distances(datapoints, coefficients)
     ) / datapoints.get_shifted_intensities().get_errors()
 
     # Compute the difference between unshifted intensities and
@@ -44,7 +44,7 @@ def chi_squared_fixed_t(
         - (
             t_hyp
             * evaluate_differentiated_polynomial_at_measuring_distances(
-                datapoints.get_distances().get_values(), coefficients
+                datapoints, coefficients
             )
         )
     ) / datapoints.get_unshifted_intensities().get_errors()
@@ -81,12 +81,8 @@ def optimize_coefficients(
         tuple: Optimized coefficients (ndarray) and minimized chi-squared value (float).
     """
     chi_squared = lambda coefficients: chi_squared_fixed_t(
-        datapoints.get_shifted_intensities().get_values(),
-        datapoints.get_unshifted_intensities().get_values(),
-        datapoints.get_shifted_intensities().get_errors(),
-        datapoints.get_unshifted_intensities().get_errors(),
+        datapoints,
         coefficients,
-        datapoints.get_distances().get_values(),
         t_hyp,
         weight_factor,
     )
@@ -128,11 +124,7 @@ def optimize_t_hyp(
     """
 
     chi_squared_t_hyp = lambda t_hyp: optimize_coefficients(
-        datapoints.get_shifted_intensities().get_values(),
-        datapoints.get_unshifted_intensities().get_values(),
-        datapoints.get_shifted_intensities().get_errors(),
-        datapoints.get_unshifted_intensities().get_errors(),
-        datapoints.get_distances().get_values(),
+        datapoints,
         initial_coefficients,
         t_hyp,
         weight_factor,

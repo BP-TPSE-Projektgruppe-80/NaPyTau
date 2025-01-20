@@ -7,7 +7,7 @@ from napytau.import_export.model.datapoint_collection import DatapointCollection
 
 def evaluate_polynomial_at_measuring_distances(
     datapoints: DatapointCollection,
-    coefficients: np.ndarray
+    coefficients: np.ndarray,
 ) -> np.ndarray:
     """
     Computes the sum of a polynomial evaluated at given distance points.
@@ -28,16 +28,20 @@ def evaluate_polynomial_at_measuring_distances(
         )
 
     # Evaluate the polynomial sum at the given time points
-    sum_at_measuring_distances: np.ndarray = np.zeros_like(datapoints.get_distances().get_values(), dtype=float)
+    sum_at_measuring_distances: np.ndarray = np.zeros_like(
+        datapoints.get_distances().get_values(), dtype=float
+    )
     for exponent, coefficient in enumerate(coefficients):
-        sum_at_measuring_distances += coefficient * np.power(datapoints.get_distances().get_values(), exponent)
+        sum_at_measuring_distances += coefficient * np.power(
+            datapoints.get_distances().get_values(), exponent
+        )
 
     return sum_at_measuring_distances
 
 
 def evaluate_differentiated_polynomial_at_measuring_distances(
     datapoints: DatapointCollection,
-    coefficients: np.ndarray
+    coefficients: np.ndarray,
 ) -> np.ndarray:
     """
     Computes the sum of the derivative of a polynomial evaluated
@@ -65,7 +69,9 @@ def evaluate_differentiated_polynomial_at_measuring_distances(
     for exponent, coefficient in enumerate(coefficients):
         if exponent > 0:
             sum_of_derivative_at_measuring_distances += (
-                exponent * coefficient * np.power(datapoints.get_distances().get_values(), (exponent - 1))
+                exponent
+                * coefficient
+                * np.power(datapoints.get_distances().get_values(), (exponent - 1))
             )
 
     return sum_of_derivative_at_measuring_distances

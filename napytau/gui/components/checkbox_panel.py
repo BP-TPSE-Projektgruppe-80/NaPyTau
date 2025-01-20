@@ -12,9 +12,7 @@ class CheckboxPanel:
         :param parent: Parent widget to host the checkbox panel.
         """
         self.parent = parent
-        self.frame_datapoint_checkboxes = customtkinter.CTkScrollableFrame(
-            self.parent
-        )
+        self.frame_datapoint_checkboxes = customtkinter.CTkScrollableFrame(self.parent)
         self.frame_datapoint_checkboxes.grid(
             row=0, column=1, padx=(0, 10), pady=(10, 0), sticky="nsew"
         )
@@ -38,10 +36,9 @@ class CheckboxPanel:
 
         # Update all checkboxes for the fitting
         for i in range(len(self.parent.datapoints)):
-
-            shifted_intensity, unshifted_intensity = (
-                self.parent.datapoints[i].get_intensity()
-            )
+            shifted_intensity, unshifted_intensity = self.parent.datapoints[
+                i
+            ].get_intensity()
             distance = self.parent.datapoints[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
@@ -87,10 +84,9 @@ class CheckboxPanel:
 
         # Update all checkboxes for the calculation
         for i in range(len(self.parent.datapoints)):
-
-            shifted_intensity, unshifted_intensity = (
-                self.parent.datapoints[i].get_intensity()
-            )
+            shifted_intensity, unshifted_intensity = self.parent.datapoints[
+                i
+            ].get_intensity()
             distance = self.parent.datapoints[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(

@@ -8,6 +8,7 @@ from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.util.model.value_error_pair import ValueErrorPair
 from napytau.import_export.model.datapoint import Datapoint
 
+
 def set_up_mocks() -> (MagicMock, MagicMock, MagicMock):
     polynomials_mock = MagicMock()
     polynomials_mock.polynomial_sum_at_measuring_times = MagicMock()
@@ -52,11 +53,28 @@ class ChiUnitTest(unittest.TestCase):
             from napytau.core.chi import chi_squared_fixed_t
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(1, 2),ValueErrorPair(4, 5)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(2, 3),ValueErrorPair(5, 6)),
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(3, 4),ValueErrorPair(6, 7)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(1, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2.0, 0.16),
+                        None,
+                        ValueErrorPair(3, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -79,11 +97,11 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1, 2])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
@@ -100,11 +118,11 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1, 2])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
@@ -172,9 +190,9 @@ class ChiUnitTest(unittest.TestCase):
             },
         ):
             from napytau.core.chi import chi_squared_fixed_t
+
             coefficients: np.ndarray = np.array([])
-            datapoints = DatapointCollection([
-            ])
+            datapoints = DatapointCollection([])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -295,9 +313,16 @@ class ChiUnitTest(unittest.TestCase):
             from napytau.core.chi import chi_squared_fixed_t
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(1, 3), ValueErrorPair(2, 4)),
-                ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(2.0, 0.16),
+                        None,
+                        ValueErrorPair(1, 3),
+                        ValueErrorPair(2, 4),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -320,11 +345,11 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([2])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
@@ -341,11 +366,11 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([2])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
@@ -418,10 +443,22 @@ class ChiUnitTest(unittest.TestCase):
             from napytau.core.chi import chi_squared_fixed_t
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(1, 0), ValueErrorPair(3, 0)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(2, 1), ValueErrorPair(4, 1)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(1, 0),
+                        ValueErrorPair(3, 0),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 1),
+                        ValueErrorPair(4, 1),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -444,11 +481,11 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
@@ -465,11 +502,11 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
@@ -542,10 +579,22 @@ class ChiUnitTest(unittest.TestCase):
             from napytau.core.chi import chi_squared_fixed_t
 
             coefficients: np.ndarray = np.array([-5, -4, 3, 2, -1])
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(-1, 1), ValueErrorPair(-3, 3)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(-2, 2), ValueErrorPair(-4, 4)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(-1, 1),
+                        ValueErrorPair(-3, 3),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(-2, 2),
+                        ValueErrorPair(-4, 4),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -568,11 +617,11 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
@@ -589,11 +638,11 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
@@ -666,11 +715,28 @@ class ChiUnitTest(unittest.TestCase):
             from napytau.core.chi import chi_squared_fixed_t
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(1, 2), ValueErrorPair(4, 5)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(2, 3), ValueErrorPair(5, 6)),
-                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(3, 4), ValueErrorPair(6, 7)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(1, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2.0, 0.16),
+                        None,
+                        ValueErrorPair(3, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 0.0
 
@@ -693,11 +759,11 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1, 2])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
@@ -714,11 +780,11 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1, 2])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
@@ -781,10 +847,22 @@ class ChiUnitTest(unittest.TestCase):
             from napytau.core.chi import optimize_coefficients
 
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(2, 1), ValueErrorPair(6, 1)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(6, 1), ValueErrorPair(10, 1)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 1),
+                        ValueErrorPair(6, 1),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(6, 1),
+                        ValueErrorPair(10, 1),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -842,10 +920,22 @@ class ChiUnitTest(unittest.TestCase):
             from napytau.core.chi import optimize_t_hyp
 
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            datapoints = DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(2, 1), ValueErrorPair(6, 1)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(6, 1), ValueErrorPair(10, 1)),
-            ])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 1),
+                        ValueErrorPair(6, 1),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(6, 1),
+                        ValueErrorPair(10, 1),
+                    ),
+                ]
+            )
             t_hyp_range: Tuple[float, float] = (-5, 5)
             weight_factor: float = 1.0
 

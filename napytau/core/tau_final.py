@@ -3,7 +3,8 @@ from typing import Tuple
 
 
 def calculate_tau_final(
-    tau_i_values: np.ndarray, delta_tau_i_values: np.ndarray
+    tau_i_values: np.ndarray,
+    delta_tau_i_values: np.ndarray,
 ) -> Tuple[float, float]:
     """
     Computes the final decay time (tau_final) and its associated uncertainty

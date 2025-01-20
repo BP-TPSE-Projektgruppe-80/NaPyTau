@@ -8,7 +8,6 @@ from typing import Tuple, Optional
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 
 
-
 def calculate_tau_i_values(
     datapoints: DatapointCollection,
     initial_coefficients: np.ndarray,
@@ -40,12 +39,8 @@ def calculate_tau_i_values(
         t_hyp: float = custom_t_hyp_estimate
     else:
         t_hyp = optimize_t_hyp(
-            datapoints.get_shifted_intensities().get_values(),
-            datapoints.get_unshifted_intensities().get_values(),
-            datapoints.get_shifted_intensities().get_errors(),
-            datapoints.get_unshifted_intensities().get_errors(),
+            datapoints,
             initial_coefficients,
-            datapoints.get_distances().get_values(),
             t_hyp_range,
             weight_factor,
         )
@@ -53,12 +48,8 @@ def calculate_tau_i_values(
     # optimize the polynomial coefficients with the optimized t_hyp
     optimized_coefficients: np.ndarray = (
         optimize_coefficients(
-            datapoints.get_shifted_intensities().get_values(),
-            datapoints.get_unshifted_intensities().get_values(),
-            datapoints.get_shifted_intensities().get_errors(),
-            datapoints.get_unshifted_intensities().get_errors(),
+            datapoints,
             initial_coefficients,
-            datapoints.get_distances().get_values(),
             t_hyp,
             weight_factor,
         )
@@ -68,7 +59,7 @@ def calculate_tau_i_values(
     tau_i_values: np.ndarray = (
         datapoints.get_unshifted_intensities().get_values()
         / evaluate_differentiated_polynomial_at_measuring_distances(
-            datapoints.get_distances().get_values(), optimized_coefficients
+            datapoints, optimized_coefficients
         )
     )
 

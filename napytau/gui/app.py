@@ -24,6 +24,7 @@ customtkinter.set_appearance_mode("System")
 # Themes: "blue" (standard), "green", "dark-blue"
 customtkinter.set_default_color_theme("blue")
 
+
 class App(customtkinter.CTk):
     def __init__(self) -> None:
         """
@@ -60,14 +61,14 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure(0, weight=3, minsize=3 * height // total_height)
         # Reduce graph height by 30 to asure all components and their
         # separators are inside the window.
-        self.grid_rowconfigure(1, weight=3, minsize=3 * height // total_height -30)
+        self.grid_rowconfigure(1, weight=3, minsize=3 * height // total_height - 30)
         self.grid_rowconfigure(2, weight=2, minsize=2 * height // total_height)
 
         # column ratio: 2/3, 1/3
         total_width = 3  # 2+1 = 3 parts
         # Reduce graph width by 30 to asure all components and their
         # separators are inside the window.
-        self.grid_columnconfigure(0, weight=2, minsize=2 * width // total_width -30)
+        self.grid_columnconfigure(0, weight=2, minsize=2 * width // total_width - 30)
         self.grid_columnconfigure(1, weight=1, minsize=1 * width // total_width)
 
         # Define menu bar callback functions
@@ -85,8 +86,6 @@ class App(customtkinter.CTk):
         # Initialize the menu bar
         self.menu_bar = MenuBar(self, menu_bar_callbacks)
 
-
-
         # Initialize the checkbox panel
         self.checkbox_panel = CheckboxPanel(self)
 
@@ -94,29 +93,36 @@ class App(customtkinter.CTk):
         # TODO: Remove dummy points later on.
         self.update_data_checkboxes(
             [
-
-                create_dummy_datapoint(ValueErrorPair(1.0, 0.3),
-                                       ValueErrorPair(5.0, 1.0)),
-                create_dummy_datapoint(ValueErrorPair(2.0, 0.3),
-                                       ValueErrorPair(1.0, 2.0)),
-                create_dummy_datapoint(ValueErrorPair(3.0, 0.3),
-                                       ValueErrorPair(3.0, 3.0)),
-                create_dummy_datapoint(ValueErrorPair(4.0, 0.3),
-                                       ValueErrorPair(9.0, 4.0)),
-                create_dummy_datapoint(ValueErrorPair(5.0, 0.3),
-                                       ValueErrorPair(7.0, 5.0)),
-                create_dummy_datapoint(ValueErrorPair(6.0, 0.3),
-                                       ValueErrorPair(2.0, 6.0)),
-                create_dummy_datapoint(ValueErrorPair(7.0, 0.3),
-                                       ValueErrorPair(1.0, 7.0)),
-                create_dummy_datapoint(ValueErrorPair(8.0, 0.3),
-                                       ValueErrorPair(10.0, 8.0)),
-                create_dummy_datapoint(ValueErrorPair(9.0, 0.3),
-                                       ValueErrorPair(5.0, 9.0)),
-                create_dummy_datapoint(ValueErrorPair(10.0, 0.3),
-                                       ValueErrorPair(4.0, 10.0)),
-
-
+                create_dummy_datapoint(
+                    ValueErrorPair(1.0, 0.3), ValueErrorPair(5.0, 1.0)
+                ),
+                create_dummy_datapoint(
+                    ValueErrorPair(2.0, 0.3), ValueErrorPair(1.0, 2.0)
+                ),
+                create_dummy_datapoint(
+                    ValueErrorPair(3.0, 0.3), ValueErrorPair(3.0, 3.0)
+                ),
+                create_dummy_datapoint(
+                    ValueErrorPair(4.0, 0.3), ValueErrorPair(9.0, 4.0)
+                ),
+                create_dummy_datapoint(
+                    ValueErrorPair(5.0, 0.3), ValueErrorPair(7.0, 5.0)
+                ),
+                create_dummy_datapoint(
+                    ValueErrorPair(6.0, 0.3), ValueErrorPair(2.0, 6.0)
+                ),
+                create_dummy_datapoint(
+                    ValueErrorPair(7.0, 0.3), ValueErrorPair(1.0, 7.0)
+                ),
+                create_dummy_datapoint(
+                    ValueErrorPair(8.0, 0.3), ValueErrorPair(10.0, 8.0)
+                ),
+                create_dummy_datapoint(
+                    ValueErrorPair(9.0, 0.3), ValueErrorPair(5.0, 9.0)
+                ),
+                create_dummy_datapoint(
+                    ValueErrorPair(10.0, 0.3), ValueErrorPair(4.0, 10.0)
+                ),
             ]
         )
 
@@ -178,25 +184,34 @@ class App(customtkinter.CTk):
         """
         Selects the number of polynomials to use.
         """
-        self.logger.log_message("selected number of polynomials: "
-              + self.menu_bar.number_of_polynomials.get()
-              + " but not implemented yet!", LogMessageType.INFO)
+        self.logger.log_message(
+            "selected number of polynomials: "
+            + self.menu_bar.number_of_polynomials.get()
+            + " but not implemented yet!",
+            LogMessageType.INFO,
+        )
 
     def select_polynomial_mode(self) -> None:
         """
         Selects the polynomial mode.
         """
-        self.logger.log_message("Polynomials set to "
-                              + self.menu_bar.polynomial_mode.get()
-                              + " but not implemented yet!", LogMessageType.ERROR)
+        self.logger.log_message(
+            "Polynomials set to "
+            + self.menu_bar.polynomial_mode.get()
+            + " but not implemented yet!",
+            LogMessageType.ERROR,
+        )
 
     def select_alpha_calc_mode(self) -> None:
         """
         Selects the alpha calculation mode.
         """
-        self.logger.log_message("Alpha calculation set to "
-                              + self.menu_bar.alpha_calc_mode.get()
-                              + " but not implemented yet!", LogMessageType.ERROR)
+        self.logger.log_message(
+            "Alpha calculation set to "
+            + self.menu_bar.alpha_calc_mode.get()
+            + " but not implemented yet!",
+            LogMessageType.ERROR,
+        )
 
     def update_data_checkboxes(self, new_datapoints: List[Datapoint]) -> None:
         """
@@ -215,18 +230,17 @@ class App(customtkinter.CTk):
         self.checkbox_panel.update_data_checkboxes_calculation()
 
 
-
 """
 Function for testing purposes only!
 """
 
-def create_dummy_datapoint(distance: ValueErrorPair,
-                           shifted_intensity: ValueErrorPair
-                           ) -> Datapoint:
 
+def create_dummy_datapoint(
+    distance: ValueErrorPair, shifted_intensity: ValueErrorPair
+) -> Datapoint:
     datapoint = Datapoint(distance)
     datapoint.shifted_intensity = shifted_intensity
-    datapoint.unshifted_intensity = ValueErrorPair(0.0,0.0)
+    datapoint.unshifted_intensity = ValueErrorPair(0.0, 0.0)
     return datapoint
 
 

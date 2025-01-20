@@ -8,7 +8,6 @@ import numpy as np
 from napytau.import_export.model.dataset import DataSet
 
 
-
 def calculate_lifetime(
     dataSet: DataSet,
     initial_coefficients: np.ndarray,
@@ -23,12 +22,8 @@ def calculate_lifetime(
         t_hyp = custom_t_hyp_estimate
     else:
         t_hyp = optimize_t_hyp(
-            dataSet.get_datapoints().get_shifted_intensities().get_values(),
-            dataSet.get_datapoints().get_unshifted_intensities().get_values(),
-            dataSet.get_datapoints().get_shifted_intensities().get_errors(),
-            dataSet.get_datapoints().get_unshifted_intensities().get_errors(),
+            dataSet.get_datapoints(),
             initial_coefficients,
-            dataSet.get_datapoints().get_distances().get_values(),
             t_hyp_range,
             weight_factor,
         )
@@ -36,12 +31,8 @@ def calculate_lifetime(
     # Now we find the optimal coefficients for the given taufactor
     optimized_coefficients: np.ndarray = (
         optimize_coefficients(
-            dataSet.get_datapoints().get_shifted_intensities().get_values(),
-            dataSet.get_datapoints().get_unshifted_intensities().get_values(),
-            dataSet.get_datapoints().get_shifted_intensities().get_errors(),
-            dataSet.get_datapoints().get_unshifted_intensities().get_errors(),
+            dataSet.get_datapoints(),
             initial_coefficients,
-            dataSet.get_datapoints().get_distances().get_values(),
             t_hyp,
             weight_factor,
         )
@@ -49,12 +40,8 @@ def calculate_lifetime(
 
     # We now calculate the lifetimes tau_i for all measured distances
     tau_i_values: np.ndarray = calculate_tau_i_values(
-        dataSet.get_datapoints().get_shifted_intensities().get_values(),
-        dataSet.get_datapoints().get_unshifted_intensities().get_values(),
-        dataSet.get_datapoints().get_shifted_intensities().get_errors(),
-        dataSet.get_datapoints().get_unshifted_intensities().get_errors(),
+        dataSet.get_datapoints(),
         initial_coefficients,
-        dataSet.get_datapoints().get_distances().get_values(),
         t_hyp_range,
         weight_factor,
         custom_t_hyp_estimate,
@@ -62,10 +49,7 @@ def calculate_lifetime(
 
     # And we calculate the respective errors for the lifetimes
     delta_tau_i_values: np.ndarray = calculate_error_propagation_terms(
-        dataSet.get_datapoints().get_unshifted_intensities().get_values(),
-        dataSet.get_datapoints().get_shifted_intensities().get_errors(),
-        dataSet.get_datapoints().get_unshifted_intensities().get_errors(),
-        dataSet.get_datapoints().get_distances().get_values(),
+        dataSet.get_datapoints(),
         optimized_coefficients,
         t_hyp,
     )

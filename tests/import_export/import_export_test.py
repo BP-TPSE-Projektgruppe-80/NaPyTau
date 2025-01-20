@@ -558,7 +558,9 @@ class IngestUnitTest(unittest.TestCase):
             import_napytau_format_from_files(PurePath("test_directory"))
 
             self.assertEqual(
-                naptau_format_json_service_module_mock.NapytauFormatJsonService.parse_json_data.mock_calls[0].args[0],
+                naptau_format_json_service_module_mock.NapytauFormatJsonService.parse_json_data.mock_calls[
+                    0
+                ].args[0],
                 "test_json_data",
             )
 
@@ -585,9 +587,11 @@ class IngestUnitTest(unittest.TestCase):
             "datapoints": [],
             "setups": ["setup1", "setup2"],
         }
-        napytau_factory_module_mock.NapyTauFactory.create_dataset.return_value = DataSet(
-            ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0.1)),
-            DatapointCollection([]),
+        napytau_factory_module_mock.NapyTauFactory.create_dataset.return_value = (
+            DataSet(
+                ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0.1)),
+                DatapointCollection([]),
+            )
         )
 
         with patch.dict(
@@ -608,7 +612,9 @@ class IngestUnitTest(unittest.TestCase):
             result = import_napytau_format_from_files(PurePath("test_directory"))
 
             self.assertEqual(
-                napytau_factory_module_mock.NapyTauFactory.create_dataset.mock_calls[0].args[0],
+                napytau_factory_module_mock.NapyTauFactory.create_dataset.mock_calls[
+                    0
+                ].args[0],
                 {
                     "relativeVelocity": 1,
                     "relativeVelocityError": 0.1,
@@ -630,7 +636,9 @@ class IngestUnitTest(unittest.TestCase):
                 ["setup1", "setup2"],
             )
 
-    def test_raisesAnExceptionIfTheSetupWithTheGivenNameIsNotFoundInTheProvidedRawSetups(self):
+    def test_raisesAnExceptionIfTheSetupWithTheGivenNameIsNotFoundInTheProvidedRawSetups(
+        self,
+    ):
         """Raises an exception if the setup with the given name is not found in the provided raw setups."""
         (
             legacy_factory_module_mock,
@@ -677,9 +685,11 @@ class IngestUnitTest(unittest.TestCase):
             naptau_format_json_service_module_mock,
             napytau_factory_module_mock,
         ) = set_up_mocks()
-        napytau_factory_module_mock.NapyTauFactory.enrich_dataset.return_value = DataSet(
-            ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0.1)),
-            DatapointCollection([]),
+        napytau_factory_module_mock.NapyTauFactory.enrich_dataset.return_value = (
+            DataSet(
+                ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0.1)),
+                DatapointCollection([]),
+            )
         )
 
         with patch.dict(
@@ -709,13 +719,18 @@ class IngestUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                napytau_factory_module_mock.NapyTauFactory.enrich_dataset.mock_calls[0].args[0],
+                napytau_factory_module_mock.NapyTauFactory.enrich_dataset.mock_calls[
+                    0
+                ].args[0],
                 dataset,
             )
             self.assertEqual(
-                napytau_factory_module_mock.NapyTauFactory.enrich_dataset.mock_calls[0].args[1],
+                napytau_factory_module_mock.NapyTauFactory.enrich_dataset.mock_calls[
+                    0
+                ].args[1],
                 {"name": "setup1"},
             )
+
 
 if __name__ == "__main__":
     unittest.main()

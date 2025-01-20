@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 from typing import Tuple, Optional
 from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 from napytau.util.model.value_error_pair import ValueErrorPair
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.dataset import DataSet
@@ -54,10 +55,25 @@ class CoreUnitTest(unittest.TestCase):
             from napytau.core.core import calculate_lifetime
 
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            datasets= DataSet(ValueErrorPair(4,2), DatapointCollection([
-                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(2, 1), ValueErrorPair(6, 1)),
-                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(6, 1), ValueErrorPair(10, 1)),
-            ]))
+            datasets = DataSet(
+                ValueErrorPair(RelativeVelocity(0.4), RelativeVelocity(0.02)),
+                DatapointCollection(
+                    [
+                        Datapoint(
+                            ValueErrorPair(0.0, 0.16),
+                            None,
+                            ValueErrorPair(2, 1),
+                            ValueErrorPair(6, 1),
+                        ),
+                        Datapoint(
+                            ValueErrorPair(1.0, 0.16),
+                            None,
+                            ValueErrorPair(6, 1),
+                            ValueErrorPair(10, 1),
+                        ),
+                    ]
+                ),
+            )
             t_hyp_range: Tuple[float, float] = (-5, 5)
             weight_factor: float = 1.0
             custom_t_hyp_estimate: Optional[float] = None
@@ -76,100 +92,57 @@ class CoreUnitTest(unittest.TestCase):
 
             self.assertEqual(len(chi_mock.optimize_t_hyp.mock_calls), 1)
 
-            np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[0], np.array([2, 6])
+            self.assertEqual(
+                chi_mock.optimize_t_hyp.mock_calls[0].args[0],
+                datasets.get_datapoints(),
             )
 
             np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[1], np.array([6, 10])
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[2], np.array([1, 1])
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[3], np.array([1, 1])
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[4], np.array([1, 1, 1])
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[5], np.array([0, 1])
-            )
-
-            self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[6], (-5, 5))
-
-            self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[7], 1.0)
-
-            self.assertEqual(len(chi_mock.optimize_coefficients.mock_calls), 1)
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_coefficients.mock_calls[0].args[0], np.array([2, 6])
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_coefficients.mock_calls[0].args[1], np.array([6, 10])
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_coefficients.mock_calls[0].args[2], np.array([1, 1])
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_coefficients.mock_calls[0].args[3], np.array([1, 1])
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_coefficients.mock_calls[0].args[4],
+                chi_mock.optimize_t_hyp.mock_calls[0].args[1],
                 np.array([1, 1, 1]),
             )
 
-            np.testing.assert_array_equal(
-                chi_mock.optimize_coefficients.mock_calls[0].args[5], np.array([0, 1])
+            self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[2], (-5, 5))
+
+            self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[3], 1.0)
+
+            self.assertEqual(len(chi_mock.optimize_coefficients.mock_calls), 1)
+
+            self.assertEqual(
+                chi_mock.optimize_coefficients.mock_calls[0].args[0],
+                datasets.get_datapoints(),
             )
 
-            self.assertEqual(chi_mock.optimize_coefficients.mock_calls[0].args[6], 2.0)
+            np.testing.assert_array_equal(
+                chi_mock.optimize_coefficients.mock_calls[0].args[1],
+                np.array([1, 1, 1]),
+            )
 
-            self.assertEqual(chi_mock.optimize_coefficients.mock_calls[0].args[7], 1.0)
+            self.assertEqual(chi_mock.optimize_coefficients.mock_calls[0].args[2], 2.0)
+
+            self.assertEqual(chi_mock.optimize_coefficients.mock_calls[0].args[3], 1.0)
 
             self.assertEqual(len(tau_mock.calculate_tau_i_values.mock_calls), 1)
 
             np.testing.assert_array_equal(
-                tau_mock.calculate_tau_i_values.mock_calls[0].args[0], np.array([2, 6])
+                tau_mock.calculate_tau_i_values.mock_calls[0].args[0],
+                datasets.get_datapoints(),
             )
 
             np.testing.assert_array_equal(
-                tau_mock.calculate_tau_i_values.mock_calls[0].args[1], np.array([6, 10])
-            )
-
-            np.testing.assert_array_equal(
-                tau_mock.calculate_tau_i_values.mock_calls[0].args[2], np.array([1, 1])
-            )
-
-            np.testing.assert_array_equal(
-                tau_mock.calculate_tau_i_values.mock_calls[0].args[3], np.array([1, 1])
-            )
-
-            np.testing.assert_array_equal(
-                tau_mock.calculate_tau_i_values.mock_calls[0].args[4],
+                tau_mock.calculate_tau_i_values.mock_calls[0].args[1],
                 np.array([1, 1, 1]),
             )
 
-            np.testing.assert_array_equal(
-                tau_mock.calculate_tau_i_values.mock_calls[0].args[5], np.array([0, 1])
+            self.assertEqual(
+                tau_mock.calculate_tau_i_values.mock_calls[0].args[2],
+                (-5, 5),
             )
 
-            self.assertEqual(
-                tau_mock.calculate_tau_i_values.mock_calls[0].args[6], (-5, 5)
-            )
-
-            self.assertEqual(tau_mock.calculate_tau_i_values.mock_calls[0].args[7], 1.0)
+            self.assertEqual(tau_mock.calculate_tau_i_values.mock_calls[0].args[3], 1.0)
 
             self.assertEqual(
-                tau_mock.calculate_tau_i_values.mock_calls[0].args[8], None
+                tau_mock.calculate_tau_i_values.mock_calls[0].args[4], None
             )
 
             self.assertEqual(
@@ -178,31 +151,16 @@ class CoreUnitTest(unittest.TestCase):
 
             np.testing.assert_array_equal(
                 delta_tau_mock.calculate_error_propagation_terms.mock_calls[0].args[0],
-                np.array([6, 10]),
+                datasets.get_datapoints(),
             )
 
             np.testing.assert_array_equal(
                 delta_tau_mock.calculate_error_propagation_terms.mock_calls[0].args[1],
-                np.array([1, 1]),
-            )
-
-            np.testing.assert_array_equal(
-                delta_tau_mock.calculate_error_propagation_terms.mock_calls[0].args[2],
-                np.array([1, 1]),
-            )
-
-            np.testing.assert_array_equal(
-                delta_tau_mock.calculate_error_propagation_terms.mock_calls[0].args[3],
-                np.array([0, 1]),
-            )
-
-            np.testing.assert_array_equal(
-                delta_tau_mock.calculate_error_propagation_terms.mock_calls[0].args[4],
                 np.array([2, 3, 1]),
             )
 
             self.assertEqual(
-                delta_tau_mock.calculate_error_propagation_terms.mock_calls[0].args[5],
+                delta_tau_mock.calculate_error_propagation_terms.mock_calls[0].args[2],
                 2.0,
             )
 

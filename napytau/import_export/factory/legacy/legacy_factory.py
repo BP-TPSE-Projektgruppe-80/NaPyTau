@@ -10,6 +10,7 @@ from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.import_export.model.dataset import DataSet
 from napytau.import_export.model.relative_velocity import RelativeVelocity
+from napytau.util.model.ValueErrorPairCollection import ValueErrorPairCollection
 from napytau.util.model.value_error_pair import ValueErrorPair
 
 
@@ -259,7 +260,7 @@ class LegacyFactory:
     @staticmethod
     def parse_datapoint_active_rows(
         active_rows: List[str],
-        distances: List[ValueErrorPair[float]],
+        distances: ValueErrorPairCollection[float],
     ) -> List[Tuple[float, bool]]:
         active_datapoints = []
         for index, active_row in enumerate(active_rows):
