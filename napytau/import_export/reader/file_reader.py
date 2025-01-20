@@ -20,3 +20,13 @@ class FileReader(Reader[PurePath]):
                 rows,
             )
         )
+
+    @staticmethod
+    def read_text(file_path: PurePath) -> str:
+        if not isfile(file_path):
+            raise FileNotFoundError(f"File not found: {file_path}")
+
+        with open(file_path) as file:
+            text = file.read()
+
+        return text
