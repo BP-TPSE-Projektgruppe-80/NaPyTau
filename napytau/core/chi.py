@@ -2,16 +2,16 @@ from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 from napytau.core.polynomials import (
     evaluate_differentiated_polynomial_at_measuring_distances,
 )
-from napytau.import_export.model.datapoint_collection import DatapointCollection
 import numpy as np
 import scipy as sp
 from typing import Tuple
 
+from napytau.import_export.model.dataset import DataSet
+
 
 def chi_squared_fixed_t(
-    datapoints: DatapointCollection,
+    dataset: DataSet,
     coefficients: np.ndarray,
-    relative_velocity: float,
     t_hyp: float,
     weight_factor: float,
 ) -> float:
@@ -19,8 +19,7 @@ def chi_squared_fixed_t(
     Computes the chi-squared value for a given hypothesis t_hyp
 
     Args:
-        datapoints (DatapointCollection):
-        Datapoints for fitting, consisting of distances and intensities
+        dataset (DataSet): The dataset of the experiment
         coefficients (ndarray):
         Polynomial coefficients for fitting
         t_hyp (float):
@@ -32,10 +31,11 @@ def chi_squared_fixed_t(
         float: The chi-squared value for the given inputs.
     """
 
+    datapoints = dataset.get_datapoints()
     # Compute the difference between Doppler-shifted intensities and polynomial model
     shifted_intensity_difference: np.ndarray = (
         datapoints.get_shifted_intensities().get_values()
-        - evaluate_polynomial_at_measuring_distances(datapoints, relative_velocity, coefficients)
+        - evaluate_polynomial_at_measuring_distances(dataset, coefficients)
     ) / datapoints.get_shifted_intensities().get_errors()
 
     # Compute the difference between unshifted intensities and
@@ -45,7 +45,7 @@ def chi_squared_fixed_t(
         - (
             t_hyp
             * evaluate_differentiated_polynomial_at_measuring_distances(
-                datapoints, relative_velocity, coefficients
+                dataset, coefficients
             )
         )
     ) / datapoints.get_unshifted_intensities().get_errors()
@@ -60,9 +60,8 @@ def chi_squared_fixed_t(
 
 
 def optimize_coefficients(
-    datapoints: DatapointCollection,
+    dataset: DataSet,
     initial_coefficients: np.ndarray,
-    relative_velocity: float,
     t_hyp: float,
     weight_factor: float,
 ) -> Tuple[np.ndarray, float]:
@@ -70,8 +69,7 @@ def optimize_coefficients(
     Optimizes the polynomial coefficients to minimize the chi-squared function.
 
     Args:
-        datapoints (DatapointCollection):
-        Datapoints for fitting, consisting of distances and intensities
+        dataset (DataSet): The dataset of the experiment
         initial_coefficients (ndarray):
         Initial guess for the polynomial coefficients
         t_hyp (float):
@@ -83,7 +81,7 @@ def optimize_coefficients(
         tuple: Optimized coefficients (ndarray) and minimized chi-squared value (float).
     """
     chi_squared = lambda coefficients: chi_squared_fixed_t(
-        datapoints,
+        dataset,
         coefficients,
         t_hyp,
         weight_factor,
@@ -103,9 +101,8 @@ def optimize_coefficients(
 
 
 def optimize_t_hyp(
-    datapoints: DatapointCollection,
+    dataset: DataSet,
     initial_coefficients: np.ndarray,
-    relative_velocity: float,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
 ) -> float:
@@ -113,8 +110,7 @@ def optimize_t_hyp(
     Optimizes the hypothesis value t_hyp to minimize the chi-squared function.
 
     Parameters:
-        datapoints (DatapointCollection):
-        Datapoints for fitting, consisting of distances and intensities
+        dataset (DataSet): The dataset of the experiment
         initial_coefficients (ndarray):
         Initial guess for the polynomial coefficients
         t_hyp_range (tuple):
@@ -127,9 +123,8 @@ def optimize_t_hyp(
     """
 
     chi_squared_t_hyp = lambda t_hyp: optimize_coefficients(
-        datapoints,
+        dataset,
         initial_coefficients,
-        relative_velocity,
         t_hyp,
         weight_factor,
     )[1]

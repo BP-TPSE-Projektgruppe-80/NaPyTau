@@ -25,7 +25,7 @@ def calculate_lifetime(
         t_hyp = custom_t_hyp_estimate
     else:
         t_hyp = optimize_t_hyp(
-            dataSet.get_datapoints(),
+            dataSet,
             initial_coefficients,
             t_hyp_range,
             weight_factor,
@@ -34,7 +34,7 @@ def calculate_lifetime(
     # Now we find the optimal coefficients for the given taufactor
     optimized_coefficients: np.ndarray = (
         optimize_coefficients(
-            dataSet.get_datapoints(),
+            dataSet,
             initial_coefficients,
             t_hyp,
             weight_factor,
@@ -43,7 +43,7 @@ def calculate_lifetime(
 
     # We now calculate the lifetimes tau_i for all measured distances
     tau_i_values: np.ndarray = calculate_tau_i_values(
-        dataSet.get_datapoints(),
+        dataSet,
         initial_coefficients,
         t_hyp_range,
         weight_factor,
@@ -52,7 +52,7 @@ def calculate_lifetime(
 
     # And we calculate the respective errors for the lifetimes
     delta_tau_i_values: np.ndarray = calculate_error_propagation_terms(
-        dataSet.get_datapoints(),
+        dataSet,
         optimized_coefficients,
         t_hyp,
     )
