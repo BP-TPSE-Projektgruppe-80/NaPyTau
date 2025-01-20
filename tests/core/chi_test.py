@@ -4,7 +4,9 @@ import numpy as np
 import numpy.testing
 import scipy as sp
 from typing import Tuple
-
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.util.model.value_error_pair import ValueErrorPair
+from napytau.import_export.model.datapoint import Datapoint
 
 def set_up_mocks() -> (MagicMock, MagicMock, MagicMock):
     polynomials_mock = MagicMock()
@@ -49,12 +51,12 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([1, 2, 3])
-            unshifted_intensities: np.ndarray = np.array([4, 5, 6])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([2, 3, 4])
-            delta_unshifted_intensities: np.ndarray = np.array([5, 6, 7])
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            distances: np.ndarray = np.array([0, 1, 2])
+            datapoints = DatapointCollection([
+                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(1, 2),ValueErrorPair(4, 5)),
+                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(2, 3),ValueErrorPair(5, 6)),
+                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(3, 4),ValueErrorPair(6, 7)),
+            ])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -62,12 +64,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -174,13 +172,9 @@ class ChiUnitTest(unittest.TestCase):
             },
         ):
             from napytau.core.chi import chi_squared_fixed_t
-
-            doppler_shifted_intensities: np.ndarray = np.array([])
-            unshifted_intensities: np.ndarray = np.array([])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([])
-            delta_unshifted_intensities: np.ndarray = np.array([])
             coefficients: np.ndarray = np.array([])
-            distances: np.ndarray = np.array([])
+            datapoints = DatapointCollection([
+            ])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -188,12 +182,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -304,12 +294,10 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([1])
-            unshifted_intensities: np.ndarray = np.array([2])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([3])
-            delta_unshifted_intensities: np.ndarray = np.array([4])
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            distances: np.ndarray = np.array([2])
+            datapoints = DatapointCollection([
+                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(1, 3), ValueErrorPair(2, 4)),
+                ])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -317,12 +305,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -433,12 +417,11 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([1, 2])
-            unshifted_intensities: np.ndarray = np.array([3, 4])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([0, 1])
-            delta_unshifted_intensities: np.ndarray = np.array([0, 1])
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            distances: np.ndarray = np.array([0, 1])
+            datapoints = DatapointCollection([
+                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(1, 0), ValueErrorPair(3, 0)),
+                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(2, 1), ValueErrorPair(4, 1)),
+            ])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -446,12 +429,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -562,12 +541,11 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([-1, -2])
-            unshifted_intensities: np.ndarray = np.array([-3, -4])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([1, 2])
-            delta_unshifted_intensities: np.ndarray = np.array([3, 4])
             coefficients: np.ndarray = np.array([-5, -4, 3, 2, -1])
-            distances: np.ndarray = np.array([0, 1])
+            datapoints = DatapointCollection([
+                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(-1, 1), ValueErrorPair(-3, 3)),
+                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(-2, 2), ValueErrorPair(-4, 4)),
+            ])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -575,12 +553,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -691,12 +665,12 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([1, 2, 3])
-            unshifted_intensities: np.ndarray = np.array([4, 5, 6])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([2, 3, 4])
-            delta_unshifted_intensities: np.ndarray = np.array([5, 6, 7])
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            distances: np.ndarray = np.array([0, 1, 2])
+            datapoints = DatapointCollection([
+                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(1, 2), ValueErrorPair(4, 5)),
+                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(2, 3), ValueErrorPair(5, 6)),
+                Datapoint(ValueErrorPair(2, 0.16), None, ValueErrorPair(3, 4), ValueErrorPair(6, 7)),
+            ])
             t_hyp: float = 2.0
             weight_factor: float = 0.0
 
@@ -704,12 +678,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -810,12 +780,11 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import optimize_coefficients
 
-            doppler_shifted_intensities: np.ndarray = np.array([2, 6])
-            unshifted_intensities: np.ndarray = np.array([6, 10])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([1, 1])
-            delta_unshifted_intensities: np.ndarray = np.array([1, 1])
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            distances: np.ndarray = np.array([0, 1])
+            datapoints = DatapointCollection([
+                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(2, 1), ValueErrorPair(6, 1)),
+                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(6, 1), ValueErrorPair(10, 1)),
+            ])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -825,12 +794,8 @@ class ChiUnitTest(unittest.TestCase):
             actual_coefficients: np.ndarray
             actual_chi: float
             actual_coefficients, actual_chi = optimize_coefficients(
-                doppler_shifted_intensities,
-                unshifted_intensities,
-                delta_doppler_shifted_intensities,
-                delta_unshifted_intensities,
+                datapoints,
                 initial_coefficients,
-                distances,
                 t_hyp,
                 weight_factor,
             )
@@ -876,24 +841,19 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import optimize_t_hyp
 
-            doppler_shifted_intensities: np.ndarray = np.array([2, 6])
-            unshifted_intensities: np.ndarray = np.array([6, 10])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([1, 1])
-            delta_unshifted_intensities: np.ndarray = np.array([1, 1])
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            distances: np.ndarray = np.array([0, 1])
+            datapoints = DatapointCollection([
+                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(2, 1), ValueErrorPair(6, 1)),
+                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(6, 1), ValueErrorPair(10, 1)),
+            ])
             t_hyp_range: Tuple[float, float] = (-5, 5)
             weight_factor: float = 1.0
 
             expected_t_hyp: float = 2.0
 
             actual_t_hyp: float = optimize_t_hyp(
-                doppler_shifted_intensities,
-                unshifted_intensities,
-                delta_doppler_shifted_intensities,
-                delta_unshifted_intensities,
+                datapoints,
                 initial_coefficients,
-                distances,
                 t_hyp_range,
                 weight_factor,
             )

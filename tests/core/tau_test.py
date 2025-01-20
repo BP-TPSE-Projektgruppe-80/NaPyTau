@@ -2,6 +2,9 @@ import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
 from typing import Tuple
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.util.model.value_error_pair import ValueErrorPair
+from napytau.import_export.model.datapoint import Datapoint
 
 
 def set_up_mocks() -> (MagicMock, MagicMock):
@@ -39,12 +42,11 @@ class TauUnitTest(unittest.TestCase):
         ):
             from napytau.core.tau import calculate_tau_i_values
 
-            doppler_shifted_intensities: np.ndarray = np.array([2, 6])
-            unshifted_intensities: np.ndarray = np.array([6, 10])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([1, 1])
-            delta_unshifted_intensities: np.ndarray = np.array([1, 1])
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            distances: np.ndarray = np.array([0, 1])
+            datapoints = DatapointCollection([
+                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(2, 1), ValueErrorPair(6, 1)),
+                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(6, 1), ValueErrorPair(10, 1)),
+            ])
             t_hyp_range: (float, float) = (-5, 5)
             weight_factor: float = 1.0
 
@@ -53,12 +55,8 @@ class TauUnitTest(unittest.TestCase):
 
             np.testing.assert_array_almost_equal(
                 calculate_tau_i_values(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     initial_coefficients,
-                    distances,
                     t_hyp_range,
                     weight_factor,
                     None,

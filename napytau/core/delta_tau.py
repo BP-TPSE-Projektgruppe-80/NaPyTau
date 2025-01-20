@@ -37,10 +37,10 @@ def calculate_jacobian_matrix(
 
         # Compute the disturbed and original polynomial values at the given distances
         perturbed_function: np.ndarray = evaluate_polynomial_at_measuring_distances(
-            datapoints.get_distances().get_values(), perturbed_coefficients
+            datapoints, perturbed_coefficients
         )
         original_function: np.ndarray = evaluate_polynomial_at_measuring_distances(
-            datapoints.get_distances().get_values(), coefficients
+            datapoints, coefficients
         )
 
         # Calculate the partial derivative coefficients and store it in the
@@ -68,7 +68,7 @@ def calculate_covariance_matrix(
         ndarray: The computed covariance matrix for the polynomial coefficients.
     """
 
-    jacobian_matrix: np.ndarray = calculate_jacobian_matrix(datapoints.get_distances().get_values(), coefficients)
+    jacobian_matrix: np.ndarray = calculate_jacobian_matrix(datapoints, coefficients)
 
     # Construct the weight matrix from the inverse squared errors
     weight_matrix: np.ndarray = np.diag(1 / np.power(datapoints.get_shifted_intensities().get_errors(), 2))
@@ -115,7 +115,7 @@ def calculate_error_propagation_terms(
     # Initialize the polynomial uncertainty term for second term
     delta_p_j_i_squared: np.ndarray = np.zeros(len(datapoints.get_distances().get_values()))
     covariance_matrix: np.ndarray = calculate_covariance_matrix(
-        datapoints.get_shifted_intensities().get_errors(), datapoints.get_distances().get_values(),coefficients
+        datapoints,coefficients
     )
 
     # Calculate the polynomial uncertainty contributions

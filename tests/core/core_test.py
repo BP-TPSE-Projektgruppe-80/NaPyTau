@@ -2,6 +2,10 @@ import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
 from typing import Tuple, Optional
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.util.model.value_error_pair import ValueErrorPair
+from napytau.import_export.model.datapoint import Datapoint
+from napytau.import_export.model.dataset import DataSet
 
 
 def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
@@ -49,23 +53,18 @@ class CoreUnitTest(unittest.TestCase):
         ):
             from napytau.core.core import calculate_lifetime
 
-            doppler_shifted_intensities: np.ndarray = np.array([2, 6])
-            unshifted_intensities: np.ndarray = np.array([6, 10])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([1, 1])
-            delta_unshifted_intensities: np.ndarray = np.array([1, 1])
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            distances: np.ndarray = np.array([0, 1])
+            datasets= DataSet(ValueErrorPair(4,2), DatapointCollection([
+                Datapoint(ValueErrorPair(0, 0.16), None, ValueErrorPair(2, 1), ValueErrorPair(6, 1)),
+                Datapoint(ValueErrorPair(1, 0.16), None, ValueErrorPair(6, 1), ValueErrorPair(10, 1)),
+            ]))
             t_hyp_range: Tuple[float, float] = (-5, 5)
             weight_factor: float = 1.0
             custom_t_hyp_estimate: Optional[float] = None
 
             actual_result: Tuple[float, float] = calculate_lifetime(
-                doppler_shifted_intensities,
-                unshifted_intensities,
-                delta_doppler_shifted_intensities,
-                delta_unshifted_intensities,
+                datasets,
                 initial_coefficients,
-                distances,
                 t_hyp_range,
                 weight_factor,
                 custom_t_hyp_estimate,
