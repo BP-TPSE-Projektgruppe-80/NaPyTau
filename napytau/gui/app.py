@@ -85,8 +85,6 @@ class App(customtkinter.CTk):
         # Initialize the menu bar
         self.menu_bar = MenuBar(self, menu_bar_callbacks)
 
-
-
         # Initialize the checkbox panel
         self.checkbox_panel = CheckboxPanel(self)
 
@@ -115,8 +113,6 @@ class App(customtkinter.CTk):
                                        ValueErrorPair(5.0, 9.0)),
                 create_dummy_datapoint(ValueErrorPair(10.0, 0.3),
                                        ValueErrorPair(4.0, 10.0)),
-
-
             ]
         )
 
@@ -129,7 +125,7 @@ class App(customtkinter.CTk):
         self.control_panel = ControlPanel(self)
 
         # Initialize the logger
-        self.logger = Logger(self)
+        self.logger:Logger = Logger(self)
 
     def open_file(self) -> None:
         """

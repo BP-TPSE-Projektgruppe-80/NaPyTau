@@ -1,6 +1,7 @@
-import tkinter as tk
 import customtkinter
 from typing import TYPE_CHECKING
+
+from napytau.gui.model.log_message_type import LogMessageType
 
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
@@ -16,7 +17,8 @@ class ControlPanel(customtkinter.CTkFrame):
         self.parent = parent
 
         # Main area for buttons and controls
-        self.grid(row=1, column=1, columnspan=2, padx=10, pady=10, sticky="nsew")
+        self.grid(row=1, column=1, rowspan=2, padx=(0, 10), pady=(10, 10),
+                  sticky="nsew")
         self.grid_rowconfigure((0, 1), weight=1)
         self.grid_propagate(True)
 
@@ -26,29 +28,29 @@ class ControlPanel(customtkinter.CTkFrame):
         self.result_tau_error = customtkinter.StringVar(value="N/A")
         self.result_abs_tau_t = customtkinter.StringVar(value="N/A")
 
-        self.create_widgets()
+        self._create_widgets()
 
-    def create_widgets(self) -> None:
+    def _create_widgets(self) -> None:
         """
         Create the control panel widgets.
         """
         # Row 1: Timescale Controls
-        timescale_widget = self.create_timescale_widget()
+        timescale_widget = self._create_timescale_widget()
         timescale_widget.pack(fill="x", padx=5, pady=5)
 
         # Row 2: Chi^2 Display
-        chi2_widget = self.create_chi2_widget()
+        chi2_widget = self._create_chi2_widget()
         chi2_widget.pack(fill="x", padx=5, pady=5)
 
         # Row 3: Tau Display
-        tau_widget = self.create_tau_widget()
+        tau_widget = self._create_tau_widget()
         tau_widget.pack(fill="x", padx=5, pady=5)
 
         # Row 4: Abs(Tau - T) Display
-        abs_tau_t_widget = self.create_abs_tau_t_widget()
+        abs_tau_t_widget = self._create_abs_tau_t_widget()
         abs_tau_t_widget.pack(fill="x", padx=5, pady=5)
 
-    def create_timescale_widget(self) -> customtkinter.CTkFrame:
+    def _create_timescale_widget(self) -> customtkinter.CTkFrame:
         """
         Create the timescale widget.
         """
@@ -59,18 +61,22 @@ class ControlPanel(customtkinter.CTkFrame):
 
         timescale_entry = customtkinter.StringVar(value=str(self.timescale.get()))
 
-        # TODO: Print errors to the logger later on.
         def update_timescale() -> None:
             try:
                 value = float(timescale_entry.get())
                 if min_timescale <= value <= max_timescale:
                     self.timescale.set(value)
-                    print(f"Timescale set to: {value}")
+                    self.parent.logger.log_message(
+                        f"Timescale set to: {value}", LogMessageType.INFO)
                 else:
-                    print(f"Error: Value out of valid range ({min_timescale:.2f}"
-                          f" - {max_timescale:.2f}).")
+                    self.parent.logger.log_message(
+                        f"Error: Value out of valid range ({min_timescale:.2f}"
+                        f" - {max_timescale:.2f}).",
+                        LogMessageType.ERROR)
             except ValueError:
-                print("Error: Invalid input value, please enter a number.")
+                self.parent.logger.log_message(
+                    "Invalid input value, please enter a number.",
+                    LogMessageType.ERROR)
 
         def sync_entry_with_slider(value : float) -> None:
             timescale_entry.set(f"{value:.2f}")
@@ -93,11 +99,14 @@ class ControlPanel(customtkinter.CTkFrame):
 
         return frame
 
-    def create_chi2_widget(self) -> customtkinter.CTkFrame:
+    def _create_chi2_widget(self) -> customtkinter.CTkFrame:
         """
         Create the chi^2 widget.
         """
         frame = customtkinter.CTkFrame(self)
+        button = customtkinter.CTkButton(frame, text="Minimize",
+                                         command=self._chi2_button_event)
+        button.pack(side="left", padx=5)
 
         label = customtkinter.CTkLabel(frame, text="χ²:")
         label.pack(side="left", padx=15)
@@ -107,29 +116,36 @@ class ControlPanel(customtkinter.CTkFrame):
 
         return frame
 
-    def create_tau_widget(self) -> customtkinter.CTkFrame:
+    def _create_tau_widget(self) -> customtkinter.CTkFrame:
         """
         Create the tau widget.
         """
         frame = customtkinter.CTkFrame(self)
 
         button = customtkinter.CTkButton(frame, text="τ ± Δτ [ps]:",
-                                         command=self.tau_button_event)
+                                         command=self._tau_button_event)
         button.pack(side="left", padx=5)
 
         result = customtkinter.CTkLabel(frame, textvariable=self.result_tau)
         result.pack(side="left", padx=5)
+
+        separator = customtkinter.CTkLabel(frame, text="±")
+        separator.pack(side="left", padx=5)
 
         error = customtkinter.CTkLabel(frame, textvariable=self.result_tau_error)
         error.pack(side="left", padx=5)
 
         return frame
 
-    def create_abs_tau_t_widget(self) -> customtkinter.CTkFrame:
+    def _create_abs_tau_t_widget(self) -> customtkinter.CTkFrame:
         """
         Create the abs tau t widget.
         """
         frame = customtkinter.CTkFrame(self)
+
+        button = customtkinter.CTkButton(frame, text="Absolute τ",
+                                         command=self._absolute_tau_button_event)
+        button.pack(side="left", padx=5)
 
         label = customtkinter.CTkLabel(frame, text="|τ - t| [ps]:")
         label.pack(side="left", padx=15)
@@ -139,21 +155,44 @@ class ControlPanel(customtkinter.CTkFrame):
 
         return frame
 
-    def timescale_button_event(self) -> None:
+    def _timescale_button_event(self) -> None:
         """
         Event if the timescale button is clicked.
         """
         print(f"Timescale set to {self.timescale.get():.2f} ps")
 
-    def timescale_slider_event(self, value: str) -> None:
+    def _timescale_slider_event(self, value: str) -> None:
        """
        Event for the timescale slider.
        :param value: The current value of the slider.
        """
        self.timescale.set(round(float(value), 2))
 
-    def tau_button_event(self) -> None:
+    def _tau_button_event(self) -> None:
         """
         Event if the tau button is clicked.
         """
-        print("Tau button clicked")
+        self.set_result_tau(0.0)
+        self.set_result_tau_error(0.0)
+
+    def _chi2_button_event(self) -> None:
+        self.set_result_chi2(0.0)
+
+    def _absolute_tau_button_event(self) -> None:
+        self.set_result_abs_tau_t(0.0)
+
+    def set_result_chi2(self, chi2: float) -> None:
+        """
+        Set the chi^2 value.
+        :param chi2: The new value.
+        """
+        self.result_chi2.set(chi2)
+
+    def set_result_tau(self, tau: float) -> None:
+        self.result_tau.set(tau)
+
+    def set_result_tau_error(self, tau_error: float) -> None:
+        self.result_tau_error.set(tau_error)
+
+    def set_result_abs_tau_t(self, abs_tau_t: float) -> None:
+        self.result_abs_tau_t.set(abs_tau_t)
