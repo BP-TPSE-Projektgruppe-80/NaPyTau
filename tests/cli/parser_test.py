@@ -43,10 +43,10 @@ class ParserUnitTest(unittest.TestCase):
                     ("--dataset_format",),
                     {
                         "type": str,
-                        "default": "napatau",
-                        "const": "napatau",
+                        "default": "legacy",
+                        "const": "legacy",
                         "nargs": "?",
-                        "choices": ["napatau"],
+                        "choices": ["legacy", "napytau"],
                         "help": "Format of the dataset to ingest",
                     },
                 ),
@@ -58,7 +58,8 @@ class ParserUnitTest(unittest.TestCase):
                     ("--data_files_directory",),
                     {
                         "type": str,
-                        "help": "Path to the directory containing either data files or subdirectories with data files",
+                        "help": """Path to the directory containing either data files or subdirectories
+        with data files""",
                     },
                 ),
             )
@@ -69,7 +70,8 @@ class ParserUnitTest(unittest.TestCase):
                     ("--fit_file",),
                     {
                         "type": str,
-                        "help": "Path to a fit file to use instead of the one found in the setup files",  # noqa E501
+                        "help": """Path to a fit file to use instead of the one found in the setup files,
+        only relevant for legacy format""",
                     },
                 ),
             )
@@ -77,10 +79,11 @@ class ParserUnitTest(unittest.TestCase):
             self.assertEqual(
                 argument_parser_mock.add_argument.mock_calls[4],
                 (
-                    ("--setup_file",),
+                    ("--setup_identifier",),
                     {
                         "type": str,
-                        "help": "Path to a setup file to load",
+                        "help": """Identifier of the setup to use with the dataset, file path for legacy
+        format, or setup name for NaPyTau format""",
                     },
                 ),
             )
@@ -101,7 +104,7 @@ class ParserUnitTest(unittest.TestCase):
 
             test_args = Namespace(
                 headless=True,
-                dataset_format="napatau",
+                dataset_format="legacy",
                 setup_files_directory="test_directory",
                 fit_file="test_file",
             )

@@ -1,12 +1,10 @@
-from numpy import ndarray
-from numpy import power
-from numpy import sum
-from numpy import sqrt
+import numpy as np
 from typing import Tuple
 
 
 def calculate_tau_final(
-    tau_i_values: ndarray, delta_tau_i_values: ndarray
+    tau_i_values: np.ndarray,
+    delta_tau_i_values: np.ndarray,
 ) -> Tuple[float, float]:
     """
     Computes the final decay time (tau_final) and its associated uncertainty
@@ -24,12 +22,12 @@ def calculate_tau_final(
     if len(tau_i_values) == 0:
         return -1, -1
 
-    weights: ndarray = 1 / power(delta_tau_i_values, 2)
+    weights: np.ndarray = 1 / np.power(delta_tau_i_values, 2)
 
     # Calculate the weighted mean of tau_i
-    weighted_mean: float = sum(weights * tau_i_values) / sum(weights)
+    weighted_mean: float = np.sum(weights * tau_i_values) / np.sum(weights)
 
     # Calculate the uncertainty of the weighted mean
-    uncertainty: float = sqrt(1 / sum(weights))
+    uncertainty: float = np.sqrt(1 / np.sum(weights))
 
     return weighted_mean, uncertainty

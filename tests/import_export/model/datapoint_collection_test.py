@@ -2,6 +2,7 @@ import unittest
 
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.util.model.ValueErrorPairCollection import ValueErrorPairCollection
 from napytau.util.model.value_error_pair import ValueErrorPair
 
 
@@ -171,7 +172,9 @@ class DatapointCollectionUnitTest(unittest.TestCase):
 
         self.assertEqual(
             collection.get_distances(),
-            [ValueErrorPair(12.12, 0.1), ValueErrorPair(12.13, 0.1)],
+            ValueErrorPairCollection(
+                [ValueErrorPair(12.12, 0.1), ValueErrorPair(12.13, 0.1)]
+            ),
         )
 
     def test_canRetrieveCalibrations(self):
@@ -194,7 +197,9 @@ class DatapointCollectionUnitTest(unittest.TestCase):
 
         self.assertEqual(
             collection.get_calibrations(),
-            [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
+            ValueErrorPairCollection(
+                [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)]
+            ),
         )
 
     def test_canRetrieveShiftedIntensities(self):
@@ -217,7 +222,9 @@ class DatapointCollectionUnitTest(unittest.TestCase):
 
         self.assertEqual(
             collection.get_shifted_intensities(),
-            [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
+            ValueErrorPairCollection(
+                [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)]
+            ),
         )
 
     def test_canRetrieveUnshiftedIntensities(self):
@@ -240,7 +247,9 @@ class DatapointCollectionUnitTest(unittest.TestCase):
 
         self.assertEqual(
             collection.get_unshifted_intensities(),
-            [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
+            ValueErrorPairCollection(
+                [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)]
+            ),
         )
 
     def test_canRetrieveFeedingShiftedIntensities(self):
@@ -263,7 +272,9 @@ class DatapointCollectionUnitTest(unittest.TestCase):
 
         self.assertEqual(
             collection.get_feeding_shifted_intensities(),
-            [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
+            ValueErrorPairCollection(
+                [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)]
+            ),
         )
 
     def test_canRetrieveFeedingUnshiftedIntensities(self):
@@ -286,7 +297,9 @@ class DatapointCollectionUnitTest(unittest.TestCase):
 
         self.assertEqual(
             collection.get_feeding_unshifted_intensities(),
-            [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
+            ValueErrorPairCollection(
+                [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)]
+            ),
         )
 
     def test_canRetrieveTaus(self):
@@ -309,7 +322,9 @@ class DatapointCollectionUnitTest(unittest.TestCase):
 
         self.assertEqual(
             collection.get_taus(),
-            [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)],
+            ValueErrorPairCollection(
+                [ValueErrorPair(1.0, 0.1), ValueErrorPair(2.0, 0.1)]
+            ),
         )
 
     def test_canRetrieveActiveDatapoints(self):

@@ -3,6 +3,6 @@ from typing import List
 
 
 @dataclass
-class RawNapatauSetupData:
+class RawLegacySetupData:
     # The rows read from a saved .napset file
     napsetup_rows: List[str]

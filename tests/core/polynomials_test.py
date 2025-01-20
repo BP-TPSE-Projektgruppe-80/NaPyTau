@@ -1,16 +1,16 @@
 import unittest
 from unittest.mock import MagicMock, patch
-
-from numpy import ndarray
-from numpy import array
-from numpy import testing
-import numpy as np
-
 from napytau.core.errors.polynomial_coefficient_error import (
     PolynomialCoefficientError,
 )
 from napytau.core.polynomials import calculate_times_from_distances_and_relative_velocity
 from scipy.constants import speed_of_light
+
+import numpy as np
+
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.util.model.value_error_pair import ValueErrorPair
+from napytau.import_export.model.datapoint import Datapoint
 
 
 def set_up_mocks() -> MagicMock:
@@ -38,11 +38,11 @@ class PolynomialsUnitTest(unittest.TestCase):
 
         # Mocked return values of called functions
         numpy_module_mock.power.side_effect = [
-            array([1, 1, 1]),
-            array([1, 2, 3]),
-            array([1, 4, 9]),
+            np.array([1, 1, 1]),
+            np.array([1, 2, 3]),
+            np.array([1, 4, 9]),
         ]
-        numpy_module_mock.zeros_like.return_value = array([0, 0, 0])
+        numpy_module_mock.zeros_like.return_value = np.array([0, 0, 0])
 
         with patch.dict(
             "sys.modules",
@@ -55,14 +55,35 @@ class PolynomialsUnitTest(unittest.TestCase):
             )
 
             # Test for a simple quadratic polynomial: 2 + 3x + 4x^2
-            distances: ndarray = array([1, 2, 3])
-            coefficients: ndarray = array([2, 3, 4])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
+            coefficients: np.ndarray = np.array([2, 3, 4])
             # At x = 1: 2 + 3(1) + 4(1^2) = 9
             # At x = 2: 2 + 3(2) + 4(2^2) = 2 + 6 + 16 = 24
             # At x = 3: 2 + 3(3) + 4(3^2) = 2 + 9 + 36 = 47
-            expected_result: ndarray = array([9, 24, 47])
-            testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(distances, coefficients),
+            expected_result: np.ndarray = np.array([9, 24, 47])
+            np.testing.assert_array_equal(
+                evaluate_polynomial_at_measuring_distances(datapoints, coefficients),
                 expected_result,
             )
 
@@ -72,8 +93,8 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [array([]), array([]), array([])]
-        numpy_module_mock.zeros_like.return_value = array([])
+        numpy_module_mock.power.side_effect = [np.array([]), np.array([]), np.array([])]
+        numpy_module_mock.zeros_like.return_value = np.array([])
 
         with patch.dict(
             "sys.modules",
@@ -85,12 +106,33 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_polynomial_at_measuring_distances,
             )
 
-            distances: ndarray = array([])
-            coefficients: ndarray = array([2, 3, 4])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
+            coefficients: np.ndarray = np.array([2, 3, 4])
             # With an empty input array, the result should also be an empty array
-            expected_result: ndarray = array([])
-            testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(distances, coefficients),
+            expected_result: np.ndarray = np.array([])
+            np.testing.assert_array_equal(
+                evaluate_polynomial_at_measuring_distances(datapoints, coefficients),
                 expected_result,
             )
 
@@ -100,8 +142,12 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [array([1]), array([2]), array([4])]
-        numpy_module_mock.zeros_like.return_value = array([0])
+        numpy_module_mock.power.side_effect = [
+            np.array([1]),
+            np.array([2]),
+            np.array([4]),
+        ]
+        numpy_module_mock.zeros_like.return_value = np.array([0])
 
         with patch.dict(
             "sys.modules",
@@ -113,13 +159,22 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_polynomial_at_measuring_distances,
             )
 
-            distances: ndarray = array([2])
-            coefficients: ndarray = array([1, 2])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
+            coefficients: np.ndarray = np.array([1, 2])
             # Polynomial: f(x) = 1 + 2x
             # At x = 2: 1 + 2(2) = 5
-            expected_result: ndarray = array([5])
-            testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(distances, coefficients),
+            expected_result: np.ndarray = np.array([5])
+            np.testing.assert_array_equal(
+                evaluate_polynomial_at_measuring_distances(datapoints, coefficients),
                 expected_result,
             )
 
@@ -130,11 +185,11 @@ class PolynomialsUnitTest(unittest.TestCase):
 
         # Mocked return values of called functions
         numpy_module_mock.power.side_effect = [
-            array([1, 1, 1]),
-            array([1, 2, 3]),
-            array([1, 4, 9]),
+            np.array([1, 1, 1]),
+            np.array([1, 2, 3]),
+            np.array([1, 4, 9]),
         ]
-        numpy_module_mock.zeros_like.return_value = array([0, 0, 0])
+        numpy_module_mock.zeros_like.return_value = np.array([0, 0, 0])
 
         with patch.dict(
             "sys.modules",
@@ -146,13 +201,34 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_polynomial_at_measuring_distances,
             )
 
-            distances: ndarray = array([1, 2, 3])
-            coefficients: ndarray = array([5])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
+            coefficients: np.ndarray = np.array([5])
             # Constant polynomial: f(x) = 5
             # All values should be 5
-            expected_result: ndarray = array([5, 5, 5])
-            testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(distances, coefficients),
+            expected_result: np.ndarray = np.array([5, 5, 5])
+            np.testing.assert_array_equal(
+                evaluate_polynomial_at_measuring_distances(datapoints, coefficients),
                 expected_result,
             )
 
@@ -163,12 +239,27 @@ class PolynomialsUnitTest(unittest.TestCase):
 
         from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 
-        distances: ndarray = array([1, 2])
-        coefficients: ndarray = array([])
+        datapoints = DatapointCollection(
+            [
+                Datapoint(
+                    ValueErrorPair(1, 0.16),
+                    None,
+                    ValueErrorPair(0, 3),
+                    ValueErrorPair(5, 6),
+                ),
+                Datapoint(
+                    ValueErrorPair(2, 0.16),
+                    None,
+                    ValueErrorPair(0, 4),
+                    ValueErrorPair(6, 7),
+                ),
+            ]
+        )
+        coefficients: np.ndarray = np.array([])
         # With an empty coefficients array, the function should throw a polynomial
         # coefficient error.
         with self.assertRaises(PolynomialCoefficientError):
-            evaluate_polynomial_at_measuring_distances(distances, coefficients)
+            evaluate_polynomial_at_measuring_distances(datapoints, coefficients)
 
     @staticmethod
     def test_CanEvaluateAValidDifferentiatedPolynomialAtMeasuringDistances():
@@ -176,8 +267,8 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [array([1, 1, 1]), array([1, 2, 3])]
-        numpy_module_mock.zeros_like.return_value = array([0, 0, 0])
+        numpy_module_mock.power.side_effect = [np.array([1, 1, 1]), np.array([1, 2, 3])]
+        numpy_module_mock.zeros_like.return_value = np.array([0, 0, 0])
 
         with patch.dict(
             "sys.modules",
@@ -190,16 +281,37 @@ class PolynomialsUnitTest(unittest.TestCase):
             )
 
             # Test for a simple quadratic polynomial: 2 + 3x + 4x^2
-            distances: ndarray = array([1, 2, 3])
-            coefficients: ndarray = array([2, 3, 4])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
+            coefficients: np.ndarray = np.array([2, 3, 4])
             # The differentiated polynomial should be: 3 + 8x
             # At x = 1: 3 + 8(1) = 3 + 8 = 11
             # At x = 2: 3 + 8(2) = 3 + 16 = 19
             # At x = 3: 3 + 8(3) = 3 + 24 = 27
-            expected_result: ndarray = array([11, 19, 27])
-            testing.assert_array_equal(
+            expected_result: np.ndarray = np.array([11, 19, 27])
+            np.testing.assert_array_equal(
                 evaluate_differentiated_polynomial_at_measuring_distances(
-                    distances, coefficients
+                    datapoints, coefficients
                 ),
                 expected_result,
             )
@@ -210,8 +322,8 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [array([]), array([])]
-        numpy_module_mock.zeros_like.return_value = array([])
+        numpy_module_mock.power.side_effect = [np.array([]), np.array([])]
+        numpy_module_mock.zeros_like.return_value = np.array([])
 
         with patch.dict(
             "sys.modules",
@@ -223,13 +335,34 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_differentiated_polynomial_at_measuring_distances,
             )
 
-            distances: ndarray = array([])
-            coefficients: ndarray = array([2, 3, 4])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
+            coefficients: np.ndarray = np.array([2, 3, 4])
             # With an empty input array, the result should also be an empty array
-            expected_result: ndarray = array([])
-            testing.assert_array_equal(
+            expected_result: np.ndarray = np.array([])
+            np.testing.assert_array_equal(
                 evaluate_differentiated_polynomial_at_measuring_distances(
-                    distances, coefficients
+                    datapoints, coefficients
                 ),
                 expected_result,
             )
@@ -240,8 +373,8 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [array([1]), array([2])]
-        numpy_module_mock.zeros_like.return_value = array([0])
+        numpy_module_mock.power.side_effect = [np.array([1]), np.array([2])]
+        numpy_module_mock.zeros_like.return_value = np.array([0])
 
         with patch.dict(
             "sys.modules",
@@ -253,14 +386,23 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_differentiated_polynomial_at_measuring_distances,
             )
 
-            distances: ndarray = array([2])
-            coefficients: ndarray = array([1, 2])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
+            coefficients: np.ndarray = np.array([1, 2])
             # The differentiated polynomial should be: 2
             # At x = 2: 2
-            expected_result: ndarray = array([2])
-            testing.assert_array_equal(
+            expected_result: np.ndarray = np.array([2])
+            np.testing.assert_array_equal(
                 evaluate_differentiated_polynomial_at_measuring_distances(
-                    distances, coefficients
+                    datapoints, coefficients
                 ),
                 expected_result,
             )
@@ -271,8 +413,8 @@ class PolynomialsUnitTest(unittest.TestCase):
         numpy_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        numpy_module_mock.power.side_effect = [array([1, 1, 1]), array([1, 2, 3])]
-        numpy_module_mock.zeros_like.return_value = array([0, 0, 0])
+        numpy_module_mock.power.side_effect = [np.array([1, 1, 1]), np.array([1, 2, 3])]
+        numpy_module_mock.zeros_like.return_value = np.array([0, 0, 0])
 
         with patch.dict(
             "sys.modules",
@@ -284,14 +426,35 @@ class PolynomialsUnitTest(unittest.TestCase):
                 evaluate_differentiated_polynomial_at_measuring_distances,
             )
 
-            distances: ndarray = array([1, 2, 3])
-            coefficients: ndarray = array([5])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0, 0.16),
+                        None,
+                        ValueErrorPair(0, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1, 0.16),
+                        None,
+                        ValueErrorPair(0, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2, 0.16),
+                        None,
+                        ValueErrorPair(0, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
+            coefficients: np.ndarray = np.array([5])
             # The differentiated polynomial should be: 0
             # All values should therefore be 0
-            expected_result: ndarray = array([0, 0, 0])
-            testing.assert_array_equal(
+            expected_result: np.ndarray = np.array([0, 0, 0])
+            np.testing.assert_array_equal(
                 evaluate_differentiated_polynomial_at_measuring_distances(
-                    distances, coefficients
+                    datapoints, coefficients
                 ),
                 expected_result,
             )
@@ -304,13 +467,28 @@ class PolynomialsUnitTest(unittest.TestCase):
             evaluate_differentiated_polynomial_at_measuring_distances,
         )
 
-        distances: ndarray = array([1, 2])
-        coefficients: ndarray = array([])
+        datapoints = DatapointCollection(
+            [
+                Datapoint(
+                    ValueErrorPair(1, 0.16),
+                    None,
+                    ValueErrorPair(0, 3),
+                    ValueErrorPair(5, 6),
+                ),
+                Datapoint(
+                    ValueErrorPair(2, 0.16),
+                    None,
+                    ValueErrorPair(0, 4),
+                    ValueErrorPair(6, 7),
+                ),
+            ]
+        )
+        coefficients: np.ndarray = np.array([])
         # With an empty coefficients array, the function should throw a polynomial
         # coefficient error.
         with self.assertRaises(PolynomialCoefficientError):
             evaluate_differentiated_polynomial_at_measuring_distances(
-                distances, coefficients
+                datapoints, coefficients
             )
 
 

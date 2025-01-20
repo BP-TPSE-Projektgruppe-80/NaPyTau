@@ -1,20 +1,16 @@
-import numpy as np
 from napytau.core.chi import optimize_t_hyp
 from napytau.core.chi import optimize_coefficients
 from napytau.core.tau import calculate_tau_i_values
 from napytau.core.delta_tau import calculate_error_propagation_terms
 from napytau.core.tau_final import calculate_tau_final
 from typing import Tuple, Optional
+import numpy as np
+from napytau.import_export.model.dataset import DataSet
 
 
 def calculate_lifetime(
-    doppler_shifted_intensities: np.ndarray,
-    unshifted_intensities: np.ndarray,
-    delta_doppler_shifted_intensities: np.ndarray,
-    delta_unshifted_intensities: np.ndarray,
+    dataSet: DataSet,
     initial_coefficients: np.ndarray,
-    distances: np.ndarray,
-    relative_velocity: float,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
     custom_t_hyp_estimate: Optional[float],
@@ -29,13 +25,8 @@ def calculate_lifetime(
         t_hyp = custom_t_hyp_estimate
     else:
         t_hyp = optimize_t_hyp(
-            doppler_shifted_intensities,
-            unshifted_intensities,
-            delta_doppler_shifted_intensities,
-            delta_unshifted_intensities,
+            dataSet.get_datapoints(),
             initial_coefficients,
-            distances,
-            relative_velocity,
             t_hyp_range,
             weight_factor,
         )
@@ -43,13 +34,8 @@ def calculate_lifetime(
     # Now we find the optimal coefficients for the given taufactor
     optimized_coefficients: np.ndarray = (
         optimize_coefficients(
-            doppler_shifted_intensities,
-            unshifted_intensities,
-            delta_doppler_shifted_intensities,
-            delta_unshifted_intensities,
+            dataSet.get_datapoints(),
             initial_coefficients,
-            distances,
-            relative_velocity,
             t_hyp,
             weight_factor,
         )
@@ -57,13 +43,8 @@ def calculate_lifetime(
 
     # We now calculate the lifetimes tau_i for all measured distances
     tau_i_values: np.ndarray = calculate_tau_i_values(
-        doppler_shifted_intensities,
-        unshifted_intensities,
-        delta_doppler_shifted_intensities,
-        delta_unshifted_intensities,
+        dataSet.get_datapoints(),
         initial_coefficients,
-        distances,
-        relative_velocity,
         t_hyp_range,
         weight_factor,
         custom_t_hyp_estimate,
@@ -71,11 +52,7 @@ def calculate_lifetime(
 
     # And we calculate the respective errors for the lifetimes
     delta_tau_i_values: np.ndarray = calculate_error_propagation_terms(
-        unshifted_intensities,
-        delta_doppler_shifted_intensities,
-        delta_unshifted_intensities,
-        distances,
-        relative_velocity,
+        dataSet.get_datapoints(),
         optimized_coefficients,
         t_hyp,
     )
