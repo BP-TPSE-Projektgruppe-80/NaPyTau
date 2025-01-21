@@ -1,17 +1,17 @@
 import unittest
 from pathlib import PurePath
 
-from napytau.import_export.crawler.napatau_setup_files import NapatauSetupFiles
+from napytau.import_export.crawler.legacy_setup_files import LegacySetupFiles
 from napytau.import_export.import_export_error import ImportExportError
 
 
-class NapatauSetupFilesUnitTest(unittest.TestCase):
+class LegacySetupFilesUnitTest(unittest.TestCase):
     def test_raisesAnErrorIfAnyFileIsNotProvided(self):
         """Raises an error if any file is not provided."""
         with self.assertRaises(ImportExportError):
-            NapatauSetupFiles.create_from_file_names([])
+            LegacySetupFiles.create_from_file_names([])
         with self.assertRaises(ImportExportError):
-            NapatauSetupFiles.create_from_file_names(
+            LegacySetupFiles.create_from_file_names(
                 [
                     PurePath("v_c"),
                     PurePath("test.fit"),
@@ -19,7 +19,7 @@ class NapatauSetupFilesUnitTest(unittest.TestCase):
                 ]
             )
         with self.assertRaises(ImportExportError):
-            NapatauSetupFiles.create_from_file_names(
+            LegacySetupFiles.create_from_file_names(
                 [
                     PurePath("distances.dat"),
                     PurePath("test.fit"),
@@ -27,7 +27,7 @@ class NapatauSetupFilesUnitTest(unittest.TestCase):
                 ]
             )
         with self.assertRaises(ImportExportError):
-            NapatauSetupFiles.create_from_file_names(
+            LegacySetupFiles.create_from_file_names(
                 [
                     PurePath("distances.dat"),
                     PurePath("v_c"),
@@ -35,7 +35,7 @@ class NapatauSetupFilesUnitTest(unittest.TestCase):
                 ]
             )
         with self.assertRaises(ImportExportError):
-            NapatauSetupFiles.create_from_file_names(
+            LegacySetupFiles.create_from_file_names(
                 [
                     PurePath("distances.dat"),
                     PurePath("v_c"),
@@ -51,7 +51,7 @@ class NapatauSetupFilesUnitTest(unittest.TestCase):
             PurePath("test.fit"),
             PurePath("norm.fac"),
         ]
-        setup_files = NapatauSetupFiles.create_from_file_names(file_names)
+        setup_files = LegacySetupFiles.create_from_file_names(file_names)
         self.assertEqual(setup_files.distances_file, PurePath("distances.dat"))
         self.assertEqual(setup_files.velocity_file, PurePath("v_c"))
         self.assertEqual(setup_files.fit_file, PurePath("test.fit"))

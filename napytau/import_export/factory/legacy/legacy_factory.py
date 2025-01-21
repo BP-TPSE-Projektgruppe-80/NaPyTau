@@ -1,24 +1,29 @@
 from typing import List, Optional, Tuple
 
-from napytau.import_export.factory.napatau.raw_napatau_data import RawNapatauData
+from napytau.import_export.factory.legacy.raw_legacy_data import RawLegacyData
 
-from napytau.import_export.factory.napatau.raw_napatau_setup_data import (
-    RawNapatauSetupData,
+from napytau.import_export.factory.legacy.raw_legacy_setup_data import (
+    RawLegacySetupData,
 )
 from napytau.import_export.import_export_error import ImportExportError
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.import_export.model.dataset import DataSet
 from napytau.import_export.model.relative_velocity import RelativeVelocity
+from napytau.util.model.ValueErrorPairCollection import ValueErrorPairCollection
 from napytau.util.model.value_error_pair import ValueErrorPair
 
 
-class NapatauFactory:
+class LegacyFactory:
+    """
+    A factory class for creating datasets from raw data stored in the Legacy format.
+    """
+
     @staticmethod
-    def create_dataset(raw_dataset: RawNapatauData) -> DataSet:
+    def create_dataset(raw_dataset: RawLegacyData) -> DataSet:
         return DataSet(
-            NapatauFactory.parse_velocity(raw_dataset.velocity_rows),
-            NapatauFactory.parse_datapoints(
+            LegacyFactory.parse_velocity(raw_dataset.velocity_rows),
+            LegacyFactory.parse_datapoints(
                 raw_dataset.distance_rows,
                 raw_dataset.calibration_rows,
                 raw_dataset.fit_rows,
@@ -65,10 +70,10 @@ class NapatauFactory:
     ) -> DatapointCollection:
         datapoints = DatapointCollection([])
         for distance_row in distance_rows:
-            distance = NapatauFactory.parse_distance_row(distance_row)
+            distance = LegacyFactory.parse_distance_row(distance_row)
             datapoints.add_datapoint(Datapoint(distance))
         for calibration_row in calibration_rows:
-            (distance_index, calibration) = NapatauFactory.parse_calibration_row(
+            (distance_index, calibration) = LegacyFactory.parse_calibration_row(
                 calibration_row
             )
             datapoint = datapoints.get_datapoint_by_distance(distance_index)
@@ -80,7 +85,7 @@ class NapatauFactory:
                 unshifted_intensity,
                 feeding_shifted_intensity,
                 feeding_unshifted_intensity,
-            ) = NapatauFactory.parse_fit_row(fit_row)
+            ) = LegacyFactory.parse_fit_row(fit_row)
             datapoint = datapoints.get_datapoint_by_distance(distance_index)
             datapoint.set_intensity(shifted_intensity, unshifted_intensity)
             if (
@@ -190,9 +195,7 @@ class NapatauFactory:
         )
 
     @staticmethod
-    def enrich_dataset(
-        dataset: DataSet, raw_setup_data: RawNapatauSetupData
-    ) -> DataSet:
+    def enrich_dataset(dataset: DataSet, raw_setup_data: RawLegacySetupData) -> DataSet:
         try:
             datapoint_count = len(dataset.datapoints)
             tau_row = raw_setup_data.napsetup_rows[0]
@@ -205,18 +208,18 @@ class NapatauFactory:
             ]
         except IndexError as e:
             raise ImportExportError(
-                "The provided Napatau setup file is not formatted correctly. Please check the file."  # noqa E501
+                "The provided Legacy setup file is not formatted correctly. Please check the file."  # noqa E501
             ) from e
 
         try:
-            dataset.set_tau_factor(NapatauFactory.parse_tau_factor(tau_row))
+            dataset.set_tau_factor(LegacyFactory.parse_tau_factor(tau_row))
         except ValueError as e:
             raise ImportExportError(
-                "The tau factor provided in the Napatau setup file is not formatted correctly. Please check the file."  # noqa E501
+                "The tau factor provided in the Legacy setup file is not formatted correctly. Please check the file."  # noqa E501
             ) from e
 
         try:
-            for distance, active in NapatauFactory.parse_datapoint_active_rows(
+            for distance, active in LegacyFactory.parse_datapoint_active_rows(
                 datapoint_active_rows,
                 dataset.get_datapoints().get_distances(),
             ):
@@ -225,25 +228,25 @@ class NapatauFactory:
                 )
         except ValueError as e:
             raise ImportExportError(
-                "The active rows provided in the Napatau setup file are not formatted correctly. Please check the file."  # noqa E501
+                "The active rows provided in the Legacy setup file are not formatted correctly. Please check the file."  # noqa E501
             ) from e
 
         try:
             dataset.set_polynomial_count(
-                NapatauFactory.parse_polynomial_count(polynomial_count_row)
+                LegacyFactory.parse_polynomial_count(polynomial_count_row)
             )
         except ValueError as e:
             raise ImportExportError(
-                "The polynomial count provided in the Napatau setup file is not formatted correctly. Please check the file."  # noqa E501
+                "The polynomial count provided in the Legacy setup file is not formatted correctly. Please check the file."  # noqa E501
             ) from e
 
         try:
             dataset.set_sampling_points(
-                NapatauFactory.parse_sampling_points(sampling_points_row)
+                LegacyFactory.parse_sampling_points(sampling_points_row)
             )
         except ValueError as e:
             raise ImportExportError(
-                "The sampling points provided in the Napatau setup file are not formatted correctly. Please check the file."  # noqa E501
+                "The sampling points provided in the Legacy setup file are not formatted correctly. Please check the file."  # noqa E501
             ) from e
 
         return dataset
@@ -257,7 +260,7 @@ class NapatauFactory:
     @staticmethod
     def parse_datapoint_active_rows(
         active_rows: List[str],
-        distances: List[ValueErrorPair[float]],
+        distances: ValueErrorPairCollection[float],
     ) -> List[Tuple[float, bool]]:
         active_datapoints = []
         for index, active_row in enumerate(active_rows):

@@ -20,27 +20,18 @@ if TYPE_CHECKING:
 
 
 class Graph:
-
     def __init__(self, parent: "App") -> None:
-
         self.parent = parent
-        self.graph_frame = self.plot(
-             customtkinter.get_appearance_mode()
-        )
+        self.graph_frame = self.plot(customtkinter.get_appearance_mode())
         self.graph_frame.grid(
-            row=0, column=0, rowspan=2, padx=(10, 10), pady=(10, 0), sticky="nsew")
+            row=0, column=0, rowspan=2, padx=(10, 10), pady=(10, 0), sticky="nsew"
+        )
         self.graph_frame.grid_propagate(False)
 
-
-
     def plot(self, appearance: str) -> Canvas:
-
         # the figure that will contain the plot
         fig = Figure(
-            figsize=(3, 2),
-            dpi=100,
-            facecolor=Color.WHITE,
-            edgecolor=Color.BLACK
+            figsize=(3, 2), dpi=100, facecolor=Color.WHITE, edgecolor=Color.BLACK
         )
 
         # adding the subplot
@@ -63,16 +54,10 @@ class Graph:
         )
 
         # draw the markers on the axes
-        self.plot_markers(
-            self.parent.datapoints_for_fitting,
-            axes_1
-        )
+        self.plot_markers(self.parent.datapoints_for_fitting, axes_1)
 
         # draw the fitting curve on the axes
-        self.plot_fitting_curve(
-            self.parent.datapoints_for_fitting,
-            axes_1)
-
+        self.plot_fitting_curve(self.parent.datapoints_for_fitting, axes_1)
 
         # creating the Tkinter canvas
         # containing the Matplotlib figure
@@ -88,13 +73,12 @@ class Graph:
         self.graph_frame = self.plot(
              customtkinter.get_appearance_mode()
         )
-        self.graph_frame.grid(row=0, column=0, rowspan=2,
-                              padx=(10, 10), pady=(10, 0), sticky="nsew")
+        self.graph_frame.grid(
+            row=0, column=0, rowspan=2, padx=(10, 10), pady=(10, 0), sticky="nsew")
         self.graph_frame.grid_propagate(False)
         self.parent.toolbar = Toolbar(self.parent, self.canvas)
 
     def set_colors(self, appearance: str) -> None:
-
         if appearance == "Light":
             self.main_color = Color.WHITE
             self.secondary_color = Color.BLACK
@@ -104,8 +88,6 @@ class Graph:
             self.main_color = Color.DARK_GRAY
             self.secondary_color = Color.WHITE
             self.main_marker_color = Color.LIGHT_GREEN
-
-
 
     def apply_coloring(self, figure: Figure, axes: Axes) -> None:
         """
@@ -124,10 +106,7 @@ class Graph:
         axes.tick_params(axis="x", colors=self.secondary_color)
         axes.tick_params(axis="y", colors=self.secondary_color)
 
-    def plot_markers(self,
-                     datapoints: DatapointCollection,
-                     axes: Axes
-                     ) -> None:
+    def plot_markers(self, datapoints: DatapointCollection, axes: Axes) -> None:
         """
         plotting the datapoints with appropriate markers
         :param x_data: x coordinates
@@ -140,9 +119,7 @@ class Graph:
         for datapoint in datapoints:
             # Generate marker and compute dynamic markersize
             marker = generate_marker(
-                generate_error_marker_path(
-                    datapoint.get_intensity()[0].error
-                )
+                generate_error_marker_path(datapoint.get_intensity()[0].error)
             )
 
             # Scale markersize based on distance
@@ -158,10 +135,7 @@ class Graph:
             )
             index = index + 1
 
-    def plot_fitting_curve(self,
-                           datapoints: DatapointCollection,
-                           axes: Axes)-> None:
-
+    def plot_fitting_curve(self, datapoints: DatapointCollection, axes: Axes) -> None:
         """
          plotting fitting curve of datapoints
         :param x_data: x coordinates
@@ -170,42 +144,28 @@ class Graph:
         :return: nothing
         """
 
-        #Extracting distance values / intensities of checked datapoints
-        checked_datapoints: DatapointCollection = (
-            datapoints.get_active_datapoints()
-        )
-
-
+        # Extracting distance values / intensities of checked datapoints
+        checked_datapoints: DatapointCollection = datapoints.get_active_datapoints()
 
         checked_distances: list[float] = [
             valueErrorPair.value
             for valueErrorPair in checked_datapoints.get_distances()
         ]
 
-
         checked_shifted_intensities: list[float] = [
             valueErrorPair.value
             for valueErrorPair in checked_datapoints.get_shifted_intensities()
         ]
 
-
         # Calculating coefficients
-        coeffs = np.polyfit(checked_distances,
-                            checked_shifted_intensities,
-                            len(checked_datapoints))
+        coeffs = np.polyfit(
+            checked_distances, checked_shifted_intensities, len(checked_datapoints)
+        )
 
         poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
 
-        x_fit = np.linspace(min(checked_distances),
-                            max(checked_distances),
-                            100)
+        x_fit = np.linspace(min(checked_distances), max(checked_distances), 100)
         y_fit = poly(x_fit)
 
-        #plot the curve
-        axes.plot(
-            x_fit, y_fit, color="red", linestyle="--", linewidth="0.6"
-        )
-
-
-
-
+        # plot the curve
+        axes.plot(x_fit, y_fit, color="red", linestyle="--", linewidth="0.6")

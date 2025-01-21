@@ -2,8 +2,7 @@ from matplotlib.path import Path
 from matplotlib.markers import MarkerStyle
 
 
-
-def generate_error_marker_path( error_amount: float) -> Path:
+def generate_error_marker_path(error_amount: float) -> Path:
     """
     Create a path to describe how an error marker should be drawn around a data point
     """
@@ -33,6 +32,7 @@ def generate_error_marker_path( error_amount: float) -> Path:
 
     return Path(verts, instructions)
 
-def generate_marker( path: Path) -> MarkerStyle:
+
+def generate_marker(path: Path) -> MarkerStyle:
     """Creates new marker for the given path."""
     return MarkerStyle(path)
