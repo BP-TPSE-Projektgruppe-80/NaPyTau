@@ -6,7 +6,6 @@ from napytau.gui.model.log_message_type import LogMessageType
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
-
 class ControlPanel(customtkinter.CTkFrame):
     def __init__(self, parent: "App"):
         """
@@ -176,23 +175,41 @@ class ControlPanel(customtkinter.CTkFrame):
         self.set_result_tau_error(0.0)
 
     def _chi2_button_event(self) -> None:
+        """
+        Event if the chi2 button is clicked.
+        """
         self.set_result_chi2(0.0)
 
     def _absolute_tau_button_event(self) -> None:
+        """
+        Event if the absolute tau button is clicked.
+        """
         self.set_result_abs_tau_t(0.0)
 
     def set_result_chi2(self, chi2: float) -> None:
         """
         Set the chi^2 value.
-        :param chi2: The new value.
+        :param chi2: The new value for chi2.
         """
         self.result_chi2.set(chi2)
 
     def set_result_tau(self, tau: float) -> None:
+        """
+        Set the tau value.
+        :param tau: The new value for tau.
+        """
         self.result_tau.set(tau)
 
     def set_result_tau_error(self, tau_error: float) -> None:
+        """
+        Set the tau error value.
+        :param tau_error: The new value for the tau error.
+        """
         self.result_tau_error.set(tau_error)
 
     def set_result_abs_tau_t(self, abs_tau_t: float) -> None:
+        """
+        Set the absolute tau value.
+        :param abs_tau_t:  The new value for the absolute tau value.
+        """
         self.result_abs_tau_t.set(abs_tau_t)
