@@ -7,8 +7,6 @@ from napytau.import_export.model.relative_velocity import RelativeVelocity
 from napytau.util.model.value_error_pair import ValueErrorPair
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.dataset import DataSet
-from napytau.import_export.model.dataset import DataSet
-from napytau.import_export.model.relative_velocity import RelativeVelocity
 
 
 def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
