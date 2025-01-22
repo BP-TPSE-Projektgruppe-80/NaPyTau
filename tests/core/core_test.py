@@ -7,6 +7,8 @@ from napytau.import_export.model.relative_velocity import RelativeVelocity
 from napytau.util.model.value_error_pair import ValueErrorPair
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 
 
 def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
@@ -24,6 +26,13 @@ def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
     tau_final_mock.calculate_tau_final = MagicMock()
 
     return chi_mock, tau_mock, delta_tau_mock, tau_final_mock
+
+
+def _get_dataset_stub(datapoints: DatapointCollection) -> DataSet:
+    return DataSet(
+        ValueErrorPair(RelativeVelocity(1 / 299792458), RelativeVelocity(0)),
+        datapoints,
+    )
 
 
 class CoreUnitTest(unittest.TestCase):
@@ -55,7 +64,7 @@ class CoreUnitTest(unittest.TestCase):
             from napytau.core.core import calculate_lifetime
 
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            datasets = DataSet(
+            dataset = DataSet(
                 ValueErrorPair(RelativeVelocity(0.4), RelativeVelocity(0.02)),
                 DatapointCollection(
                     [
@@ -79,7 +88,7 @@ class CoreUnitTest(unittest.TestCase):
             custom_t_hyp_estimate: Optional[float] = None
 
             actual_result: Tuple[float, float] = calculate_lifetime(
-                datasets,
+                dataset,
                 initial_coefficients,
                 t_hyp_range,
                 weight_factor,
@@ -94,7 +103,7 @@ class CoreUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 chi_mock.optimize_t_hyp.mock_calls[0].args[0],
-                datasets.get_datapoints(),
+                dataset,
             )
 
             np.testing.assert_array_equal(
@@ -110,7 +119,7 @@ class CoreUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 chi_mock.optimize_coefficients.mock_calls[0].args[0],
-                datasets.get_datapoints(),
+                dataset,
             )
 
             np.testing.assert_array_equal(
@@ -126,7 +135,7 @@ class CoreUnitTest(unittest.TestCase):
 
             np.testing.assert_array_equal(
                 tau_mock.calculate_tau_i_values.mock_calls[0].args[0],
-                datasets.get_datapoints(),
+                dataset,
             )
 
             np.testing.assert_array_equal(
@@ -151,7 +160,7 @@ class CoreUnitTest(unittest.TestCase):
 
             np.testing.assert_array_equal(
                 delta_tau_mock.calculate_error_propagation_terms.mock_calls[0].args[0],
-                datasets.get_datapoints(),
+                dataset,
             )
 
             np.testing.assert_array_equal(

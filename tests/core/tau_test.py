@@ -20,6 +20,7 @@ def set_up_mocks() -> (MagicMock, MagicMock):
 
     return chi_mock, polynomials_mock
 
+
 def _get_dataset_stub(datapoints: DatapointCollection) -> DataSet:
     return DataSet(
         ValueErrorPair(RelativeVelocity(random()), RelativeVelocity(random())),
