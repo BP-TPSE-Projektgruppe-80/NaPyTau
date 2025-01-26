@@ -1,6 +1,9 @@
 import customtkinter
 from typing import TYPE_CHECKING
 
+import napytau.gui.components.logger as Logger
+from napytau.gui.model.log_message_type import LogMessageType
+
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
@@ -43,7 +46,7 @@ class CheckboxPanel:
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
-                text=f"({distance.value} | {shifted_intensity.value})",
+                text=f"x: ({distance.value})",
                 variable=customtkinter.IntVar(value=1),
                 command=lambda index=i: self._data_checkbox_fitting_event(index),
             )
@@ -61,8 +64,13 @@ class CheckboxPanel:
         ].active = not self.parent.datapoints_for_fitting[index].active
         if self.parent.datapoints_for_fitting[index].active:
             print("[fitting] checkbox with index " + str(index) + " activated.")
+            self.parent.logger.log_message("[fitting] checkbox with index " + str(index) + " activated.",
+                                           LogMessageType.INFO)
+
         else:
             print("[fitting] checkbox with index " + str(index) + " deactivated.")
+            self.parent.logger.log_message("[fitting] checkbox with index " + str(index) + " deactivated.",
+                                           LogMessageType.INFO)
         self.parent.graph.update_plot()
 
     def update_data_checkboxes_calculation(self) -> None:
@@ -91,7 +99,7 @@ class CheckboxPanel:
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
-                text=f"({distance.value} | {shifted_intensity.value})",
+                text=f"x: ({distance.value})",
                 variable=customtkinter.IntVar(value=1),
                 command=lambda index=i: self._data_checkbox_calculation_event(index),
             )

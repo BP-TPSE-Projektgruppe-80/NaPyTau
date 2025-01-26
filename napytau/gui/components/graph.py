@@ -59,6 +59,8 @@ class Graph:
         # draw the fitting curve on the axes
         self.plot_fitting_curve(self.parent.datapoints_for_fitting, axes_1)
 
+        self.plot_derivative_curve(self.parent.datapoints_for_fitting, axes_1)
+
         # creating the Tkinter canvas
         # containing the Matplotlib figure
         self.canvas = FigureCanvasTkAgg(fig, master=self.parent)
@@ -83,11 +85,13 @@ class Graph:
             self.main_color = Color.WHITE
             self.secondary_color = Color.BLACK
             self.main_marker_color = Color.DARK_GREEN
+            self.secondary_marker_color = Color.DARK_RED
 
         else:
             self.main_color = Color.DARK_GRAY
             self.secondary_color = Color.WHITE
             self.main_marker_color = Color.LIGHT_GREEN
+            self.secondary_marker_color = Color.Light_RED
 
     def apply_coloring(self, figure: Figure, axes: Axes) -> None:
         """
@@ -118,20 +122,35 @@ class Graph:
         index: int = 0
         for datapoint in datapoints:
             # Generate marker and compute dynamic markersize
-            marker = generate_marker(
+            marker_shifted = generate_marker(
                 generate_error_marker_path(datapoint.get_intensity()[0].error)
             )
 
+            marker_unshifted = generate_marker(
+                generate_error_marker_path(datapoint.get_intensity()[1].error)
+            )
+
             # Scale markersize based on distance
-            size = datapoint.get_intensity()[0].error * 5
+            size_shifted = datapoint.get_intensity()[0].error * 5
             axes.plot(
                 datapoint.get_distance().value,
                 datapoint.get_intensity()[0].value,
-                marker=marker,
+                marker=marker_shifted,
                 linestyle="None",
-                markersize=size,
+                markersize=size_shifted,
                 label=f"Point {index + 1}",
                 color=self.main_marker_color,
+            )
+
+            size_unshifted = datapoint.get_intensity()[1].error * 5
+            axes.plot(
+                datapoint.get_distance().value,
+                datapoint.get_intensity()[1].value,
+                marker=marker_unshifted,
+                linestyle="None",
+                markersize=size_unshifted,
+                label=f"Point {index + 1}",
+                color=self.secondary_marker_color,
             )
             index = index + 1
 
@@ -169,3 +188,40 @@ class Graph:
 
         # plot the curve
         axes.plot(x_fit, y_fit, color="red", linestyle="--", linewidth="0.6")
+
+
+    def plot_derivative_curve(self, datapoints: DatapointCollection, axes: Axes) -> None:
+        """
+         plotting derivative curve of datapoints
+        :param x_data: x coordinates
+        :param y_data: y coordinates
+        :param axes: the axes on which to draw the fitting curve
+        :return: nothing
+        """
+
+        # Extracting distance values / intensities of checked datapoints
+        checked_datapoints: DatapointCollection = datapoints.get_active_datapoints()
+
+        checked_distances: list[float] = [
+            valueErrorPair.value
+            for valueErrorPair in checked_datapoints.get_distances()
+        ]
+
+        checked_shifted_intensities: list[float] = [
+            valueErrorPair.value
+            for valueErrorPair in checked_datapoints.get_unshifted_intensities()
+        ]
+
+        # Calculating coefficients
+        coeffs = np.polyfit(
+            checked_distances, checked_shifted_intensities, len(checked_datapoints)
+        )
+
+        poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
+
+        x_fit = np.linspace(min(checked_distances), max(checked_distances), 100)
+        y_fit = poly(x_fit)
+
+        # plot the curve
+        axes.plot(x_fit, y_fit, color="blue", linestyle="-", linewidth="0.6")
+
