@@ -9,7 +9,9 @@ if TYPE_CHECKING:
 class ControlPanel(customtkinter.CTkFrame):
     def __init__(self, parent: "App"):
         """
-        The panel with all the controls, inputs etc.
+        The panel with all the controls like timescale input,
+        buttons for minimizing chi^2, calculating tau and absolute tau
+        and displaying all results.
         :param parent: Parent widget to host the control panel.
         """
         super().__init__(parent, corner_radius=10)
