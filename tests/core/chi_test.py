@@ -1,9 +1,12 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
-import numpy.testing as nptest
+import numpy.testing
 import scipy as sp
 from typing import Tuple
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.util.model.value_error_pair import ValueErrorPair
+from napytau.import_export.model.datapoint import Datapoint
 
 
 def set_up_mocks() -> (MagicMock, MagicMock, MagicMock):
@@ -49,12 +52,29 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([1, 2, 3])
-            unshifted_intensities: np.ndarray = np.array([4, 5, 6])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([2, 3, 4])
-            delta_unshifted_intensities: np.ndarray = np.array([5, 6, 7])
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            distances: np.ndarray = np.array([0, 1, 2])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(1, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2.0, 0.16),
+                        None,
+                        ValueErrorPair(3, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -62,12 +82,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -81,14 +97,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1, 2])),
+                datapoints,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -102,14 +118,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1, 2])),
+                datapoints,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -121,7 +137,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 (np.array([4.64, 52.80555556, 570.90306122])),
             )
@@ -131,22 +147,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([-2, -4.33333333, -13.5])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([-0.8, -5.83333333, -19.71428571])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -175,12 +191,8 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([])
-            unshifted_intensities: np.ndarray = np.array([])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([])
-            delta_unshifted_intensities: np.ndarray = np.array([])
             coefficients: np.ndarray = np.array([])
-            distances: np.ndarray = np.array([])
+            datapoints = DatapointCollection([])
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -188,12 +200,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -207,14 +215,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -228,14 +236,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
                 (np.array([])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -247,7 +255,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 np.array([]),
             )
@@ -257,22 +265,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -304,12 +312,17 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([1])
-            unshifted_intensities: np.ndarray = np.array([2])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([3])
-            delta_unshifted_intensities: np.ndarray = np.array([4])
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            distances: np.ndarray = np.array([2])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(2.0, 0.16),
+                        None,
+                        ValueErrorPair(1, 3),
+                        ValueErrorPair(2, 4),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -317,12 +330,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -336,14 +345,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([2])),
+                datapoints,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -357,14 +366,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([2])),
+                datapoints,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -376,7 +385,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 (np.array([1608.69444444])),
             )
@@ -386,22 +395,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([-18.66666667])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([-35.5])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -433,12 +442,23 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([1, 2])
-            unshifted_intensities: np.ndarray = np.array([3, 4])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([0, 1])
-            delta_unshifted_intensities: np.ndarray = np.array([0, 1])
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            distances: np.ndarray = np.array([0, 1])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(1, 0),
+                        ValueErrorPair(3, 0),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 1),
+                        ValueErrorPair(4, 1),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -446,12 +466,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -465,14 +481,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1])),
+                datapoints,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -486,14 +502,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1])),
+                datapoints,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -505,7 +521,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 (np.array([float("inf"), 1465])),
             )
@@ -515,22 +531,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([-float("inf"), -13])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([-float("inf"), -36])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -562,12 +578,23 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([-1, -2])
-            unshifted_intensities: np.ndarray = np.array([-3, -4])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([1, 2])
-            delta_unshifted_intensities: np.ndarray = np.array([3, 4])
             coefficients: np.ndarray = np.array([-5, -4, 3, 2, -1])
-            distances: np.ndarray = np.array([0, 1])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(-1, 1),
+                        ValueErrorPair(-3, 3),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(-2, 2),
+                        ValueErrorPair(-4, 4),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -575,12 +602,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -594,14 +617,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1])),
+                datapoints,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -615,14 +638,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1])),
+                datapoints,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -634,7 +657,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 (np.array([18.77777778, 3.25])),
             )
@@ -644,22 +667,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([4, 1.5])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([1.66666667, 1])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -691,12 +714,29 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import chi_squared_fixed_t
 
-            doppler_shifted_intensities: np.ndarray = np.array([1, 2, 3])
-            unshifted_intensities: np.ndarray = np.array([4, 5, 6])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([2, 3, 4])
-            delta_unshifted_intensities: np.ndarray = np.array([5, 6, 7])
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
-            distances: np.ndarray = np.array([0, 1, 2])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(1, 2),
+                        ValueErrorPair(4, 5),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 3),
+                        ValueErrorPair(5, 6),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(2.0, 0.16),
+                        None,
+                        ValueErrorPair(3, 4),
+                        ValueErrorPair(6, 7),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 0.0
 
@@ -704,12 +744,8 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     coefficients,
-                    distances,
                     t_hyp,
                     weight_factor,
                 ),
@@ -723,14 +759,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1, 2])),
+                datapoints,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -744,14 +780,14 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1, 2])),
+                datapoints,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[1],
@@ -763,7 +799,7 @@ class ChiUnitTest(unittest.TestCase):
                 1,
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.sum.mock_calls[0].args[0],
                 (np.array([4, 18.77777778, 182.25])),
             )
@@ -773,22 +809,22 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[0].args[0],
                 (np.array([-2, -4.33333333, -13.5])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[0].args[1],
                 2,
             )
 
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 numpy_module_mock.power.mock_calls[1].args[0],
                 (np.array([-0.8, -5.83333333, -19.71428571])),
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 numpy_module_mock.power.mock_calls[1].args[1],
                 2,
             )
@@ -810,12 +846,23 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import optimize_coefficients
 
-            doppler_shifted_intensities: np.ndarray = np.array([2, 6])
-            unshifted_intensities: np.ndarray = np.array([6, 10])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([1, 1])
-            delta_unshifted_intensities: np.ndarray = np.array([1, 1])
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            distances: np.ndarray = np.array([0, 1])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 1),
+                        ValueErrorPair(6, 1),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(6, 1),
+                        ValueErrorPair(10, 1),
+                    ),
+                ]
+            )
             t_hyp: float = 2.0
             weight_factor: float = 1.0
 
@@ -825,18 +872,14 @@ class ChiUnitTest(unittest.TestCase):
             actual_coefficients: np.ndarray
             actual_chi: float
             actual_coefficients, actual_chi = optimize_coefficients(
-                doppler_shifted_intensities,
-                unshifted_intensities,
-                delta_doppler_shifted_intensities,
-                delta_unshifted_intensities,
+                datapoints,
                 initial_coefficients,
-                distances,
                 t_hyp,
                 weight_factor,
             )
 
             self.assertAlmostEqual(actual_chi, expected_chi)
-            nptest.assert_array_almost_equal(
+            np.testing.assert_array_almost_equal(
                 actual_coefficients, expected_coefficients
             )
 
@@ -844,7 +887,7 @@ class ChiUnitTest(unittest.TestCase):
                 len(scipy_optimize_module_mock.optimize.minimize.mock_calls), 1
             )
 
-            nptest.assert_array_equal(
+            np.testing.assert_array_equal(
                 scipy_optimize_module_mock.optimize.minimize.mock_calls[0].args[1],
                 np.array([1, 1, 1]),
             )
@@ -876,24 +919,31 @@ class ChiUnitTest(unittest.TestCase):
         ):
             from napytau.core.chi import optimize_t_hyp
 
-            doppler_shifted_intensities: np.ndarray = np.array([2, 6])
-            unshifted_intensities: np.ndarray = np.array([6, 10])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([1, 1])
-            delta_unshifted_intensities: np.ndarray = np.array([1, 1])
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            distances: np.ndarray = np.array([0, 1])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 1),
+                        ValueErrorPair(6, 1),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(6, 1),
+                        ValueErrorPair(10, 1),
+                    ),
+                ]
+            )
             t_hyp_range: Tuple[float, float] = (-5, 5)
             weight_factor: float = 1.0
 
             expected_t_hyp: float = 2.0
 
             actual_t_hyp: float = optimize_t_hyp(
-                doppler_shifted_intensities,
-                unshifted_intensities,
-                delta_doppler_shifted_intensities,
-                delta_unshifted_intensities,
+                datapoints,
                 initial_coefficients,
-                distances,
                 t_hyp_range,
                 weight_factor,
             )

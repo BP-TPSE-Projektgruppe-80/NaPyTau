@@ -6,7 +6,7 @@ from typing import List
 from napytau.import_export.import_export_error import ImportExportError
 
 
-class NapatauSetupFiles:
+class LegacySetupFiles:
     distances_file: PurePath
     velocity_file: PurePath
     fit_file: PurePath
@@ -26,7 +26,7 @@ class NapatauSetupFiles:
         self.calibration_file = calibration_file
 
     @staticmethod
-    def create_from_file_names(file_paths: List[PurePath]) -> NapatauSetupFiles:
+    def create_from_file_names(file_paths: List[PurePath]) -> LegacySetupFiles:
         distances_file: PurePath
         velocity_file: PurePath
         fit_file: PurePath
@@ -63,6 +63,6 @@ class NapatauSetupFiles:
                 f". Missing files: {missing_files}"
             )
 
-        return NapatauSetupFiles(
+        return LegacySetupFiles(
             distances_file, velocity_file, fit_file, calibration_file
         )

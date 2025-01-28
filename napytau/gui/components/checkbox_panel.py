@@ -12,11 +12,9 @@ class CheckboxPanel:
         :param parent: Parent widget to host the checkbox panel.
         """
         self.parent = parent
-        self.frame_datapoint_checkboxes = customtkinter.CTkScrollableFrame(
-            self.parent, width=200, height=250
-        )
+        self.frame_datapoint_checkboxes = customtkinter.CTkScrollableFrame(self.parent)
         self.frame_datapoint_checkboxes.grid(
-            row=0, column=1, padx=0, pady=0, sticky="nsew"
+            row=0, column=1, padx=(0, 10), pady=(10, 0), sticky="nsew"
         )
 
     def update_data_checkboxes_fitting(self) -> None:
@@ -38,11 +36,14 @@ class CheckboxPanel:
 
         # Update all checkboxes for the fitting
         for i in range(len(self.parent.datapoints)):
-            x, y = self.parent.datapoints[i]
+            shifted_intensity, unshifted_intensity = self.parent.datapoints[
+                i
+            ].get_intensity()
+            distance = self.parent.datapoints[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
-                text=f"({x} | {y})",
+                text=f"({distance.value} | {shifted_intensity.value})",
                 variable=customtkinter.IntVar(value=1),
                 command=lambda index=i: self._data_checkbox_fitting_event(index),
             )
@@ -57,11 +58,12 @@ class CheckboxPanel:
         """
         self.parent.datapoints_for_fitting[
             index
-        ].is_checked = not self.parent.datapoints_for_fitting[index].is_checked
-        if self.parent.datapoints_for_fitting[index].is_checked:
+        ].active = not self.parent.datapoints_for_fitting[index].active
+        if self.parent.datapoints_for_fitting[index].active:
             print("[fitting] checkbox with index " + str(index) + " activated.")
         else:
             print("[fitting] checkbox with index " + str(index) + " deactivated.")
+        self.parent.graph.update_plot()
 
     def update_data_checkboxes_calculation(self) -> None:
         """
@@ -75,18 +77,21 @@ class CheckboxPanel:
 
         header_label = customtkinter.CTkLabel(
             self.frame_datapoint_checkboxes,
-            text="Datapoints for tau calculation",
+            text="Tau calculation",
             font=("Arial", 16),
         )
         header_label.grid(row=0, column=1, padx=30, pady=5, sticky="nsew")
 
         # Update all checkboxes for the calculation
         for i in range(len(self.parent.datapoints)):
-            x, y = self.parent.datapoints[i]
+            shifted_intensity, unshifted_intensity = self.parent.datapoints[
+                i
+            ].get_intensity()
+            distance = self.parent.datapoints[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
-                text=f"({x} | {y})",
+                text=f"({distance.value} | {shifted_intensity.value})",
                 variable=customtkinter.IntVar(value=1),
                 command=lambda index=i: self._data_checkbox_calculation_event(index),
             )
@@ -101,8 +106,8 @@ class CheckboxPanel:
         """
         self.parent.datapoints_for_calculation[
             index
-        ].is_checked = not self.parent.datapoints_for_calculation[index].is_checked
-        if self.parent.datapoints_for_calculation[index].is_checked:
+        ].active = not self.parent.datapoints_for_calculation[index].active
+        if self.parent.datapoints_for_calculation[index].active:
             print("[calculation] checkbox with index " + str(index) + " activated.")
         else:
             print("[calculation] checkbox with index " + str(index) + " deactivated.")

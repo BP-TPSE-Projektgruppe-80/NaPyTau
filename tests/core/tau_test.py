@@ -2,6 +2,9 @@ import unittest
 from unittest.mock import MagicMock, patch
 import numpy as np
 from typing import Tuple
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.util.model.value_error_pair import ValueErrorPair
+from napytau.import_export.model.datapoint import Datapoint
 
 
 def set_up_mocks() -> (MagicMock, MagicMock):
@@ -39,12 +42,23 @@ class TauUnitTest(unittest.TestCase):
         ):
             from napytau.core.tau import calculate_tau_i_values
 
-            doppler_shifted_intensities: np.ndarray = np.array([2, 6])
-            unshifted_intensities: np.ndarray = np.array([6, 10])
-            delta_doppler_shifted_intensities: np.ndarray = np.array([1, 1])
-            delta_unshifted_intensities: np.ndarray = np.array([1, 1])
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            distances: np.ndarray = np.array([0, 1])
+            datapoints = DatapointCollection(
+                [
+                    Datapoint(
+                        ValueErrorPair(0.0, 0.16),
+                        None,
+                        ValueErrorPair(2, 1),
+                        ValueErrorPair(6, 1),
+                    ),
+                    Datapoint(
+                        ValueErrorPair(1.0, 0.16),
+                        None,
+                        ValueErrorPair(6, 1),
+                        ValueErrorPair(10, 1),
+                    ),
+                ]
+            )
             t_hyp_range: (float, float) = (-5, 5)
             weight_factor: float = 1.0
 
@@ -53,12 +67,8 @@ class TauUnitTest(unittest.TestCase):
 
             np.testing.assert_array_almost_equal(
                 calculate_tau_i_values(
-                    doppler_shifted_intensities,
-                    unshifted_intensities,
-                    delta_doppler_shifted_intensities,
-                    delta_unshifted_intensities,
+                    datapoints,
                     initial_coefficients,
-                    distances,
                     t_hyp_range,
                     weight_factor,
                     None,
@@ -68,81 +78,44 @@ class TauUnitTest(unittest.TestCase):
 
             self.assertEqual(len(chi_mock.optimize_coefficients.mock_calls), 1)
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 chi_mock.optimize_coefficients.mock_calls[0].args[0],
-                (np.array([2, 6])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
                 chi_mock.optimize_coefficients.mock_calls[0].args[1],
-                (np.array([6, 10])),
+                (np.array([1, 1, 1])),
             )
 
             np.testing.assert_array_equal(
                 chi_mock.optimize_coefficients.mock_calls[0].args[2],
-                (np.array([1, 1])),
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_coefficients.mock_calls[0].args[3],
-                (np.array([1, 1])),
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_coefficients.mock_calls[0].args[4],
-                (np.array([1, 1, 1])),
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_coefficients.mock_calls[0].args[5],
-                (np.array([0, 1])),
-            )
-
-            self.assertEqual(
-                chi_mock.optimize_coefficients.mock_calls[0].args[6],
                 2.0,
             )
 
-            self.assertEqual(chi_mock.optimize_coefficients.mock_calls[0].args[7], 1.0)
+            self.assertEqual(
+                chi_mock.optimize_coefficients.mock_calls[0].args[3],
+                1.0,
+            )
 
             self.assertEqual(len(chi_mock.optimize_t_hyp.mock_calls), 1)
 
-            np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[0],
-                (np.array([2, 6])),
+            self.assertEqual(
+                chi_mock.optimize_coefficients.mock_calls[0].args[0],
+                datapoints,
             )
 
             np.testing.assert_array_equal(
                 chi_mock.optimize_t_hyp.mock_calls[0].args[1],
-                (np.array([6, 10])),
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[2],
-                (np.array([1, 1])),
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[3],
-                (np.array([1, 1])),
-            )
-
-            np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[4],
                 (np.array([1, 1, 1])),
             )
 
-            np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[5],
-                (np.array([0, 1])),
-            )
-
             self.assertEqual(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[6],
+                chi_mock.optimize_t_hyp.mock_calls[0].args[2],
                 (-5, 5),
             )
 
-            self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[7], 1.0)
+            self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[3], 1.0)
 
             self.assertEqual(
                 len(
@@ -151,11 +124,11 @@ class TauUnitTest(unittest.TestCase):
                 1,
             )
 
-            np.testing.assert_array_equal(
+            self.assertEqual(
                 polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
                     0
                 ].args[0],
-                (np.array([0, 1])),
+                datapoints,
             )
 
             np.testing.assert_array_equal(
