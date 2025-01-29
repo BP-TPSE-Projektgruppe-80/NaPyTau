@@ -4,20 +4,8 @@ from napytau.core.errors.polynomial_coefficient_error import (
 import numpy as np
 import scipy as sp
 
+from napytau.core.time import calculate_times_from_distances_and_relative_velocity
 from napytau.import_export.model.dataset import DataSet
-
-
-def _calculate_times_from_distances_and_relative_velocity(
-    dataset: DataSet,
-) -> np.ndarray:
-    return np.array(
-        dataset.get_datapoints().get_distances().get_values()
-        / (
-            dataset.get_relative_velocity().value.get_velocity()
-            * sp.constants.speed_of_light
-        )
-    )
-
 
 def evaluate_polynomial_at_measuring_times(
     dataset: DataSet,
@@ -41,7 +29,7 @@ def evaluate_polynomial_at_measuring_times(
             "An empty array of coefficients can not be evaluated."
         )
 
-    times: np.ndarray = _calculate_times_from_distances_and_relative_velocity(dataset)
+    times: np.ndarray = calculate_times_from_distances_and_relative_velocity(dataset)
     # Evaluate the polynomial sum at the given time points
     sum_at_measuring_distances: np.ndarray = np.zeros_like(times, dtype=float)
     for exponent, coefficient in enumerate(coefficients):
@@ -74,7 +62,7 @@ def evaluate_differentiated_polynomial_at_measuring_times(
             "An empty array of coefficients can not be evaluated."
         )
 
-    times: np.ndarray = _calculate_times_from_distances_and_relative_velocity(dataset)
+    times: np.ndarray = calculate_times_from_distances_and_relative_velocity(dataset)
     sum_of_derivative_at_measuring_distances: np.ndarray = np.zeros_like(
         times, dtype=float
     )
@@ -87,12 +75,16 @@ def evaluate_differentiated_polynomial_at_measuring_times(
     return sum_of_derivative_at_measuring_distances
 
 
-def calculate_polynomial_coefficients_for_fit(dataset: DataSet) -> np.ndarray:
+def calculate_polynomial_coefficients_for_fit(
+    dataset: DataSet,
+    degree: int,
+) -> np.ndarray:
     """
     Calculates the polynomial coefficients for the polynomial fit.
 
     Args:
         dataset (DataSet): The dataset of the experiment
+        degree (int): The degree of the polynomial to be fitted
 
     Returns:
         ndarray: Array of polynomial coefficients for the fit.
@@ -100,9 +92,9 @@ def calculate_polynomial_coefficients_for_fit(dataset: DataSet) -> np.ndarray:
     # Calculate the polynomial coefficients for the fit
     polynomial_coefficients: np.ndarray = (
         np.polynomial.Polynomial.fit(
-            dataset.get_datapoints().get_distances().get_values(),
+            calculate_times_from_distances_and_relative_velocity(dataset),
             dataset.get_datapoints().get_shifted_intensities().get_values(),
-            dataset.get_polynomial_degree(),
+            degree,
         )
         .convert()
         .coef
@@ -114,6 +106,7 @@ def calculate_polynomial_coefficients_for_fit(dataset: DataSet) -> np.ndarray:
 def calculate_polynomial_coefficients_for_tau_factor(
     dataset: DataSet,
     tau_factor: float,
+    degree: int,
 ) -> np.ndarray:
     """
     Calculates the polynomial coefficients for the tau factor.
@@ -121,6 +114,7 @@ def calculate_polynomial_coefficients_for_tau_factor(
     Args:
         dataset (DataSet): The dataset of the experiment
         tau_factor (float): The tau factor to be used in the polynomial fit
+        degree (int): The degree of the polynomial to be fitted
 
     Returns:
         ndarray: Array of polynomial coefficients for the tau factor.
@@ -134,12 +128,12 @@ def calculate_polynomial_coefficients_for_tau_factor(
     )
 
     # Initial guess: coefficients as ones
-    initial_guess = np.ones(dataset.get_polynomial_degree() + 1)
+    initial_guess = np.ones(degree)
 
     # Solve for coefficients using least squares
-    res = sp.least_squares(
+    res = sp.optimize.least_squares(
         lambda coefficients: polynomial_fit(
-            dataset.get_datapoints().get_distances().get_values(),
+            calculate_times_from_distances_and_relative_velocity(dataset),
             *coefficients,
         ),
         initial_guess,

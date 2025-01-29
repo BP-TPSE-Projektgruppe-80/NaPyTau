@@ -11,12 +11,16 @@ import numpy as np
 from napytau.import_export.model.dataset import DataSet
 
 
-def calculate_lifetime_for_fit(dataset: DataSet) -> Tuple[float, float]:
+def calculate_lifetime_for_fit(
+    dataset: DataSet, polynomial_degree: int
+) -> Tuple[float, float]:
     """
     Docstring missing. To be implemented with issue #44.
     """
     # Now we find the optimal coefficients for the given taufactor
-    coefficients: np.ndarray = calculate_polynomial_coefficients_for_fit(dataset)
+    coefficients: np.ndarray = calculate_polynomial_coefficients_for_fit(
+        dataset, polynomial_degree
+    )
 
     # We now calculate the lifetimes tau_i for all measured distances
     tau_i_values: np.ndarray = calculate_tau_i_values(
@@ -44,11 +48,14 @@ def calculate_optimal_tau_factor(
     dataset: DataSet,
     t_hyp_range: Tuple[float, float],
     weight_factor: float,
+    polynomial_degree: int,
 ) -> float:
     """
     Docstring missing. To be implemented with issue #44.
     """
-    coefficients: np.ndarray = calculate_polynomial_coefficients_for_fit(dataset)
+    coefficients: np.ndarray = calculate_polynomial_coefficients_for_fit(
+        dataset, polynomial_degree
+    )
 
     optimal_t_hyp = optimize_tau_factor(
         dataset,
@@ -63,6 +70,7 @@ def calculate_optimal_tau_factor(
 def calculate_lifetime_for_custom_tau_factor(
     dataset: DataSet,
     custom_tau_factor: float,
+    polynomial_degree: int,
 ) -> Tuple[float, float]:
     """
     Docstring missing. To be implemented with issue #44.
@@ -71,6 +79,7 @@ def calculate_lifetime_for_custom_tau_factor(
     coefficients: np.ndarray = calculate_polynomial_coefficients_for_tau_factor(
         dataset,
         custom_tau_factor,
+        polynomial_degree,
     )
 
     # We now calculate the lifetimes tau_i for all measured distances

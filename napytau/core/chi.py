@@ -1,6 +1,6 @@
-from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
 from napytau.core.polynomials import (
-    evaluate_differentiated_polynomial_at_measuring_distances,
+    evaluate_differentiated_polynomial_at_measuring_times,
+    evaluate_polynomial_at_measuring_times,
 )
 import numpy as np
 import scipy as sp
@@ -12,7 +12,7 @@ from napytau.import_export.model.dataset import DataSet
 def calculate_chi_squared(
     dataset: DataSet,
     coefficients: np.ndarray,
-    t_hyp: float,
+    tau_factor: float,
     weight_factor: float,
 ) -> float:
     """
@@ -22,7 +22,7 @@ def calculate_chi_squared(
         dataset (DataSet): The dataset of the experiment
         coefficients (ndarray):
         Polynomial coefficients for fitting
-        t_hyp (float):
+        tau_factor (float):
         Hypothesis value for the scaling factor
         weight_factor (float):
         Weighting factor for unshifted intensities
@@ -30,12 +30,13 @@ def calculate_chi_squared(
     Returns:
         float: The chi-squared value for the given inputs.
     """
+    print(tau_factor)
 
     datapoints = dataset.get_datapoints()
     # Compute the difference between Doppler-shifted intensities and polynomial model
     shifted_intensity_difference: np.ndarray = (
         datapoints.get_shifted_intensities().get_values()
-        - evaluate_polynomial_at_measuring_distances(dataset, coefficients)
+        - evaluate_polynomial_at_measuring_times(dataset, coefficients)
     ) / datapoints.get_shifted_intensities().get_errors()
 
     # Compute the difference between unshifted intensities and
@@ -43,18 +44,22 @@ def calculate_chi_squared(
     unshifted_intensity_difference: np.ndarray = (
         datapoints.get_unshifted_intensities().get_values()
         - (
-            t_hyp
-            * evaluate_differentiated_polynomial_at_measuring_distances(
+            tau_factor
+            * evaluate_differentiated_polynomial_at_measuring_times(
                 dataset, coefficients
             )
         )
     ) / datapoints.get_unshifted_intensities().get_errors()
+
+    print("Shifted Intensity Difference:", shifted_intensity_difference)
+    print("Unshifted Intensity Difference:", unshifted_intensity_difference)
 
     # combine the weighted sum of squared differences
     result: float = np.sum(
         (np.power(shifted_intensity_difference, 2))
         + (weight_factor * (np.power(unshifted_intensity_difference, 2)))
     )
+    print("Chi Squared:", result)
 
     return result
 
