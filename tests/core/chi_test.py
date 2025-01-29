@@ -59,7 +59,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
             datapoints = DatapointCollection(
@@ -90,7 +90,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = 628.3486168
 
             self.assertAlmostEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -198,7 +198,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([])
             datapoints = DatapointCollection([])
@@ -208,7 +208,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = 0
 
             self.assertEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -319,7 +319,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
             datapoints = DatapointCollection(
@@ -338,7 +338,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = 1608.69444444
 
             self.assertAlmostEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -449,7 +449,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
             datapoints = DatapointCollection(
@@ -474,7 +474,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = float("inf")
 
             self.assertAlmostEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -585,7 +585,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([-5, -4, 3, 2, -1])
             datapoints = DatapointCollection(
@@ -610,7 +610,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = 22.02777778
 
             self.assertAlmostEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -721,7 +721,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
             datapoints = DatapointCollection(
@@ -752,7 +752,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = 205.02777778
 
             self.assertAlmostEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -926,7 +926,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import optimize_t_hyp
+            from napytau.core.chi import optimize_tau_factor
 
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
             datapoints = DatapointCollection(
@@ -950,7 +950,7 @@ class ChiUnitTest(unittest.TestCase):
 
             expected_t_hyp: float = 2.0
 
-            actual_t_hyp: float = optimize_t_hyp(
+            actual_t_hyp: float = optimize_tau_factor(
                 _get_dataset_stub(datapoints),
                 initial_coefficients,
                 t_hyp_range,

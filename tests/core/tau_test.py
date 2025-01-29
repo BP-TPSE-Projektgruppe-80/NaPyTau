@@ -38,7 +38,7 @@ class TauUnitTest(unittest.TestCase):
             np.array([2, 3, 1]),
             0,
         )
-        chi_mock.optimize_t_hyp.return_value: float = 2.0
+        chi_mock.optimize_tau_factor.return_value: float = 2.0
         polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value: np.ndarray = np.array(
             [2, 6]
         )
@@ -109,7 +109,7 @@ class TauUnitTest(unittest.TestCase):
                 1.0,
             )
 
-            self.assertEqual(len(chi_mock.optimize_t_hyp.mock_calls), 1)
+            self.assertEqual(len(chi_mock.optimize_tau_factor.mock_calls), 1)
 
             self.assertEqual(
                 chi_mock.optimize_coefficients.mock_calls[0].args[0],
@@ -117,16 +117,16 @@ class TauUnitTest(unittest.TestCase):
             )
 
             np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[1],
+                chi_mock.optimize_tau_factor.mock_calls[0].args[1],
                 (np.array([1, 1, 1])),
             )
 
             self.assertEqual(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[2],
+                chi_mock.optimize_tau_factor.mock_calls[0].args[2],
                 (-5, 5),
             )
 
-            self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[3], 1.0)
+            self.assertEqual(chi_mock.optimize_tau_factor.mock_calls[0].args[3], 1.0)
 
             self.assertEqual(
                 len(

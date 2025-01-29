@@ -85,3 +85,64 @@ def evaluate_differentiated_polynomial_at_measuring_distances(
             )
 
     return sum_of_derivative_at_measuring_distances
+
+
+def calculate_polynomial_coefficients_for_fit(dataset: DataSet) -> np.ndarray:
+    """
+    Calculates the polynomial coefficients for the polynomial fit.
+
+    Args:
+        dataset (DataSet): The dataset of the experiment
+
+    Returns:
+        ndarray: Array of polynomial coefficients for the fit.
+    """
+    # Calculate the polynomial coefficients for the fit
+    polynomial_coefficients: np.ndarray = (
+        np.polynomial.Polynomial.fit(
+            dataset.get_datapoints().get_distances().get_values(),
+            dataset.get_datapoints().get_shifted_intensities().get_values(),
+            dataset.get_polynomial_degree(),
+        )
+        .convert()
+        .coef
+    )
+
+    return polynomial_coefficients
+
+
+def calculate_polynomial_coefficients_for_tau_factor(
+    dataset: DataSet,
+    tau_factor: float,
+) -> np.ndarray:
+    """
+    Calculates the polynomial coefficients for the tau factor.
+
+    Args:
+        dataset (DataSet): The dataset of the experiment
+        tau_factor (float): The tau factor to be used in the polynomial fit
+
+    Returns:
+        ndarray: Array of polynomial coefficients for the tau factor.
+    """
+
+    polynomial_fit = (
+        lambda x, *coefficients: (
+            np.poly1d(coefficients)(x) / np.polyder(np.poly1d(coefficients))(x)
+        )
+        - tau_factor
+    )
+
+    # Initial guess: coefficients as ones
+    initial_guess = np.ones(dataset.get_polynomial_degree() + 1)
+
+    # Solve for coefficients using least squares
+    res = sp.least_squares(
+        lambda coefficients: polynomial_fit(
+            dataset.get_datapoints().get_distances().get_values(),
+            *coefficients,
+        ),
+        initial_guess,
+    )
+
+    return np.array(res.x)
