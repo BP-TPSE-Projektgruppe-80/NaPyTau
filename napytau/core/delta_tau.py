@@ -1,7 +1,7 @@
 from napytau.core.polynomials import (
-    evaluate_differentiated_polynomial_at_measuring_distances,
+    evaluate_differentiated_polynomial_at_measuring_times,
 )
-from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
+from napytau.core.polynomials import evaluate_polynomial_at_measuring_times
 import numpy as np
 
 from napytau.import_export.model.dataset import DataSet
@@ -40,10 +40,10 @@ def calculate_jacobian_matrix(
         perturbed_coefficients[i] += epsilon  # slightly disturb the current coefficient
 
         # Compute the disturbed and original polynomial values at the given distances
-        perturbed_function: np.ndarray = evaluate_polynomial_at_measuring_distances(
+        perturbed_function: np.ndarray = evaluate_polynomial_at_measuring_times(
             dataset, perturbed_coefficients
         )
-        original_function: np.ndarray = evaluate_polynomial_at_measuring_distances(
+        original_function: np.ndarray = evaluate_polynomial_at_measuring_times(
             dataset, coefficients
         )
 
@@ -106,7 +106,7 @@ def calculate_error_propagation_terms(
 
     datapoints = dataset.get_datapoints()
     calculated_differentiated_polynomial_sum_at_measuring_distances = (
-        evaluate_differentiated_polynomial_at_measuring_distances(  # noqa E501
+        evaluate_differentiated_polynomial_at_measuring_times(  # noqa E501
             dataset,
             coefficients,
         )

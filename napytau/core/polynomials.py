@@ -19,7 +19,7 @@ def _calculate_times_from_distances_and_relative_velocity(
     )
 
 
-def evaluate_polynomial_at_measuring_distances(
+def evaluate_polynomial_at_measuring_times(
     dataset: DataSet,
     coefficients: np.ndarray,
 ) -> np.ndarray:
@@ -50,7 +50,7 @@ def evaluate_polynomial_at_measuring_distances(
     return sum_at_measuring_distances
 
 
-def evaluate_differentiated_polynomial_at_measuring_distances(
+def evaluate_differentiated_polynomial_at_measuring_times(
     dataset: DataSet,
     coefficients: np.ndarray,
 ) -> np.ndarray:

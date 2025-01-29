@@ -44,7 +44,7 @@ class DeltaTauUnitTests(unittest.TestCase):
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
-        polynomial_module_mock.evaluate_polynomial_at_measuring_distances.side_effect = [
+        polynomial_module_mock.evaluate_polynomial_at_measuring_times.side_effect = [
             6,
             3,
             2,
@@ -81,7 +81,7 @@ class DeltaTauUnitTests(unittest.TestCase):
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
-        polynomial_module_mock.evaluate_polynomial_at_measuring_distances.side_effect = (
+        polynomial_module_mock.evaluate_polynomial_at_measuring_times.side_effect = (
             lambda datapoints, coefficients: (np.array([6, 3, 2]))
         )
         numpy_module_mock.power.return_value = np.array([4, 9, 16])
@@ -120,13 +120,13 @@ class DeltaTauUnitTests(unittest.TestCase):
             self.assertEqual(zeros_mock.mock_calls[0].args[0], (3, 2))
 
             self.assertIsInstance(
-                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
                 DataSet,
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ]
                 .args[0]
@@ -144,7 +144,7 @@ class DeltaTauUnitTests(unittest.TestCase):
             np.array([0, 0, 0]),
             np.array([[0, 0], [0, 0], [0, 0]]),
         ]
-        polynomial_module_mock.evaluate_polynomial_at_measuring_distances.side_effect = [
+        polynomial_module_mock.evaluate_polynomial_at_measuring_times.side_effect = [
             6,
             3,
             2,
@@ -176,7 +176,7 @@ class DeltaTauUnitTests(unittest.TestCase):
             np.array([64, 64, 64]),
         ]
 
-        polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = np.array(
+        polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_times.return_value = np.array(
             [4, 4, 4]
         )
 
@@ -223,13 +223,13 @@ class DeltaTauUnitTests(unittest.TestCase):
             )
 
             self.assertEqual(
-                polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
                 _get_dataset_stub(datapoints),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 np.array([5, 4]),
