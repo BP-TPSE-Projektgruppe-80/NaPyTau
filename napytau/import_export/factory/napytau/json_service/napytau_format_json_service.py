@@ -2,6 +2,8 @@ import json
 import jsonschema
 
 from napytau.import_export.import_export_error import ImportExportError
+from napytau.import_export.model.dataset import DataSet
+from napytau.util.coalesce import coalesce
 
 _SCHEMA = """
 {
@@ -75,8 +77,7 @@ _SCHEMA = """
           },
           "feedingShiftedIntensityError": {
             "type": "number",
-            "description": "The error in the feeding shifted intensity
-             of the data point",
+            "description": "The error in the feeding shifted intensity of the data point",
             "minimum": 0
           },
           "feedingUnshiftedIntensity": {
@@ -86,8 +87,7 @@ _SCHEMA = """
           },
           "feedingUnshiftedIntensityError": {
             "type": "number",
-            "description": "The error in the feeding unshifted intensity
-             of the data point",
+            "description": "The error in the feeding unshifted intensity of the data point",
             "minimum": 0
           }
         },
@@ -131,8 +131,7 @@ _SCHEMA = """
               "properties": {
                 "distance": {
                   "type": "number",
-                  "description": "The distance of the particles at the 
-                  time of the data point",
+                  "description": "The distance of the particles at the time of the data point",
                   "minimum": 0
                 },
                 "active": {
@@ -205,3 +204,90 @@ class NapytauFormatJsonService:
             )
 
         return True
+
+    @staticmethod
+    def create_calculation_data_json_string(dataset: DataSet) -> str:
+        """
+        Creates a json string from the provided dataset
+        """
+
+        try:
+            json_data = json.dumps(
+                obj={
+                    "tauFactor": coalesce(dataset.get_tau_factor()),
+                    "weightedMeanTau": coalesce(dataset.get_weighted_mean_tau()).value,
+                    "weightedMeanTauError": coalesce(
+                        dataset.get_weighted_mean_tau()
+                    ).error,  # noqa E501
+                    "datapoints": list(
+                        map(
+                            lambda datapoint: {
+                                "distance": datapoint.distance.value,
+                                "distanceError": datapoint.distance.error,
+                                "tau": coalesce(datapoint.tau).value,
+                                "tauError": coalesce(datapoint.tau).error,
+                                "shiftedIntensity": coalesce(
+                                    datapoint.shifted_intensity
+                                ).value,  # noqa E501
+                                "shiftedIntensityError": coalesce(
+                                    datapoint.shifted_intensity
+                                ).error,  # noqa E501
+                                "unshiftedIntensity": coalesce(
+                                    datapoint.unshifted_intensity
+                                ).value,  # noqa E501
+                                "unshiftedIntensityError": coalesce(
+                                    datapoint.unshifted_intensity
+                                ).error,  # noqa E501
+                            }
+                            if datapoint.feeding_shifted_intensity is None
+                            else {
+                                "distance": datapoint.distance.value,
+                                "distanceError": datapoint.distance.error,
+                                "tau": coalesce(datapoint.tau).value,
+                                "tauError": coalesce(datapoint.tau).error,
+                                "shiftedIntensity": coalesce(
+                                    datapoint.shifted_intensity
+                                ).value,  # noqa E501
+                                "shiftedIntensityError": coalesce(
+                                    datapoint.shifted_intensity
+                                ).error,  # noqa E501
+                                "unshiftedIntensity": coalesce(
+                                    datapoint.unshifted_intensity
+                                ).value,  # noqa E501
+                                "unshiftedIntensityError": coalesce(
+                                    datapoint.unshifted_intensity
+                                ).error,  # noqa E501
+                                "feedingShiftedIntensity": coalesce(
+                                    datapoint.feeding_shifted_intensity
+                                ).value,  # noqa E501
+                                "feedingShiftedIntensityError": coalesce(
+                                    datapoint.feeding_shifted_intensity
+                                ).error,  # noqa E501
+                                "feedingUnshiftedIntensity": coalesce(
+                                    datapoint.feeding_unshifted_intensity
+                                ).value,  # noqa E501
+                                "feedingUnshiftedIntensityError": coalesce(
+                                    datapoint.feeding_unshifted_intensity
+                                ).error,  # noqa E501
+                            },
+                            dataset.get_datapoints(),
+                        ),
+                    ),
+                    "samplingPoints": dataset.get_sampling_points(),
+                    "polynomials": list(
+                        map(
+                            lambda polynomial: {
+                                "coefficients": polynomial.coefficients,
+                            },
+                            coalesce(dataset.get_polynomials()),
+                        ),
+                    ),
+                },
+                indent=2,
+            )
+        except ValueError as e:
+            raise ImportExportError(
+                f"Provided dataset could not be converted to json: {e}"
+            )
+
+        return json_data
