@@ -122,10 +122,10 @@ def optimize_t_hyp(
         float: Optimized t_hyp value.
     """
 
-    chi_squared_t_hyp = lambda t_hyp: optimize_coefficients(
+    chi_squared_t_hyp = lambda args: optimize_coefficients(
         dataset,
         initial_coefficients,
-        t_hyp,
+        args[0],
         weight_factor,
     )[1]
 
@@ -133,7 +133,7 @@ def optimize_t_hyp(
         chi_squared_t_hyp,
         # Initial guess for t_hyp. Startíng with the mean reduces likelihood of
         # biasing the optimization process toward one boundary.
-        x0=np.mean(t_hyp_range),
+        x0=np.ndarray(shape=(1,), buffer=np.array([np.mean(t_hyp_range)])),
         bounds=[(t_hyp_range[0], t_hyp_range[1])],
     )
 

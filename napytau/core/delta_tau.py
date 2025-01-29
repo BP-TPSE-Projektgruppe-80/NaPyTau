@@ -32,7 +32,7 @@ def calculate_jacobian_matrix(
         (len(datapoints.get_distances().get_values()), len(coefficients))
     )
 
-    epsilon: float = 1e-8  # small disturbance value
+    epsilon: float = 1e-6  # small disturbance value
 
     # Loop over each coefficient and calculate the partial derivative
     for i in range(len(coefficients)):
