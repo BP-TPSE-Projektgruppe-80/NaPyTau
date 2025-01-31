@@ -10,7 +10,7 @@ class ControlPanel(customtkinter.CTkFrame):
     def __init__(self, parent: "App"):
         """
         The panel with all the controls like timescale input,
-        buttons for minimizing chi^2, calculating tau and absolute tau
+        buttons for minimizing chi squared, calculating tau and absolute tau
         and displaying all results.
         :param parent: Parent widget to host the control panel.
         """
@@ -40,17 +40,17 @@ class ControlPanel(customtkinter.CTkFrame):
         timescale_widget = self._create_timescale_widget()
         timescale_widget.pack(fill="x", padx=5, pady=5)
 
-        # Row 2: Chi^2 Display
-        chi2_widget = self._create_chi2_widget()
-        chi2_widget.pack(fill="x", padx=5, pady=5)
+        # Row 2: Chi squared display
+        chi_squared_widget = self._create_chi_squared_widget()
+        chi_squared_widget.pack(fill="x", padx=5, pady=5)
 
-        # Row 3: Tau Display
+        # Row 3: Tau display
         tau_widget = self._create_tau_widget()
         tau_widget.pack(fill="x", padx=5, pady=5)
 
-        # Row 4: Abs(Tau - T) Display
-        abs_tau_t_widget = self._create_abs_tau_t_widget()
-        abs_tau_t_widget.pack(fill="x", padx=5, pady=5)
+        # Row 4: Abs(Tau - T) display
+        absolute_tau_t_widget = self._create_absolute_tau_t_widget()
+        absolute_tau_t_widget.pack(fill="x", padx=5, pady=5)
 
     def _create_timescale_widget(self) -> customtkinter.CTkFrame:
         """
@@ -100,13 +100,13 @@ class ControlPanel(customtkinter.CTkFrame):
 
         return frame
 
-    def _create_chi2_widget(self) -> customtkinter.CTkFrame:
+    def _create_chi_squared_widget(self) -> customtkinter.CTkFrame:
         """
-        Create the chi^2 widget.
+        Create the chi squared widget.
         """
         frame = customtkinter.CTkFrame(self)
         button = customtkinter.CTkButton(frame, text="Minimize",
-                                         command=self._chi2_button_event)
+                                         command=self._chi_squared_button_event)
         button.pack(side="left", padx=5)
 
         label = customtkinter.CTkLabel(frame, text="χ²:")
@@ -138,9 +138,9 @@ class ControlPanel(customtkinter.CTkFrame):
 
         return frame
 
-    def _create_abs_tau_t_widget(self) -> customtkinter.CTkFrame:
+    def _create_absolute_tau_t_widget(self) -> customtkinter.CTkFrame:
         """
-        Create the abs tau t widget.
+        Create the absolute tau t widget.
         """
         frame = customtkinter.CTkFrame(self)
 
@@ -176,42 +176,42 @@ class ControlPanel(customtkinter.CTkFrame):
         self.set_result_tau(0.0)
         self.set_result_tau_error(0.0)
 
-    def _chi2_button_event(self) -> None:
+    def _chi_squared_button_event(self) -> None:
         """
         Event if the chi2 button is clicked.
         """
-        self.set_result_chi2(0.0)
+        self.set_result_chi_squared(0.0)
 
     def _absolute_tau_button_event(self) -> None:
         """
         Event if the absolute tau button is clicked.
         """
-        self.set_result_abs_tau_t(0.0)
+        self.set_result_absolute_tau_t(0.0)
 
-    def set_result_chi2(self, chi2: float) -> None:
+    def set_result_chi_squared(self, chi_squared: float) -> None:
         """
-        Set the chi^2 value.
-        :param chi2: The new value for chi2.
+        Set the chi squared result.
+        :param chi_squared: The new value for chi squared.
         """
-        self.result_chi_squared.set(chi2)
+        self.result_chi_squared.set(chi_squared)
 
     def set_result_tau(self, tau: float) -> None:
         """
-        Set the tau value.
+        Set the tau result.
         :param tau: The new value for tau.
         """
         self.result_tau.set(tau)
 
     def set_result_tau_error(self, tau_error: float) -> None:
         """
-        Set the tau error value.
+        Set the tau error result.
         :param tau_error: The new value for the tau error.
         """
         self.result_tau_error.set(tau_error)
 
-    def set_result_abs_tau_t(self, abs_tau_t: float) -> None:
+    def set_result_absolute_tau_t(self, absolute_tau_t: float) -> None:
         """
-        Set the absolute tau value.
-        :param abs_tau_t:  The new value for the absolute tau value.
+        Set the absolute tau result.
+        :param absolute_tau_t: The new value for the absolute tau value.
         """
-        self.result_absolute_tau_t.set(abs_tau_t)
+        self.result_absolute_tau_t.set(absolute_tau_t)
