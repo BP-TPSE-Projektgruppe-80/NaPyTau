@@ -14,7 +14,7 @@ class CheckboxPanel:
         self.parent = parent
         self.frame_datapoint_checkboxes = customtkinter.CTkScrollableFrame(self.parent)
         self.frame_datapoint_checkboxes.grid(
-            row=0, column=1, padx=(0, 10), pady=(10, 0), sticky="nsew"
+            row=1, column=1, padx=(0, 10), pady=(10, 0), sticky="nsew"
         )
 
     def update_data_checkboxes_fitting(self) -> None:

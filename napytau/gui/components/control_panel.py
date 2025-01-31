@@ -17,7 +17,7 @@ class ControlPanel(customtkinter.CTkFrame):
 
         # Main area for buttons and controls
         self.grid(
-            row=1, column=1, rowspan=2, padx=(0, 10), pady=(10, 10), sticky="nsew"
+            row=2, column=1, rowspan=2, padx=(0, 10), pady=(10, 10), sticky="nsew"
         )
         self.grid_rowconfigure((0, 1), weight=1)
         self.grid_propagate(True)
