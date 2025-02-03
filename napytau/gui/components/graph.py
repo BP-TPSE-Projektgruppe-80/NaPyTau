@@ -53,6 +53,8 @@ class Graph:
             linewidth=0.3
         )
 
+        axes_1.set_xscale("log")
+
         # draw the markers on the axes
         self.plot_markers(self.parent.datapoints_for_fitting, axes_1)
 

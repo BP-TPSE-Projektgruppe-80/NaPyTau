@@ -16,7 +16,9 @@ class CustomToolbar(NavigationToolbar2Tk):
 
 
 
-        self.winfo_children()[9].destroy()
+
+
+
 
 
 
@@ -26,3 +28,8 @@ class CustomToolbar(NavigationToolbar2Tk):
             if toolitem[0] in self._buttons:
                 self._buttons[toolitem[0]].config(bg='green', relief='flat', highlightthickness=0)
                 print(toolitem[0])
+
+
+        self.winfo_children()[9].destroy()
+
+        self.winfo_children()[6].destroy()

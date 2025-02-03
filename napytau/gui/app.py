@@ -100,55 +100,55 @@ class App(customtkinter.CTk):
 
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(2.0, 0.3),
+                    ValueErrorPair(10.0, 0.3),
                     ValueErrorPair(1.0, 2.0),
                     ValueErrorPair(5.0, 2.0)
 
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(3.0, 0.3),
+                    ValueErrorPair(100.0, 0.3),
                     ValueErrorPair(3.0, 3.0),
                     ValueErrorPair(7.0, 3.0)
 
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(4.0, 0.3),
+                    ValueErrorPair(400.0, 0.3),
                     ValueErrorPair(9.0, 4.0),
                     ValueErrorPair(1.0, 4.0)
 
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(5.0, 0.3),
+                    ValueErrorPair(10000.0, 0.3),
                     ValueErrorPair(7.0, 5.0),
                     ValueErrorPair(2.0, 5.0)
 
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(6.0, 0.3),
+                    ValueErrorPair(600000.0, 0.3),
                     ValueErrorPair(2.0, 6.0),
                     ValueErrorPair(6.0, 6.0)
 
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(7.0, 0.3),
+                    ValueErrorPair(7000000.0, 0.3),
                     ValueErrorPair(1.0, 7.0),
                     ValueErrorPair(5.0, 7.0)
 
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(8.0, 0.3),
+                    ValueErrorPair(80000000.0, 0.3),
                     ValueErrorPair(10.0, 8.0),
                     ValueErrorPair(2.0, 8.0)
 
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(9.0, 0.3),
+                    ValueErrorPair(900000000.0, 0.3),
                     ValueErrorPair(5.0, 9.0),
                     ValueErrorPair(1.0, 9.0)
 
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(10.0, 0.3),
+                    ValueErrorPair(1000000000.0, 0.3),
                     ValueErrorPair(4.0, 10.0),
                     ValueErrorPair(8.0, 10.0)
 
