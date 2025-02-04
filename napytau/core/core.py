@@ -15,14 +15,17 @@ def calculate_lifetime(
     weight_factor: float,
     custom_t_hyp_estimate: Optional[float],
 ) -> Tuple[float, float]:
-    t_hyp: float = 0
+    """
+    Docstring missing. To be implemented with issue #44.
+    """
+
     # If a custom t_hyp is given, we will use it for the further calculations
     # If no custom t_hyp is given, we will use the optimal taufactor instead
     if custom_t_hyp_estimate is not None:
         t_hyp = custom_t_hyp_estimate
     else:
         t_hyp = optimize_t_hyp(
-            dataSet.get_datapoints(),
+            dataSet,
             initial_coefficients,
             t_hyp_range,
             weight_factor,
@@ -31,7 +34,7 @@ def calculate_lifetime(
     # Now we find the optimal coefficients for the given taufactor
     optimized_coefficients: np.ndarray = (
         optimize_coefficients(
-            dataSet.get_datapoints(),
+            dataSet,
             initial_coefficients,
             t_hyp,
             weight_factor,
@@ -40,7 +43,7 @@ def calculate_lifetime(
 
     # We now calculate the lifetimes tau_i for all measured distances
     tau_i_values: np.ndarray = calculate_tau_i_values(
-        dataSet.get_datapoints(),
+        dataSet,
         initial_coefficients,
         t_hyp_range,
         weight_factor,
@@ -49,7 +52,7 @@ def calculate_lifetime(
 
     # And we calculate the respective errors for the lifetimes
     delta_tau_i_values: np.ndarray = calculate_error_propagation_terms(
-        dataSet.get_datapoints(),
+        dataSet,
         optimized_coefficients,
         t_hyp,
     )

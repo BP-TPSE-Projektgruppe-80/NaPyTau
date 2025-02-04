@@ -5,6 +5,8 @@ import numpy as np
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.util.model.value_error_pair import ValueErrorPair
 from napytau.import_export.model.datapoint import Datapoint
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 
 
 def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
@@ -28,14 +30,21 @@ def set_up_mocks() -> (MagicMock, MagicMock, MagicMock, MagicMock):
     return polynomial_module_mock, zeros_mock, numpy_module_mock
 
 
-class DeltaChiUnitTests(unittest.TestCase):
+def _get_dataset_stub(datapoints: DatapointCollection) -> DataSet:
+    return DataSet(
+        ValueErrorPair(RelativeVelocity(1 / 299792458), RelativeVelocity(0)),
+        datapoints,
+    )
+
+
+class DeltaTauUnitTests(unittest.TestCase):
     @staticmethod
     def test_canCalculateAJacobianMatrixFromDistancesAndCoefficients():
         """Can calculate a Jacobian matrix from distances and coefficients."""
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
-        polynomial_module_mock.evaluate_polynomial_at_measuring_distances.side_effect = [
+        polynomial_module_mock.evaluate_polynomial_at_measuring_times.side_effect = [
             6,
             3,
             2,
@@ -63,7 +72,8 @@ class DeltaChiUnitTests(unittest.TestCase):
             jacobian_matrix = np.array([[3e8, 1e8], [3e8, 1e8], [3e8, 1e8]])
 
             np.testing.assert_array_equal(
-                calculate_jacobian_matrix(datapoints, coefficients), jacobian_matrix
+                calculate_jacobian_matrix(_get_dataset_stub(datapoints), coefficients),
+                jacobian_matrix,
             )
 
     def test_canCalculateACovarianceMatrixFromTimesAndCoefficients(self):
@@ -71,7 +81,7 @@ class DeltaChiUnitTests(unittest.TestCase):
         polynomial_module_mock, zeros_mock, numpy_module_mock = set_up_mocks()
 
         zeros_mock.return_value = np.array([[0, 0], [0, 0], [0, 0]])
-        polynomial_module_mock.evaluate_polynomial_at_measuring_distances.side_effect = (
+        polynomial_module_mock.evaluate_polynomial_at_measuring_times.side_effect = (
             lambda datapoints, coefficients: (np.array([6, 3, 2]))
         )
         numpy_module_mock.power.return_value = np.array([4, 9, 16])
@@ -101,23 +111,26 @@ class DeltaChiUnitTests(unittest.TestCase):
             coefficients = np.array([5, 4])
 
             np.testing.assert_array_equal(
-                calculate_covariance_matrix(datapoints, coefficients),
+                calculate_covariance_matrix(
+                    _get_dataset_stub(datapoints), coefficients
+                ),
                 np.array([[-0.13826047, 0.41478141], [0.41478141, -1.24434423]]),
             )
 
             self.assertEqual(zeros_mock.mock_calls[0].args[0], (3, 2))
 
             self.assertIsInstance(
-                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                DatapointCollection,
+                DataSet,
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ]
                 .args[0]
+                .get_datapoints()
                 .get_distances()
                 .get_values(),
                 np.array([0, 1, 2]),
@@ -131,7 +144,7 @@ class DeltaChiUnitTests(unittest.TestCase):
             np.array([0, 0, 0]),
             np.array([[0, 0], [0, 0], [0, 0]]),
         ]
-        polynomial_module_mock.evaluate_polynomial_at_measuring_distances.side_effect = [
+        polynomial_module_mock.evaluate_polynomial_at_measuring_times.side_effect = [
             6,
             3,
             2,
@@ -163,7 +176,7 @@ class DeltaChiUnitTests(unittest.TestCase):
             np.array([64, 64, 64]),
         ]
 
-        polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = np.array(
+        polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_times.return_value = np.array(
             [4, 4, 4]
         )
 
@@ -204,19 +217,19 @@ class DeltaChiUnitTests(unittest.TestCase):
             )
 
             calculated_error_propagation_terms = calculate_error_propagation_terms(
-                datapoints,
+                _get_dataset_stub(datapoints),
                 coefficients,
                 taufactor,
             )
 
             self.assertEqual(
-                polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
             np.testing.assert_array_equal(
-                polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomial_module_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 np.array([5, 4]),

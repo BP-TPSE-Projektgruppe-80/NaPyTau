@@ -9,7 +9,11 @@ if TYPE_CHECKING:
 class ControlPanel(customtkinter.CTkFrame):
     def __init__(self, parent: "App"):
         """
-        The panel with all the controls, inputs etc.
+
+        The panel with all the controls like timescale input,
+        buttons for minimizing chi squared, calculating tau and absolute tau
+        and displaying all results.
+        
         :param parent: Parent widget to host the control panel.
         """
         super().__init__(parent, corner_radius=10)
@@ -23,10 +27,12 @@ class ControlPanel(customtkinter.CTkFrame):
         self.grid_propagate(True)
 
         self.timescale = customtkinter.DoubleVar(value=1.0)
-        self.result_chi2 = customtkinter.StringVar(value="N/A")
+
+        self.result_chi_squared = customtkinter.StringVar(value="N/A")
         self.result_tau = customtkinter.StringVar(value="N/A")
         self.result_tau_error = customtkinter.StringVar(value="N/A")
-        self.result_abs_tau_t = customtkinter.StringVar(value="N/A")
+        self.result_absolute_tau_t = customtkinter.StringVar(value="N/A")
+
 
         self._create_widgets()
 
@@ -38,24 +44,27 @@ class ControlPanel(customtkinter.CTkFrame):
         timescale_widget = self._create_timescale_widget()
         timescale_widget.pack(fill="x", padx=5, pady=5)
 
-        # Row 2: Chi^2 Display
-        chi2_widget = self._create_chi2_widget()
-        chi2_widget.pack(fill="x", padx=5, pady=5)
+        # Row 2: Chi squared display
+        chi_squared_widget = self._create_chi_squared_widget()
+        chi_squared_widget.pack(fill="x", padx=5, pady=5)
 
-        # Row 3: Tau Display
+        # Row 3: Tau display
         tau_widget = self._create_tau_widget()
         tau_widget.pack(fill="x", padx=5, pady=5)
 
-        # Row 4: Abs(Tau - T) Display
-        abs_tau_t_widget = self._create_abs_tau_t_widget()
-        abs_tau_t_widget.pack(fill="x", padx=5, pady=5)
+        # Row 4: Abs(Tau - T) display
+        absolute_tau_t_widget = self._create_absolute_tau_t_widget()
+        absolute_tau_t_widget.pack(fill="x", padx=5, pady=5)
+
 
     def _create_timescale_widget(self) -> customtkinter.CTkFrame:
         """
         Create the timescale widget.
         """
-        min_timescale = 0.01
-        max_timescale = 100.0
+
+        timescale_min = 0.01
+        timescale_max = 100.0
+
 
         frame = customtkinter.CTkFrame(self)
 
@@ -64,22 +73,27 @@ class ControlPanel(customtkinter.CTkFrame):
         def update_timescale() -> None:
             try:
                 value = float(timescale_entry.get())
-                if min_timescale <= value <= max_timescale:
+
+                if timescale_min <= value <= timescale_max:
+
                     self.timescale.set(value)
                     self.parent.logger.log_message(
                         f"Timescale set to: {value}", LogMessageType.INFO)
                 else:
                     self.parent.logger.log_message(
-                        f"Error: Value out of valid range ({min_timescale:.2f}"
-                        f" - {max_timescale:.2f}).",
+
+                        f"Error: Value out of valid range ({timescale_min:.2f}"
+                        f" - {timescale_max:.2f}).",
+
                         LogMessageType.ERROR)
             except ValueError:
                 self.parent.logger.log_message(
                     "Invalid input value, please enter a number.",
                     LogMessageType.ERROR)
 
-        def sync_entry_with_slider(value : float) -> None:
-            timescale_entry.set(f"{value:.2f}")
+
+        sync_entry_with_slider = lambda value: timescale_entry.set(f"{value:.2f}")
+
 
         button = customtkinter.CTkButton(frame, text="t [ps]",
                                          command=update_timescale)
@@ -89,7 +103,9 @@ class ControlPanel(customtkinter.CTkFrame):
                                        justify="right", width=80)
         entry.grid(row=0, column=1, padx=5, pady=5, sticky="e")
 
-        slider = customtkinter.CTkSlider(frame, from_=min_timescale, to=max_timescale,
+
+        slider = customtkinter.CTkSlider(frame, from_=timescale_min, to=timescale_max,
+
                                          variable=self.timescale,
                                          command=sync_entry_with_slider)
         slider.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
@@ -99,19 +115,23 @@ class ControlPanel(customtkinter.CTkFrame):
 
         return frame
 
-    def _create_chi2_widget(self) -> customtkinter.CTkFrame:
+
+    def _create_chi_squared_widget(self) -> customtkinter.CTkFrame:
         """
-        Create the chi^2 widget.
+        Create the chi squared widget.
         """
         frame = customtkinter.CTkFrame(self)
         button = customtkinter.CTkButton(frame, text="Minimize",
-                                         command=self._chi2_button_event)
+                                         command=self._chi_squared_button_event)
+
         button.pack(side="left", padx=5)
 
         label = customtkinter.CTkLabel(frame, text="χ²:")
         label.pack(side="left", padx=15)
 
-        result = customtkinter.CTkLabel(frame, textvariable=self.result_chi2)
+
+        result = customtkinter.CTkLabel(frame, textvariable=self.result_chi_squared)
+
         result.pack(side="left", padx=5)
 
         return frame
@@ -137,9 +157,11 @@ class ControlPanel(customtkinter.CTkFrame):
 
         return frame
 
-    def _create_abs_tau_t_widget(self) -> customtkinter.CTkFrame:
+
+    def _create_absolute_tau_t_widget(self) -> customtkinter.CTkFrame:
         """
-        Create the abs tau t widget.
+        Create the absolute tau t widget.
+
         """
         frame = customtkinter.CTkFrame(self)
 
@@ -150,7 +172,9 @@ class ControlPanel(customtkinter.CTkFrame):
         label = customtkinter.CTkLabel(frame, text="|τ - t| [ps]:")
         label.pack(side="left", padx=15)
 
-        result = customtkinter.CTkLabel(frame, textvariable=self.result_abs_tau_t)
+
+        result = customtkinter.CTkLabel(frame, textvariable=self.result_absolute_tau_t)
+
         result.pack(side="left", padx=5)
 
         return frame
@@ -175,42 +199,50 @@ class ControlPanel(customtkinter.CTkFrame):
         self.set_result_tau(0.0)
         self.set_result_tau_error(0.0)
 
-    def _chi2_button_event(self) -> None:
+
+    def _chi_squared_button_event(self) -> None:
         """
         Event if the chi2 button is clicked.
         """
-        self.set_result_chi2(0.0)
+        self.set_result_chi_squared(0.0)
+
 
     def _absolute_tau_button_event(self) -> None:
         """
         Event if the absolute tau button is clicked.
         """
-        self.set_result_abs_tau_t(0.0)
 
-    def set_result_chi2(self, chi2: float) -> None:
+        self.set_result_absolute_tau_t(0.0)
+
+    def set_result_chi_squared(self, chi_squared: float) -> None:
         """
-        Set the chi^2 value.
-        :param chi2: The new value for chi2.
+        Set the chi squared result.
+        :param chi_squared: The new value for chi squared.
         """
-        self.result_chi2.set(chi2)
+        self.result_chi_squared.set(chi_squared)
 
     def set_result_tau(self, tau: float) -> None:
         """
-        Set the tau value.
+        Set the tau result.
+
         :param tau: The new value for tau.
         """
         self.result_tau.set(tau)
 
     def set_result_tau_error(self, tau_error: float) -> None:
         """
-        Set the tau error value.
+
+        Set the tau error result.
+
         :param tau_error: The new value for the tau error.
         """
         self.result_tau_error.set(tau_error)
 
-    def set_result_abs_tau_t(self, abs_tau_t: float) -> None:
+
+    def set_result_absolute_tau_t(self, absolute_tau_t: float) -> None:
         """
-        Set the absolute tau value.
-        :param abs_tau_t:  The new value for the absolute tau value.
+        Set the absolute tau result.
+        :param absolute_tau_t: The new value for the absolute tau value.
         """
-        self.result_abs_tau_t.set(abs_tau_t)
+        self.result_absolute_tau_t.set(absolute_tau_t)
+

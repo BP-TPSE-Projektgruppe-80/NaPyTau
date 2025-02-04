@@ -7,6 +7,8 @@ from typing import Tuple
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.util.model.value_error_pair import ValueErrorPair
 from napytau.import_export.model.datapoint import Datapoint
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 
 
 def set_up_mocks() -> (MagicMock, MagicMock, MagicMock):
@@ -25,15 +27,22 @@ def set_up_mocks() -> (MagicMock, MagicMock, MagicMock):
     return polynomials_mock, numpy_module_mock, scipy_optimize_module_mock
 
 
+def _get_dataset_stub(datapoints: DatapointCollection) -> DataSet:
+    return DataSet(
+        ValueErrorPair(RelativeVelocity(1 / 299792458), RelativeVelocity(0)),
+        datapoints,
+    )
+
+
 class ChiUnitTest(unittest.TestCase):
     def test_CanCalculateChiForValidData(self):
         """Can calculate chi for valid data"""
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
-        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
-            np.array([5, 15, 57])
+        polynomials_mock.evaluate_polynomial_at_measuring_times.return_value = np.array(
+            [5, 15, 57]
         )
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = np.array(
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.return_value = np.array(
             [4, 20, 72]
         )
 
@@ -82,7 +91,7 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    datapoints,
+                    _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
                     weight_factor,
@@ -91,21 +100,19 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(
-                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
-                ),
+                len(polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([5, 4, 3, 2, 1])),
@@ -113,20 +120,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls
+                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls
                 ),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([5, 4, 3, 2, 1])),
@@ -172,10 +179,10 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
-            np.array([])
+        polynomials_mock.evaluate_polynomial_at_measuring_times.return_value = np.array(
+            []
         )
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = np.array(
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.return_value = np.array(
             []
         )
 
@@ -200,7 +207,7 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 chi_squared_fixed_t(
-                    datapoints,
+                    _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
                     weight_factor,
@@ -209,21 +216,19 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(
-                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
-                ),
+                len(polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls),
                 1,
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                (np.array([])),
+                (_get_dataset_stub(datapoints)),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([])),
@@ -231,20 +236,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls
+                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls
                 ),
                 1,
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                (np.array([])),
+                (_get_dataset_stub(datapoints)),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([])),
@@ -290,10 +295,10 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
-            np.array([57])
+        polynomials_mock.evaluate_polynomial_at_measuring_times.return_value = np.array(
+            [57]
         )
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = np.array(
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.return_value = np.array(
             [72]
         )
 
@@ -330,7 +335,7 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    datapoints,
+                    _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
                     weight_factor,
@@ -339,21 +344,19 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(
-                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
-                ),
+                len(polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([5, 4, 3, 2, 1])),
@@ -361,20 +364,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls
+                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls
                 ),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([5, 4, 3, 2, 1])),
@@ -420,10 +423,10 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
-            np.array([5, 15])
+        polynomials_mock.evaluate_polynomial_at_measuring_times.return_value = np.array(
+            [5, 15]
         )
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = np.array(
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.return_value = np.array(
             [4, 20]
         )
 
@@ -466,7 +469,7 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    datapoints,
+                    _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
                     weight_factor,
@@ -475,21 +478,19 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(
-                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
-                ),
+                len(polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([5, 4, 3, 2, 1])),
@@ -497,20 +498,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls
+                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls
                 ),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([5, 4, 3, 2, 1])),
@@ -556,10 +557,10 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
-            np.array([-5, -5])
+        polynomials_mock.evaluate_polynomial_at_measuring_times.return_value = np.array(
+            [-5, -5]
         )
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = np.array(
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.return_value = np.array(
             [-4, -4]
         )
 
@@ -602,7 +603,7 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    datapoints,
+                    _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
                     weight_factor,
@@ -611,21 +612,19 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(
-                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
-                ),
+                len(polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([-5, -4, 3, 2, -1])),
@@ -633,20 +632,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls
+                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls
                 ),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([-5, -4, 3, 2, -1])),
@@ -692,10 +691,10 @@ class ChiUnitTest(unittest.TestCase):
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        polynomials_mock.evaluate_polynomial_at_measuring_distances.return_value = (
-            np.array([5, 15, 57])
+        polynomials_mock.evaluate_polynomial_at_measuring_times.return_value = np.array(
+            [5, 15, 57]
         )
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value = np.array(
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.return_value = np.array(
             [4, 20, 72]
         )
 
@@ -744,7 +743,7 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(
                 chi_squared_fixed_t(
-                    datapoints,
+                    _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
                     weight_factor,
@@ -753,21 +752,19 @@ class ChiUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                len(
-                    polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls
-                ),
+                len(polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([5, 4, 3, 2, 1])),
@@ -775,20 +772,20 @@ class ChiUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls
+                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls
                 ),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                _get_dataset_stub(datapoints),
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([5, 4, 3, 2, 1])),
@@ -872,7 +869,7 @@ class ChiUnitTest(unittest.TestCase):
             actual_coefficients: np.ndarray
             actual_chi: float
             actual_coefficients, actual_chi = optimize_coefficients(
-                datapoints,
+                _get_dataset_stub(datapoints),
                 initial_coefficients,
                 t_hyp,
                 weight_factor,
@@ -942,7 +939,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_t_hyp: float = 2.0
 
             actual_t_hyp: float = optimize_t_hyp(
-                datapoints,
+                _get_dataset_stub(datapoints),
                 initial_coefficients,
                 t_hyp_range,
                 weight_factor,
