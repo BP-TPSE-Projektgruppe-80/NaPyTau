@@ -65,10 +65,10 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure(2, weight=2, minsize=2 * height // total_height)
 
         # column ratio: 2/3, 1/3
-        total_width = 3  # 2+1 = 3 parts
+        total_width = 4  # 2+1 = 3 parts
         # Reduce graph width by 30 to asure all components and their
         # separators are inside the window.
-        self.grid_columnconfigure(0, weight=2, minsize=2 * width // total_width - 30)
+        self.grid_columnconfigure(0, weight=2, minsize=3 * width // total_width - 30)
         self.grid_columnconfigure(1, weight=1, minsize=1 * width // total_width)
 
         # Define menu bar callback functions
@@ -94,34 +94,54 @@ class App(customtkinter.CTk):
         self.update_data_checkboxes(
             [
                 create_dummy_datapoint(
-                    ValueErrorPair(1.0, 0.3), ValueErrorPair(5.0, 1.0)
+                    ValueErrorPair(1.0, 0.3),
+                    ValueErrorPair(5.0, 1.0),
+                    ValueErrorPair(3.0, 1.0),
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(2.0, 0.3), ValueErrorPair(1.0, 2.0)
+                    ValueErrorPair(10.0, 0.3),
+                    ValueErrorPair(1.0, 2.0),
+                    ValueErrorPair(5.0, 2.0),
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(3.0, 0.3), ValueErrorPair(3.0, 3.0)
+                    ValueErrorPair(100.0, 0.3),
+                    ValueErrorPair(3.0, 3.0),
+                    ValueErrorPair(7.0, 3.0),
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(4.0, 0.3), ValueErrorPair(9.0, 4.0)
+                    ValueErrorPair(400.0, 0.3),
+                    ValueErrorPair(9.0, 4.0),
+                    ValueErrorPair(1.0, 4.0),
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(5.0, 0.3), ValueErrorPair(7.0, 5.0)
+                    ValueErrorPair(10000.0, 0.3),
+                    ValueErrorPair(7.0, 5.0),
+                    ValueErrorPair(2.0, 5.0),
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(6.0, 0.3), ValueErrorPair(2.0, 6.0)
+                    ValueErrorPair(600000.0, 0.3),
+                    ValueErrorPair(2.0, 6.0),
+                    ValueErrorPair(6.0, 6.0),
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(7.0, 0.3), ValueErrorPair(1.0, 7.0)
+                    ValueErrorPair(7000000.0, 0.3),
+                    ValueErrorPair(1.0, 7.0),
+                    ValueErrorPair(5.0, 7.0),
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(8.0, 0.3), ValueErrorPair(10.0, 8.0)
+                    ValueErrorPair(80000000.0, 0.3),
+                    ValueErrorPair(10.0, 8.0),
+                    ValueErrorPair(2.0, 8.0),
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(9.0, 0.3), ValueErrorPair(5.0, 9.0)
+                    ValueErrorPair(900000000.0, 0.3),
+                    ValueErrorPair(5.0, 9.0),
+                    ValueErrorPair(1.0, 9.0),
                 ),
                 create_dummy_datapoint(
-                    ValueErrorPair(10.0, 0.3), ValueErrorPair(4.0, 10.0)
+                    ValueErrorPair(1000000000.0, 0.3),
+                    ValueErrorPair(4.0, 10.0),
+                    ValueErrorPair(8.0, 10.0),
                 ),
             ]
         )
@@ -135,7 +155,7 @@ class App(customtkinter.CTk):
         self.control_panel = ControlPanel(self)
 
         # Initialize the logger
-        self.logger = Logger(self)
+        self.logger: Logger = Logger(self)
 
     def open_file(self) -> None:
         """
@@ -230,17 +250,17 @@ class App(customtkinter.CTk):
         self.checkbox_panel.update_data_checkboxes_calculation()
 
 
-"""
-Function for testing purposes only!
-"""
-
-
 def create_dummy_datapoint(
-    distance: ValueErrorPair, shifted_intensity: ValueErrorPair
+    distance: ValueErrorPair,
+    shifted_intensity: ValueErrorPair,
+    unshifted_intensity: ValueErrorPair,
 ) -> Datapoint:
+    """
+    Function for testing purposes only!
+    """
     datapoint = Datapoint(distance)
     datapoint.shifted_intensity = shifted_intensity
-    datapoint.unshifted_intensity = ValueErrorPair(0.0, 0.0)
+    datapoint.unshifted_intensity = unshifted_intensity
     return datapoint
 
 
