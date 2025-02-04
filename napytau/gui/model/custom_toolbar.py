@@ -14,9 +14,6 @@ class CustomToolbar(NavigationToolbar2Tk):
 
         super().__init__(canvas, window)
 
-        # Debugging: Print available widgets
-        print("Children of toolbar:", self.winfo_children())
-
         # Change background color of the message label
         self._message_label.config(
             bg=parent.graph.main_color,
@@ -33,8 +30,6 @@ class CustomToolbar(NavigationToolbar2Tk):
                                                 highlightthickness=0
                                                 )
 
-
-
+        # Remove superfluous buttons
         self.winfo_children()[9].destroy()
-
         self.winfo_children()[6].destroy()
