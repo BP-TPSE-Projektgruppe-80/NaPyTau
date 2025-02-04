@@ -192,7 +192,10 @@ class Graph:
         axes.plot(x_fit, y_fit, color="red", linestyle="--", linewidth="0.6")
 
 
-    def plot_derivative_curve(self, datapoints: DatapointCollection, axes: Axes) -> None:
+    def plot_derivative_curve(self,
+                              datapoints: DatapointCollection,
+                              axes: Axes
+                              ) -> None:
         """
          plotting derivative curve of datapoints
         :param x_data: x coordinates

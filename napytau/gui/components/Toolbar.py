@@ -1,7 +1,6 @@
 import tkinter as tk
 
 
-from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 from typing import TYPE_CHECKING
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
