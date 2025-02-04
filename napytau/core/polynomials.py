@@ -3,6 +3,7 @@ from napytau.core.errors.polynomial_coefficient_error import (
 )
 import numpy as np
 import scipy as sp
+from typing import List
 
 from napytau.core.time import calculate_times_from_distances_and_relative_velocity
 from napytau.import_export.model.dataset import DataSet
@@ -140,3 +141,58 @@ def calculate_polynomial_coefficients_for_tau_factor(
     )
 
     return np.array(res.x)
+
+
+def calculate_polynomial_coefficients_for_spline_function(
+    dataset: DataSet,
+    degree: int,
+) -> List[np.ndarray]:
+    """
+        Calculates the polynomial coefficients for the spline function.
+
+        Args:
+            dataset (DataSet): The dataset of the experiment
+            degree (int): The degree of the polynomials to be fitted
+
+        Returns:
+            ndarray: List of arrays of polynomial coefficients for the spline function.
+        """
+    sampling_points: List[float] = dataset.get_sampling_points()
+    measuring_times: np.ndarray = calculate_times_from_distances_and_relative_velocity(dataset)
+    intensities: np.ndarray = dataset.get_datapoints().get_shifted_intensities().get_values()
+
+    # Create a mask to assign data points to spaces between sampling points
+    bin_indices: np.ndarray = np.digitize(measuring_times, sampling_points)
+    sorted_times: List[np.ndarray] = []
+    sorted_intensities: List[np.ndarray] = []
+    for i in range(len(sampling_points) + 1):
+        sorted_times.append(measuring_times[bin_indices == i])
+        sorted_intensities.append(intensities[bin_indices == i])
+
+    # Fit polynomial coefficients for each group of data points
+    piecewise_polynomial_coefficients: List[np.ndarray] = []
+    for i in range(len(sorted_times)):
+        polynomial_coefficients: np.ndarray = (
+            np.polynomial.Polynomial.fit(
+                sorted_times[i],
+                sorted_intensities[i],
+                degree,
+            )
+            .convert()
+            .coef
+        )
+
+        piecewise_polynomial_coefficients.append(polynomial_coefficients)
+
+    return piecewise_polynomial_coefficients
+
+
+def create_spline_function_from_piecewise_polynomial_coefficients(
+    dataset: DataSet,
+    piecewise_coefficients: List[np.ndarray],
+) -> sp.interpolate.PPoly:
+    # Convert to PPoly format: Each row should represent coefficients for one power
+    coefficients_matrix: np.ndarray = np.vstack(piecewise_coefficients).T
+
+    # Create piecewise polynomial function
+    return sp.interpolate.PPoly(coefficients_matrix, np.array(dataset.get_sampling_points()))
