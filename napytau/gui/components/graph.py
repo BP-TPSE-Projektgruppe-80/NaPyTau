@@ -207,19 +207,13 @@ class Graph:
         # Extracting distance values / intensities of checked datapoints
         checked_datapoints: DatapointCollection = datapoints.get_active_datapoints()
 
-        checked_distances: list[float] = [
-            valueErrorPair.value
-            for valueErrorPair in checked_datapoints.get_distances()
-        ]
+        checked_distances = checked_datapoints.get_distances().get_values()
 
-        checked_shifted_intensities: list[float] = [
-            valueErrorPair.value
-            for valueErrorPair in checked_datapoints.get_unshifted_intensities()
-        ]
+        checked_unshifted_intensities = checked_datapoints.get_unshifted_intensities().get_values()
 
         # Calculating coefficients
         coeffs = np.polyfit(
-            checked_distances, checked_shifted_intensities, len(checked_datapoints)
+            checked_distances, checked_unshifted_intensities, len(checked_datapoints)
         )
 
         poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
