@@ -50,7 +50,7 @@ class Graph:
             which="both",
             color=self.secondary_color,
             linestyle="--",
-            linewidth=0.3
+            linewidth=0.3,
         )
 
         axes_1.set_xscale("log")
@@ -74,11 +74,10 @@ class Graph:
         """
         Is called whenever the graph needs to be re-rendered.
         """
-        self.graph_frame = self.plot(
-             customtkinter.get_appearance_mode()
-        )
+        self.graph_frame = self.plot(customtkinter.get_appearance_mode())
         self.graph_frame.grid(
-            row=0, column=0, rowspan=2, padx=(10, 10), pady=(10, 0), sticky="nsew")
+            row=0, column=0, rowspan=2, padx=(10, 10), pady=(10, 0), sticky="nsew"
+        )
         self.graph_frame.grid_propagate(False)
         self.parent.toolbar = Toolbar(self.parent, self.canvas)
 
@@ -191,11 +190,9 @@ class Graph:
         # plot the curve
         axes.plot(x_fit, y_fit, color="red", linestyle="--", linewidth="0.6")
 
-
-    def plot_derivative_curve(self,
-                              datapoints: DatapointCollection,
-                              axes: Axes
-                              ) -> None:
+    def plot_derivative_curve(
+        self, datapoints: DatapointCollection, axes: Axes
+    ) -> None:
         """
          plotting derivative curve of datapoints
         :param x_data: x coordinates
@@ -209,7 +206,9 @@ class Graph:
 
         checked_distances = checked_datapoints.get_distances().get_values()
 
-        checked_unshifted_intensities = checked_datapoints.get_unshifted_intensities().get_values()
+        checked_unshifted_intensities = (
+            checked_datapoints.get_unshifted_intensities().get_values()
+        )
 
         # Calculating coefficients
         coeffs = np.polyfit(
@@ -223,4 +222,3 @@ class Graph:
 
         # plot the curve
         axes.plot(x_fit, y_fit, color="blue", linestyle="-", linewidth="0.6")
-

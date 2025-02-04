@@ -96,62 +96,52 @@ class App(customtkinter.CTk):
                 create_dummy_datapoint(
                     ValueErrorPair(1.0, 0.3),
                     ValueErrorPair(5.0, 1.0),
-                    ValueErrorPair(3.0, 1.0)
-
+                    ValueErrorPair(3.0, 1.0),
                 ),
                 create_dummy_datapoint(
                     ValueErrorPair(10.0, 0.3),
                     ValueErrorPair(1.0, 2.0),
-                    ValueErrorPair(5.0, 2.0)
-
+                    ValueErrorPair(5.0, 2.0),
                 ),
                 create_dummy_datapoint(
                     ValueErrorPair(100.0, 0.3),
                     ValueErrorPair(3.0, 3.0),
-                    ValueErrorPair(7.0, 3.0)
-
+                    ValueErrorPair(7.0, 3.0),
                 ),
                 create_dummy_datapoint(
                     ValueErrorPair(400.0, 0.3),
                     ValueErrorPair(9.0, 4.0),
-                    ValueErrorPair(1.0, 4.0)
-
+                    ValueErrorPair(1.0, 4.0),
                 ),
                 create_dummy_datapoint(
                     ValueErrorPair(10000.0, 0.3),
                     ValueErrorPair(7.0, 5.0),
-                    ValueErrorPair(2.0, 5.0)
-
+                    ValueErrorPair(2.0, 5.0),
                 ),
                 create_dummy_datapoint(
                     ValueErrorPair(600000.0, 0.3),
                     ValueErrorPair(2.0, 6.0),
-                    ValueErrorPair(6.0, 6.0)
-
+                    ValueErrorPair(6.0, 6.0),
                 ),
                 create_dummy_datapoint(
                     ValueErrorPair(7000000.0, 0.3),
                     ValueErrorPair(1.0, 7.0),
-                    ValueErrorPair(5.0, 7.0)
-
+                    ValueErrorPair(5.0, 7.0),
                 ),
                 create_dummy_datapoint(
                     ValueErrorPair(80000000.0, 0.3),
                     ValueErrorPair(10.0, 8.0),
-                    ValueErrorPair(2.0, 8.0)
-
+                    ValueErrorPair(2.0, 8.0),
                 ),
                 create_dummy_datapoint(
                     ValueErrorPair(900000000.0, 0.3),
                     ValueErrorPair(5.0, 9.0),
-                    ValueErrorPair(1.0, 9.0)
-
+                    ValueErrorPair(1.0, 9.0),
                 ),
                 create_dummy_datapoint(
                     ValueErrorPair(1000000000.0, 0.3),
                     ValueErrorPair(4.0, 10.0),
-                    ValueErrorPair(8.0, 10.0)
-
+                    ValueErrorPair(8.0, 10.0),
                 ),
             ]
         )
@@ -165,7 +155,7 @@ class App(customtkinter.CTk):
         self.control_panel = ControlPanel(self)
 
         # Initialize the logger
-        self.logger:Logger = Logger(self)
+        self.logger: Logger = Logger(self)
 
     def open_file(self) -> None:
         """
@@ -263,7 +253,7 @@ class App(customtkinter.CTk):
 def create_dummy_datapoint(
     distance: ValueErrorPair,
     shifted_intensity: ValueErrorPair,
-    unshifted_intensity: ValueErrorPair
+    unshifted_intensity: ValueErrorPair,
 ) -> Datapoint:
     """
     Function for testing purposes only!

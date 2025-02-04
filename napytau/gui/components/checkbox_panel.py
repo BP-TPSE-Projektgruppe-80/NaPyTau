@@ -65,14 +65,14 @@ class CheckboxPanel:
             print("[fitting] checkbox with index " + str(index) + " activated.")
             self.parent.logger.log_message(
                 "[fitting] checkbox with index " + str(index) + " activated.",
-                LogMessageType.INFO
+                LogMessageType.INFO,
             )
 
         else:
             print("[fitting] checkbox with index " + str(index) + " deactivated.")
             self.parent.logger.log_message(
                 "[fitting] checkbox with index " + str(index) + " deactivated.",
-                LogMessageType.INFO
+                LogMessageType.INFO,
             )
         self.parent.graph.update_plot()
 
@@ -104,9 +104,7 @@ class CheckboxPanel:
                 self.frame_datapoint_checkboxes,
                 text=f"x: ({distance.value})",
                 variable=customtkinter.IntVar(value=1),
-                command=lambda index=i: self._data_checkbox_calculation_event(
-                    index
-                ),
+                command=lambda index=i: self._data_checkbox_calculation_event(index),
             )
             checkbox.grid(row=i + 1, column=1, padx=35, pady=2, sticky="nsew")
 
