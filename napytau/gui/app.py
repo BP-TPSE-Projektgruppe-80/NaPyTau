@@ -1,4 +1,5 @@
-from typing import List
+from pathlib import PurePath
+from typing import List, Tuple
 
 import tkinter as tk
 from tkinter import filedialog
@@ -12,11 +13,15 @@ from napytau.gui.components.control_panel import ControlPanel
 from napytau.gui.components.graph import Graph
 from napytau.gui.components.logger import Logger, LogMessageType
 from napytau.gui.components.menu_bar import MenuBar
-from napytau.gui.components.Toolbar import Toolbar
+from napytau.gui.components.toolbar import Toolbar
+from napytau.import_export.import_export import (
+    IMPORT_FORMAT_LEGACY,
+    import_napytau_format_from_files,
+    import_legacy_format_from_files,
+)
 
-from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection
-from napytau.util.model.value_error_pair import ValueErrorPair
+from napytau.import_export.model.dataset import DataSet
 
 
 # Modes: "System" (standard), "Dark", "Light"
@@ -33,8 +38,8 @@ class App(customtkinter.CTk):
         """
         super().__init__()
 
+        self.datasets: List[Tuple[DataSet, List[dict]]] = []
         # Datapoints
-        self.datapoints: DatapointCollection = DatapointCollection([])
         self.datapoints_for_fitting: DatapointCollection = DatapointCollection([])
         self.datapoints_for_calculation: DatapointCollection = DatapointCollection([])
 
@@ -73,7 +78,7 @@ class App(customtkinter.CTk):
 
         # Define menu bar callback functions
         menu_bar_callbacks = {
-            "open_file": self.open_file,
+            "open_directory": self.open_directory,
             "save_file": self.save_file,
             "read_setup": self.read_setup,
             "quit": self.quit,
@@ -89,63 +94,6 @@ class App(customtkinter.CTk):
         # Initialize the checkbox panel
         self.checkbox_panel = CheckboxPanel(self)
 
-        # Update data checkboxes with some data to create them.
-        # TODO: Remove dummy points later on.
-        self.update_data_checkboxes(
-            [
-                create_dummy_datapoint(
-                    ValueErrorPair(1.0, 0.3),
-                    ValueErrorPair(5.0, 1.0),
-                    ValueErrorPair(3.0, 1.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(10.0, 0.3),
-                    ValueErrorPair(1.0, 2.0),
-                    ValueErrorPair(5.0, 2.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(100.0, 0.3),
-                    ValueErrorPair(3.0, 3.0),
-                    ValueErrorPair(7.0, 3.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(400.0, 0.3),
-                    ValueErrorPair(9.0, 4.0),
-                    ValueErrorPair(1.0, 4.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(10000.0, 0.3),
-                    ValueErrorPair(7.0, 5.0),
-                    ValueErrorPair(2.0, 5.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(600000.0, 0.3),
-                    ValueErrorPair(2.0, 6.0),
-                    ValueErrorPair(6.0, 6.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(7000000.0, 0.3),
-                    ValueErrorPair(1.0, 7.0),
-                    ValueErrorPair(5.0, 7.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(80000000.0, 0.3),
-                    ValueErrorPair(10.0, 8.0),
-                    ValueErrorPair(2.0, 8.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(900000000.0, 0.3),
-                    ValueErrorPair(5.0, 9.0),
-                    ValueErrorPair(1.0, 9.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(1000000000.0, 0.3),
-                    ValueErrorPair(4.0, 10.0),
-                    ValueErrorPair(8.0, 10.0),
-                ),
-            ]
-        )
-
         # Initialize the graph
         self.graph: Graph = Graph(self)
 
@@ -157,21 +105,43 @@ class App(customtkinter.CTk):
         # Initialize the logger
         self.logger: Logger = Logger(self)
 
-    def open_file(self) -> None:
+    def open_directory(self, mode: str) -> None:
         """
         Opens the file explorer and lets the user choose a file to open.
         """
-        file_path = filedialog.askopenfilename(
-            title="Choose file",
-            filetypes=[
-                ("ALl files", "*.*"),
-                ("Text files", "*.txt"),
-                ("Python files", "*.py"),
-            ],
-        )
 
-        if file_path:
-            self.logger.log_message(f"chosen file: {file_path}", LogMessageType.INFO)
+        if mode == IMPORT_FORMAT_LEGACY:
+            directory_path = filedialog.askdirectory(
+                title="Choose directory",
+                initialdir=".",
+            )
+
+            if directory_path:
+                self.datasets = list(map(
+                    lambda dataset: (dataset, []),
+                    import_legacy_format_from_files(PurePath(directory_path)),
+                ))
+                self.logger.log_message(
+                    f"chosen directory: {directory_path}", LogMessageType.INFO
+                )
+
+        else:
+            directory_path = filedialog.askdirectory(
+                title="Choose directory",
+                initialdir=".",
+            )
+
+            if directory_path:
+                self.datasets = import_napytau_format_from_files(
+                    PurePath(directory_path)
+                )
+                print(self.datasets)
+                self.logger.log_message(
+                    f"chosen directory: {directory_path}", LogMessageType.INFO
+                )
+
+        if len(self.datasets) > 0:
+            self.update_data_checkboxes()
 
     def save_file(self) -> None:
         """
@@ -233,35 +203,27 @@ class App(customtkinter.CTk):
             LogMessageType.ERROR,
         )
 
-    def update_data_checkboxes(self, new_datapoints: List[Datapoint]) -> None:
+    def update_data_checkboxes(self) -> None:
         """
         Updates the datapoint for the gui and updates both columns of the
         data checkboxes.
         Call this method if there are new datapoints.
-        :param new_datapoints: The new list of datapoints.
         """
-        self.datapoints = DatapointCollection(new_datapoints)
-
-        for point in new_datapoints:
+        # TODO: Implement handling for multiple datasets via dataset index
+        for point in self.datasets[0][0].get_datapoints():
             self.datapoints_for_fitting.add_datapoint(point)
             self.datapoints_for_calculation.add_datapoint(point)
 
         self.checkbox_panel.update_data_checkboxes_fitting()
         self.checkbox_panel.update_data_checkboxes_calculation()
 
+    def get_datapoints(self) -> DatapointCollection:
+        """
+        Returns the datapoints for fitting and calculation.
+        """
 
-def create_dummy_datapoint(
-    distance: ValueErrorPair,
-    shifted_intensity: ValueErrorPair,
-    unshifted_intensity: ValueErrorPair,
-) -> Datapoint:
-    """
-    Function for testing purposes only!
-    """
-    datapoint = Datapoint(distance)
-    datapoint.shifted_intensity = shifted_intensity
-    datapoint.unshifted_intensity = unshifted_intensity
-    return datapoint
+        # TODO: Implement handling for multiple datasets via dataset index
+        return self.datasets[0][0].get_datapoints()
 
 
 def init(cli_arguments: CLIArguments) -> None:

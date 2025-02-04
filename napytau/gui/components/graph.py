@@ -7,7 +7,7 @@ import customtkinter
 from typing import TYPE_CHECKING
 import numpy as np
 
-from napytau.gui.components.Toolbar import Toolbar
+from napytau.gui.components.toolbar import Toolbar
 from napytau.gui.model.color import Color
 from napytau.gui.model.marker_factory import generate_marker
 from napytau.gui.model.marker_factory import generate_error_marker_path
@@ -57,11 +57,6 @@ class Graph:
 
         # draw the markers on the axes
         self.plot_markers(self.parent.datapoints_for_fitting, axes_1)
-
-        # draw the fitting curve on the axes
-        self.plot_fitting_curve(self.parent.datapoints_for_fitting, axes_1)
-
-        self.plot_derivative_curve(self.parent.datapoints_for_fitting, axes_1)
 
         # creating the Tkinter canvas
         # containing the Matplotlib figure

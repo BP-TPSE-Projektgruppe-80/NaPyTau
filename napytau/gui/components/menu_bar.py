@@ -2,6 +2,11 @@ import tkinter as tk
 from tkinter import Menu
 from typing import TYPE_CHECKING
 
+from napytau.import_export.import_export import (
+    IMPORT_FORMAT_NAPYTAU,
+    IMPORT_FORMAT_LEGACY,
+)
+
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
@@ -25,6 +30,7 @@ class MenuBar:
         self._init_view_menu()
         self._init_poly_menu()
         self._init_alpha_calc_menu()
+        self._init_mode_menu()
 
     def _init_file_menu(self) -> None:
         """
@@ -33,9 +39,18 @@ class MenuBar:
         file_menu = Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="File", menu=file_menu)
 
-        file_menu.add_command(label="Open", command=self.callbacks["open_file"])
-        file_menu.add_command(label="Save", command=self.callbacks["save_file"])
-        file_menu.add_command(label="Read Setup", command=self.callbacks["read_setup"])
+        file_menu.add_command(
+            label="Open",
+            command=lambda: self.callbacks["open_directory"](self.mode.get()),
+        )
+        # TODO: Connect after export is implemented
+        file_menu.add_command(
+            label="Save", command=lambda: self.callbacks["save_file"](self.mode.get())
+        )
+        file_menu.add_command(
+            label="Read Setup",
+            command=lambda: self.callbacks["read_setup"](self.mode.get()),
+        )
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.callbacks["quit"])
 
@@ -119,4 +134,25 @@ class MenuBar:
             variable=self.alpha_calc_mode,
             value="weighted mean",
             command=self.callbacks["select_alpha_calc_mode"],
+        )
+
+    def _init_mode_menu(self) -> None:
+        """
+        Create the Mode menu. Allowing the user to switch the import/export mode
+        between `legacy` and `napytau`.
+        """
+
+        mode_menu = Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label="Mode", menu=mode_menu)
+
+        self.mode = tk.StringVar(value=IMPORT_FORMAT_NAPYTAU)
+        mode_menu.add_radiobutton(
+            label="Legacy",
+            variable=self.mode,
+            value=IMPORT_FORMAT_LEGACY,
+        )
+        mode_menu.add_radiobutton(
+            label="Napytau",
+            variable=self.mode,
+            value=IMPORT_FORMAT_NAPYTAU,
         )

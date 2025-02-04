@@ -7,6 +7,7 @@ import scipy as sp
 from napytau.core.time import calculate_times_from_distances_and_relative_velocity
 from napytau.import_export.model.dataset import DataSet
 
+
 def evaluate_polynomial_at_measuring_times(
     dataset: DataSet,
     coefficients: np.ndarray,

@@ -3,6 +3,7 @@ import scipy as sp
 
 from napytau.import_export.model.dataset import DataSet
 
+
 def calculate_times_from_distances_and_relative_velocity(
     dataset: DataSet,
 ) -> np.ndarray:

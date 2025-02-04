@@ -37,11 +37,11 @@ class CheckboxPanel:
         header_label.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         # Update all checkboxes for the fitting
-        for i in range(len(self.parent.datapoints)):
-            shifted_intensity, unshifted_intensity = self.parent.datapoints[
+        for i in range(len(self.parent.get_datapoints())):
+            shifted_intensity, unshifted_intensity = self.parent.get_datapoints()[
                 i
             ].get_intensity()
-            distance = self.parent.datapoints[i].get_distance()
+            distance = self.parent.get_datapoints()[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
@@ -94,11 +94,11 @@ class CheckboxPanel:
         header_label.grid(row=0, column=1, padx=30, pady=5, sticky="nsew")
 
         # Update all checkboxes for the calculation
-        for i in range(len(self.parent.datapoints)):
-            shifted_intensity, unshifted_intensity = self.parent.datapoints[
+        for i in range(len(self.parent.get_datapoints())):
+            shifted_intensity, unshifted_intensity = self.parent.get_datapoints()[
                 i
             ].get_intensity()
-            distance = self.parent.datapoints[i].get_distance()
+            distance = self.parent.get_datapoints()[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
