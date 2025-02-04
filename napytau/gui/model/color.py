@@ -8,6 +8,8 @@ class Color:
     WHITE: str = "#ffffff"
     DARK_GREEN: str = "#009d00"
     LIGHT_GREEN: str = "#2eff2a"
+    DARK_RED: str = "#900000"
+    Light_RED: str = "#ff001b"
 
     # Define color constants for the logger
     LIGHT_MODE_INFO_COLOR: str = "black"

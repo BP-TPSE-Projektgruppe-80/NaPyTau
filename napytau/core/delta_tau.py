@@ -1,13 +1,14 @@
 from napytau.core.polynomials import (
-    evaluate_differentiated_polynomial_at_measuring_distances,
+    evaluate_differentiated_polynomial_at_measuring_times,
 )
-from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
-from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.core.polynomials import evaluate_polynomial_at_measuring_times
 import numpy as np
+
+from napytau.import_export.model.dataset import DataSet
 
 
 def calculate_jacobian_matrix(
-    datapoints: DatapointCollection,
+    dataset: DataSet,
     coefficients: np.ndarray,
 ) -> np.ndarray:
     """
@@ -16,7 +17,7 @@ def calculate_jacobian_matrix(
     Adds Disturbances to each coefficient to calculate partial derivatives,
     safes them in jacobian matrix
     Args:
-        datapoints (DatapointCollection):
+        dataset (DataSet): The dataset of the experiment
         Datapoints for fitting, consisting of distances and intensities
         coefficients (ndarray): Array of polynomial coefficients.
 
@@ -25,6 +26,7 @@ def calculate_jacobian_matrix(
         The computed Jacobian matrix with shape (len(distances), len(coefficients)).
     """
 
+    datapoints = dataset.get_datapoints()
     # initializes the jacobian matrix
     jacobian_matrix: np.ndarray = np.zeros(
         (len(datapoints.get_distances().get_values()), len(coefficients))
@@ -38,11 +40,11 @@ def calculate_jacobian_matrix(
         perturbed_coefficients[i] += epsilon  # slightly disturb the current coefficient
 
         # Compute the disturbed and original polynomial values at the given distances
-        perturbed_function: np.ndarray = evaluate_polynomial_at_measuring_distances(
-            datapoints, perturbed_coefficients
+        perturbed_function: np.ndarray = evaluate_polynomial_at_measuring_times(
+            dataset, perturbed_coefficients
         )
-        original_function: np.ndarray = evaluate_polynomial_at_measuring_distances(
-            datapoints, coefficients
+        original_function: np.ndarray = evaluate_polynomial_at_measuring_times(
+            dataset, coefficients
         )
 
         # Calculate the partial derivative coefficients and store it in the
@@ -55,14 +57,14 @@ def calculate_jacobian_matrix(
 
 
 def calculate_covariance_matrix(
-    datapoints: DatapointCollection,
+    dataset: DataSet,
     coefficients: np.ndarray,
 ) -> np.ndarray:
     """
     Computes the covariance matrix for the polynomial coefficients using the
     jacobian matrix and a weight matrix derived from the shifted intensities' errors.
     Args:
-        datapoints (DatapointCollection):
+        dataset (Dataset): The dataset of the experiment
         Datapoints for fitting, consisting of distances and intensities
         coefficients (ndarray): Array of polynomial coefficients.
 
@@ -70,7 +72,8 @@ def calculate_covariance_matrix(
         ndarray: The computed covariance matrix for the polynomial coefficients.
     """
 
-    jacobian_matrix: np.ndarray = calculate_jacobian_matrix(datapoints, coefficients)
+    datapoints = dataset.get_datapoints()
+    jacobian_matrix: np.ndarray = calculate_jacobian_matrix(dataset, coefficients)
 
     # Construct the weight matrix from the inverse squared errors
     weight_matrix: np.ndarray = np.diag(
@@ -85,7 +88,7 @@ def calculate_covariance_matrix(
 
 
 def calculate_error_propagation_terms(
-    datapoints: DatapointCollection,
+    dataset: DataSet,
     coefficients: np.ndarray,
     taufactor: float,
 ) -> np.ndarray:
@@ -93,8 +96,7 @@ def calculate_error_propagation_terms(
     creates the error propagation term for the polynomial coefficients.
     combining direct errors, polynomial uncertainties, and mixed covariance terms.
     Args:
-        datapoints (DatapointCollection):
-        Datapoints for fitting, consisting of distances and intensities
+        dataset (DataSet): The dataset of the experiment
         coefficients (ndarray): Array of polynomial coefficients.
         taufactor (float): Scaling factor related to the Doppler-shift model.
 
@@ -102,9 +104,10 @@ def calculate_error_propagation_terms(
         ndarray: The combined error propagation terms for each distance point.
     """
 
+    datapoints = dataset.get_datapoints()
     calculated_differentiated_polynomial_sum_at_measuring_distances = (
-        evaluate_differentiated_polynomial_at_measuring_distances(  # noqa E501
-            datapoints,
+        evaluate_differentiated_polynomial_at_measuring_times(  # noqa E501
+            dataset,
             coefficients,
         )
     )
@@ -120,9 +123,7 @@ def calculate_error_propagation_terms(
     delta_p_j_i_squared: np.ndarray = np.zeros(
         len(datapoints.get_distances().get_values())
     )
-    covariance_matrix: np.ndarray = calculate_covariance_matrix(
-        datapoints, coefficients
-    )
+    covariance_matrix: np.ndarray = calculate_covariance_matrix(dataset, coefficients)
 
     # Calculate the polynomial uncertainty contributions
     for k in range(len(coefficients)):
