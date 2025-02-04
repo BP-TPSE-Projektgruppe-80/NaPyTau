@@ -18,6 +18,7 @@ from napytau.import_export.import_export import (
     IMPORT_FORMAT_LEGACY,
     import_napytau_format_from_files,
     import_legacy_format_from_files,
+    read_legacy_setup_data_into_data_set,
 )
 
 from napytau.import_export.model.datapoint_collection import DatapointCollection
@@ -117,10 +118,12 @@ class App(customtkinter.CTk):
             )
 
             if directory_path:
-                self.datasets = list(map(
-                    lambda dataset: (dataset, []),
-                    import_legacy_format_from_files(PurePath(directory_path)),
-                ))
+                self.datasets = list(
+                    map(
+                        lambda dataset: (dataset, []),
+                        import_legacy_format_from_files(PurePath(directory_path)),
+                    )
+                )
                 self.logger.log_message(
                     f"chosen directory: {directory_path}", LogMessageType.INFO
                 )
@@ -142,6 +145,7 @@ class App(customtkinter.CTk):
 
         if len(self.datasets) > 0:
             self.update_data_checkboxes()
+            self.graph.update_plot()
 
     def save_file(self) -> None:
         """
@@ -149,10 +153,48 @@ class App(customtkinter.CTk):
         """
         self.logger.log_message("Saved file", LogMessageType.SUCCESS)
 
-    def read_setup(self) -> None:
+    def read_setup(self, mode: str) -> None:
         """
         Reads the setup.
         """
+
+        if mode == IMPORT_FORMAT_LEGACY:
+            file_path = filedialog.askopenfilename(
+                title="Choose setup file",
+                filetypes=[("Legacy setup files", "*.napset")],
+                initialdir=".",
+            )
+
+            self.datasets[0] = (
+                read_legacy_setup_data_into_data_set(
+                    self.datasets[0][0], PurePath(file_path)
+                ),
+                self.datasets[0][1],
+            )
+        else:
+            if len(self.datasets) == 0:
+                self.logger.log_message(
+                    "No dataset loaded yet. Please load a dataset first.",
+                    LogMessageType.ERROR,
+                )
+
+                return
+
+            optionmenu = customtkinter.CTkOptionMenu(
+                self,
+                values=list(
+                    map(
+                        lambda setup: setup["name"],
+                        self.datasets[0][1],
+                    )
+                ),
+                command=lambda value: self.logger.log_message(
+                    f"selected setup: {value}", LogMessageType.INFO
+                ),
+            )
+            optionmenu.set("option 2")
+            optionmenu.grid(row=0, column=0)
+
         self.logger.log_message("read setup not implemented yet.", LogMessageType.INFO)
 
     def quit(self) -> None:

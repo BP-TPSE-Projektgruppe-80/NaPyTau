@@ -58,6 +58,11 @@ class Graph:
         # draw the markers on the axes
         self.plot_markers(self.parent.datapoints_for_fitting, axes_1)
 
+        if len(self.parent.datapoints_for_fitting.get_active_datapoints()) > 0:
+            # draw the fitting curve
+            self.plot_fitting_curve(self.parent.datapoints_for_fitting, axes_1)
+            self.plot_derivative_curve(self.parent.datapoints_for_fitting, axes_1)
+
         # creating the Tkinter canvas
         # containing the Matplotlib figure
         self.canvas = FigureCanvasTkAgg(fig, master=self.parent)
@@ -127,7 +132,7 @@ class Graph:
             )
 
             # Scale markersize based on distance
-            size_shifted = datapoint.get_intensity()[0].error * 5
+            size_shifted = datapoint.get_intensity()[0].error
             axes.plot(
                 datapoint.get_distance().value,
                 datapoint.get_intensity()[0].value,
@@ -138,7 +143,7 @@ class Graph:
                 color=self.main_marker_color,
             )
 
-            size_unshifted = datapoint.get_intensity()[1].error * 5
+            size_unshifted = datapoint.get_intensity()[1].error
             axes.plot(
                 datapoint.get_distance().value,
                 datapoint.get_intensity()[1].value,
@@ -174,7 +179,9 @@ class Graph:
 
         # Calculating coefficients
         coeffs = np.polyfit(
-            checked_distances, checked_shifted_intensities, len(checked_datapoints)
+            checked_distances,
+            checked_shifted_intensities,
+            int(self.parent.menu_bar.number_of_polynomials.get()),
         )
 
         poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
@@ -207,7 +214,9 @@ class Graph:
 
         # Calculating coefficients
         coeffs = np.polyfit(
-            checked_distances, checked_unshifted_intensities, len(checked_datapoints)
+            checked_distances,
+            checked_unshifted_intensities,
+            int(self.parent.menu_bar.number_of_polynomials.get()),
         )
 
         poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
