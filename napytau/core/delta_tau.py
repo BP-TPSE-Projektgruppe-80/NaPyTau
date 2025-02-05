@@ -1,60 +1,11 @@
 from napytau.core.polynomials import (
     evaluate_differentiated_polynomial_at_measuring_times,
-    evaluate_polynomial_at_measuring_times,
+    evaluate_polynomial_at_measuring_time,
 )
 import numpy as np
+import autograd as ag
 
 from napytau.import_export.model.dataset import DataSet
-
-
-def calculate_jacobian_matrix(
-    dataset: DataSet,
-    coefficients: np.ndarray,
-) -> np.ndarray:
-    """
-    calculated the jacobian matrix for a set of polynomial coefficients taking
-    different distances into account.
-    Adds Disturbances to each coefficient to calculate partial derivatives,
-    safes them in jacobian matrix
-    Args:
-        dataset (DataSet): The dataset of the experiment
-        Datapoints for fitting, consisting of distances and intensities
-        coefficients (ndarray): Array of polynomial coefficients.
-
-    Returns:
-        ndarray:
-        The computed Jacobian matrix with shape (len(distances), len(coefficients)).
-    """
-
-    datapoints = dataset.get_datapoints()
-    # initializes the jacobian matrix
-    jacobian_matrix: np.ndarray = np.zeros(
-        (len(datapoints.get_distances().get_values()), len(coefficients))
-    )
-
-    epsilon: float = 1e-6  # small disturbance value
-
-    # Loop over each coefficient and calculate the partial derivative
-    for i in range(len(coefficients)):
-        perturbed_coefficients: np.ndarray = np.array(coefficients, dtype=float)
-        perturbed_coefficients[i] += epsilon  # slightly disturb the current coefficient
-
-        # Compute the disturbed and original polynomial values at the given distances
-        perturbed_function: np.ndarray = evaluate_polynomial_at_measuring_times(
-            dataset, perturbed_coefficients
-        )
-        original_function: np.ndarray = evaluate_polynomial_at_measuring_times(
-            dataset, coefficients
-        )
-
-        # Calculate the partial derivative coefficients and store it in the
-        # Jacobian matrix
-        # jacobian_matrix[:, i] selects the entire column i of the jacobian matrix
-        # The colon (:) indicates all rows and i specifies the column
-        jacobian_matrix[:, i] = (perturbed_function - original_function) / epsilon
-
-    return jacobian_matrix
-
 
 def calculate_covariance_matrix(
     dataset: DataSet,
@@ -73,8 +24,12 @@ def calculate_covariance_matrix(
     """
 
     datapoints = dataset.get_datapoints()
-    jacobian_matrix: np.ndarray = calculate_jacobian_matrix(dataset, coefficients)
-
+    
+    evaluate_polynomial = ag.jacobian(
+        lambda coefficients_x, distance: evaluate_polynomial_at_measuring_time(dataset, distance, coefficients_x),
+        argnum=1,
+    )
+    jacobian_matrix: np.ndarray = evaluate_polynomial(coefficients, datapoints.get_distances().get_values())
     # Construct the weight matrix from the inverse squared errors
     weight_matrix: np.ndarray = np.diag(
         1 / np.power(datapoints.get_shifted_intensities().get_errors(), 2)
@@ -105,7 +60,7 @@ def calculate_error_propagation_terms(
     """
 
     datapoints = dataset.get_datapoints()
-    calculated_differentiated_polynomial_sum_at_measuring_distances = (
+    calculated_differentiated_polynomial_sum_at_measuring_times = (
         evaluate_differentiated_polynomial_at_measuring_times(
             dataset,
             coefficients,
@@ -115,7 +70,7 @@ def calculate_error_propagation_terms(
     gaussian_error_from_unshifted_intensity: np.ndarray = np.power(
         datapoints.get_unshifted_intensities().get_errors(), 2
     ) / np.power(
-        calculated_differentiated_polynomial_sum_at_measuring_distances,
+        calculated_differentiated_polynomial_sum_at_measuring_times,
         2,
     )
 
@@ -138,7 +93,7 @@ def calculate_error_propagation_terms(
     gaussian_error_from_polynomial_uncertainties: np.ndarray = (
         np.power(datapoints.get_unshifted_intensities().get_values(), 2)
         / np.power(
-            calculated_differentiated_polynomial_sum_at_measuring_distances,
+            calculated_differentiated_polynomial_sum_at_measuring_times,
             4,
         )
     ) * np.power(delta_p_j_i_squared, 2)
@@ -147,7 +102,7 @@ def calculate_error_propagation_terms(
         datapoints.get_unshifted_intensities().get_values()
         * taufactor
         * delta_p_j_i_squared
-    ) / np.power(calculated_differentiated_polynomial_sum_at_measuring_distances, 3)
+    ) / np.power(calculated_differentiated_polynomial_sum_at_measuring_times, 3)
 
     interim_result: np.ndarray = (
         gaussian_error_from_unshifted_intensity

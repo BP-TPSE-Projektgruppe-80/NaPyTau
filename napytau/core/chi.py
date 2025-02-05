@@ -30,8 +30,6 @@ def calculate_chi_squared(
     Returns:
         float: The chi-squared value for the given inputs.
     """
-    print(tau_factor)
-
     datapoints = dataset.get_datapoints()
     # Compute the difference between Doppler-shifted intensities and polynomial model
     shifted_intensity_difference: np.ndarray = (
@@ -51,15 +49,11 @@ def calculate_chi_squared(
         )
     ) / datapoints.get_unshifted_intensities().get_errors()
 
-    print("Shifted Intensity Difference:", shifted_intensity_difference)
-    print("Unshifted Intensity Difference:", unshifted_intensity_difference)
-
     # combine the weighted sum of squared differences
     result: float = np.sum(
         (np.power(shifted_intensity_difference, 2))
         + (weight_factor * (np.power(unshifted_intensity_difference, 2)))
     )
-    print("Chi Squared:", result)
 
     return result
 
