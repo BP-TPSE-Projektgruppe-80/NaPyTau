@@ -18,7 +18,7 @@ from napytau.import_export.import_export import (
     IMPORT_FORMAT_LEGACY,
     import_napytau_format_from_files,
     import_legacy_format_from_files,
-    read_legacy_setup_data_into_data_set,
+    read_legacy_setup_data_into_data_set, read_napytau_setup_data_into_data_set,
 )
 
 from napytau.import_export.model.datapoint_collection import DatapointCollection
@@ -188,11 +188,13 @@ class App(customtkinter.CTk):
                         self.datasets[0][1],
                     )
                 ),
-                command=lambda value: self.logger.log_message(
-                    f"selected setup: {value}", LogMessageType.INFO
-                ),
+                command=lambda value: read_napytau_setup_data_into_data_set(
+                    self.datasets[0][0],
+                    self.datasets[0][1],
+                    value,
+                )
             )
-            optionmenu.set("option 2")
+            optionmenu.set("Choose setup")
             optionmenu.grid(row=0, column=0)
 
         self.logger.log_message("read setup not implemented yet.", LogMessageType.INFO)
