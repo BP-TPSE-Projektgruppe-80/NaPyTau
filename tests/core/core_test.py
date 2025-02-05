@@ -39,7 +39,7 @@ class CoreUnitTest(unittest.TestCase):
         chi_mock, tau_mock, delta_tau_mock, tau_final_mock = set_up_mocks()
 
         # Mocked return values of called functions
-        chi_mock.optimize_t_hyp.return_value = 2.0
+        chi_mock.optimize_tau_factor.return_value = 2.0
         chi_mock.optimize_coefficients.return_value = (np.array([2, 3, 1]), 2.0)
 
         tau_mock.calculate_tau_i_values.return_value = np.array([3, 1.66666667])
@@ -97,21 +97,23 @@ class CoreUnitTest(unittest.TestCase):
 
             self.assertAlmostEqual(actual_result[1], 0.18973666)
 
-            self.assertEqual(len(chi_mock.optimize_t_hyp.mock_calls), 1)
+            self.assertEqual(len(chi_mock.optimize_tau_factor.mock_calls), 1)
 
             self.assertEqual(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[0],
+                chi_mock.optimize_tau_factor.mock_calls[0].args[0],
                 dataset,
             )
 
             np.testing.assert_array_equal(
-                chi_mock.optimize_t_hyp.mock_calls[0].args[1],
+                chi_mock.optimize_tau_factor.mock_calls[0].args[1],
                 np.array([1, 1, 1]),
             )
 
-            self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[2], (-5, 5))
+            self.assertEqual(
+                chi_mock.optimize_tau_factor.mock_calls[0].args[2], (-5, 5)
+            )
 
-            self.assertEqual(chi_mock.optimize_t_hyp.mock_calls[0].args[3], 1.0)
+            self.assertEqual(chi_mock.optimize_tau_factor.mock_calls[0].args[3], 1.0)
 
             self.assertEqual(len(chi_mock.optimize_coefficients.mock_calls), 1)
 

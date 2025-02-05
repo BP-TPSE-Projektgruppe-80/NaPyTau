@@ -57,3 +57,15 @@ class DataSet:
 
     def set_polynomials(self, polynomials: List[Polynomial]) -> None:
         self.polynomials = polynomials
+
+    def get_polynomial_degree(self) -> int:
+        if self.polynomials is None:
+            raise ValueError("No polynomials have been set.")
+
+        if (
+            len(set([len(polynomial.coefficients) for polynomial in self.polynomials]))
+            != 1
+        ):
+            raise ValueError("Polynomials have different degrees.")
+
+        return len(self.polynomials[0].coefficients) - 1
