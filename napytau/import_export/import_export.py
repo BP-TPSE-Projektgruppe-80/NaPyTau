@@ -44,6 +44,20 @@ def import_legacy_format_from_files(
 
     setup_file_bundles: List[LegacySetupFiles] = file_crawler.crawl(directory_path)
 
+    print(list(
+        map(
+            lambda setup_files: LegacyFactory.create_dataset(
+                RawLegacyData(
+                    FileReader.read_rows(setup_files.velocity_file),
+                    FileReader.read_rows(setup_files.distances_file),
+                    FileReader.read_rows(setup_files.fit_file),
+                    FileReader.read_rows(setup_files.calibration_file),
+                )
+            ),
+            setup_file_bundles,
+        )
+    ))
+
     return list(
         map(
             lambda setup_files: LegacyFactory.create_dataset(
@@ -57,6 +71,8 @@ def import_legacy_format_from_files(
             setup_file_bundles,
         )
     )
+
+
 
 
 def _configure_file_crawler_for_legacy_format(

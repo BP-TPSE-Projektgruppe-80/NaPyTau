@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING
 
 from napytau.gui.model.log_message_type import LogMessageType
 
+from napytau.core.core import calculate_optimal_tau_factor, calculate_lifetime_for_custom_tau_factor
+
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
@@ -77,6 +79,14 @@ class ControlPanel(customtkinter.CTkFrame):
                     self.parent.logger.log_message(
                         f"Timescale set to: {value}", LogMessageType.INFO
                     )
+                    lifetime = calculate_lifetime_for_custom_tau_factor(
+                        self.parent.datasets[0][0],
+                        value,
+                        int(self.parent.menu_bar.number_of_polynomials.get())
+                    )
+                    print(f"Lifetime: {lifetime}")
+                    self._tau_button_event(lifetime[0], lifetime[1])
+
                 else:
                     self.parent.logger.log_message(
                         f"Error: Value out of valid range ({timescale_min:.2f}"
@@ -139,7 +149,7 @@ class ControlPanel(customtkinter.CTkFrame):
         frame = customtkinter.CTkFrame(self)
 
         button = customtkinter.CTkButton(
-            frame, text="τ ± Δτ [ps]:", command=self._tau_button_event
+            frame, text="τ ± Δτ [ps]:", command=self._tau_button_event(0.0, 0.0)
         )
         button.pack(side="left", padx=5)
 
@@ -188,23 +198,31 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         self.timescale.set(round(float(value), 2))
 
-    def _tau_button_event(self) -> None:
+    def _tau_button_event(self, value, error) -> None:
         """
         Event if the tau button is clicked.
         """
-        self.set_result_tau(0.0)
-        self.set_result_tau_error(0.0)
+        self.set_result_tau(value)
+        self.set_result_tau_error(error)
 
     def _chi_squared_button_event(self) -> None:
         """
         Event if the chi2 button is clicked.
         """
-        self.set_result_chi_squared(0.0)
+        self.set_result_chi_squared(
+            calculate_optimal_tau_factor(
+                self.parent.datasets[0][0],
+                (5, 100),
+                1.0,
+                int(self.parent.menu_bar.number_of_polynomials.get())
+            )
+        )
 
     def _absolute_tau_button_event(self) -> None:
         """
         Event if the absolute tau button is clicked.
         """
+
 
         self.set_result_absolute_tau_t(0.0)
 
