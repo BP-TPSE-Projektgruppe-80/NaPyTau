@@ -18,6 +18,7 @@ from napytau.import_export.factory.napytau.napytau_factory import NapyTauFactory
 from napytau.import_export.import_export_error import ImportExportError
 from napytau.import_export.model.dataset import DataSet
 from napytau.import_export.reader.file_reader import FileReader
+from napytau.import_export.writer.file_writer import FileWriter
 
 IMPORT_FORMAT_LEGACY = "legacy"
 IMPORT_FORMAT_NAPYTAU = "napytau"
@@ -165,3 +166,15 @@ def read_napytau_setup_data_into_data_set(
         dataset,
         raw_setup_data,
     )
+
+
+def save_napytau_calculation_data_to_file(
+    dataset: DataSet, file_path: PurePath
+) -> None:
+    """
+    Saves the dataset to a file in the NapyTau format
+    """
+
+    json_data = NapytauFormatJsonService.create_calculation_data_json_string(dataset)
+
+    FileWriter.write_text(file_path, json_data)
