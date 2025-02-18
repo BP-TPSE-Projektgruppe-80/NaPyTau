@@ -77,7 +77,7 @@ _SCHEMA = """
           },
           "feedingShiftedIntensityError": {
             "type": "number",
-            "description": "The error in the feeding shifted intensity of the data point",
+            "description": "Error in the feeding shifted intensity of the data point",
             "minimum": 0
           },
           "feedingUnshiftedIntensity": {
@@ -87,7 +87,7 @@ _SCHEMA = """
           },
           "feedingUnshiftedIntensityError": {
             "type": "number",
-            "description": "The error in the feeding unshifted intensity of the data point",
+            "description": "Error in the feeding unshifted intensity of the data point",
             "minimum": 0
           }
         },
@@ -131,7 +131,7 @@ _SCHEMA = """
               "properties": {
                 "distance": {
                   "type": "number",
-                  "description": "The distance of the particles at the time of the data point",
+                  "description": "Distance of the particles at time of the data point",
                   "minimum": 0
                 },
                 "active": {
