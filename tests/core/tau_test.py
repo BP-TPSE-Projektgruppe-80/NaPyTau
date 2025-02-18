@@ -1,8 +1,11 @@
 import unittest
+from random import random
 from unittest.mock import MagicMock, patch
 import numpy as np
 from typing import Tuple
 from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 from napytau.util.model.value_error_pair import ValueErrorPair
 from napytau.import_export.model.datapoint import Datapoint
 
@@ -18,6 +21,13 @@ def set_up_mocks() -> (MagicMock, MagicMock):
     return chi_mock, polynomials_mock
 
 
+def _get_dataset_stub(datapoints: DatapointCollection) -> DataSet:
+    return DataSet(
+        ValueErrorPair(RelativeVelocity(random()), RelativeVelocity(random())),
+        datapoints,
+    )
+
+
 class TauUnitTest(unittest.TestCase):
     def test_CanCalculateTau(self):
         """Can calculate tau"""
@@ -29,7 +39,7 @@ class TauUnitTest(unittest.TestCase):
             0,
         )
         chi_mock.optimize_t_hyp.return_value: float = 2.0
-        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.return_value: np.ndarray = np.array(
+        polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.return_value: np.ndarray = np.array(
             [2, 6]
         )
 
@@ -59,6 +69,7 @@ class TauUnitTest(unittest.TestCase):
                     ),
                 ]
             )
+            dataset = _get_dataset_stub(datapoints)
             t_hyp_range: (float, float) = (-5, 5)
             weight_factor: float = 1.0
 
@@ -67,7 +78,7 @@ class TauUnitTest(unittest.TestCase):
 
             np.testing.assert_array_almost_equal(
                 calculate_tau_i_values(
-                    datapoints,
+                    dataset,
                     initial_coefficients,
                     t_hyp_range,
                     weight_factor,
@@ -80,7 +91,7 @@ class TauUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 chi_mock.optimize_coefficients.mock_calls[0].args[0],
-                datapoints,
+                dataset,
             )
 
             np.testing.assert_array_equal(
@@ -102,7 +113,7 @@ class TauUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 chi_mock.optimize_coefficients.mock_calls[0].args[0],
-                datapoints,
+                dataset,
             )
 
             np.testing.assert_array_equal(
@@ -119,20 +130,20 @@ class TauUnitTest(unittest.TestCase):
 
             self.assertEqual(
                 len(
-                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls
+                    polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls
                 ),
                 1,
             )
 
             self.assertEqual(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[0],
-                datapoints,
+                dataset,
             )
 
             np.testing.assert_array_equal(
-                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_distances.mock_calls[
+                polynomials_mock.evaluate_differentiated_polynomial_at_measuring_times.mock_calls[
                     0
                 ].args[1],
                 (np.array([2, 3, 1])),
