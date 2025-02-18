@@ -19,6 +19,7 @@ def set_up_mocks() -> (
     MagicMock,
     MagicMock,
     MagicMock,
+    MagicMock,
 ):
     legacy_factory_module_mock = MagicMock()
     legacy_factory_mock = MagicMock()
@@ -50,6 +51,11 @@ def set_up_mocks() -> (
     napytau_factory_module_mock.NapyTauFactory = napytau_factory_mock
     napytau_factory_mock.create_dataset = MagicMock()
     napytau_factory_mock.enrich_dataset = MagicMock()
+    file_writer_module_mock = MagicMock()
+    file_writer_mock = MagicMock()
+    file_writer_module_mock.FileWriter = file_writer_mock
+    file_writer_mock.write_rows = MagicMock()
+    file_writer_mock.write_text = MagicMock()
 
     return (
         legacy_factory_module_mock,
@@ -58,6 +64,7 @@ def set_up_mocks() -> (
         regex_module_mock,
         napytau_format_json_service_module_mock,
         napytau_factory_module_mock,
+        file_writer_module_mock,
     )
 
 
@@ -70,6 +77,7 @@ class IngestUnitTest(unittest.TestCase):
             file_reader_module_mock,
             regex_module_mock,
             naptau_format_json_service_module_mock,
+            _,
             _,
         ) = set_up_mocks()
         regex_module_mock.compile = lambda x: x
@@ -101,6 +109,7 @@ class IngestUnitTest(unittest.TestCase):
             file_reader_module_mock,
             regex_module_mock,
             naptau_format_json_service_module_mock,
+            _,
             _,
         ) = set_up_mocks()
         regex_module_mock.compile = lambda x: x
@@ -136,6 +145,7 @@ class IngestUnitTest(unittest.TestCase):
             regex_module_mock,
             naptau_format_json_service_module_mock,
             _,
+            _,
         ) = set_up_mocks()
         with patch.dict(
             "sys.modules",
@@ -162,6 +172,7 @@ class IngestUnitTest(unittest.TestCase):
             file_reader_module_mock,
             regex_module_mock,
             naptau_format_json_service_module_mock,
+            _,
             _,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
@@ -218,6 +229,7 @@ class IngestUnitTest(unittest.TestCase):
             file_reader_module_mock,
             regex_module_mock,
             naptau_format_json_service_module_mock,
+            _,
             _,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
@@ -288,6 +300,7 @@ class IngestUnitTest(unittest.TestCase):
             file_reader_module_mock,
             regex_module_mock,
             naptau_format_json_service_module_mock,
+            _,
             _,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
@@ -362,6 +375,7 @@ class IngestUnitTest(unittest.TestCase):
             regex_module_mock,
             naptau_format_json_service_module_mock,
             _,
+            _,
         ) = set_up_mocks()
 
         with patch.dict(
@@ -403,6 +417,7 @@ class IngestUnitTest(unittest.TestCase):
             file_reader_module_mock,
             regex_module_mock,
             naptau_format_json_service_module_mock,
+            _,
             _,
         ) = set_up_mocks()
 
@@ -454,6 +469,7 @@ class IngestUnitTest(unittest.TestCase):
             regex_module_mock,
             naptau_format_json_service_module_mock,
             napytau_factory_module_mock,
+            _,
         ) = set_up_mocks()
         regex_module_mock.compile = lambda x: x
         with patch.dict(
@@ -492,6 +508,7 @@ class IngestUnitTest(unittest.TestCase):
             regex_module_mock,
             naptau_format_json_service_module_mock,
             napytau_factory_module_mock,
+            _,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
@@ -531,6 +548,7 @@ class IngestUnitTest(unittest.TestCase):
             regex_module_mock,
             naptau_format_json_service_module_mock,
             napytau_factory_module_mock,
+            _,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
@@ -573,6 +591,7 @@ class IngestUnitTest(unittest.TestCase):
             regex_module_mock,
             naptau_format_json_service_module_mock,
             napytau_factory_module_mock,
+            _,
         ) = set_up_mocks()
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
@@ -647,6 +666,7 @@ class IngestUnitTest(unittest.TestCase):
             regex_module_mock,
             naptau_format_json_service_module_mock,
             napytau_factory_module_mock,
+            _,
         ) = set_up_mocks()
         with patch.dict(
             "sys.modules",
@@ -684,6 +704,7 @@ class IngestUnitTest(unittest.TestCase):
             regex_module_mock,
             naptau_format_json_service_module_mock,
             napytau_factory_module_mock,
+            _,
         ) = set_up_mocks()
         napytau_factory_module_mock.NapyTauFactory.enrich_dataset.return_value = (
             DataSet(
@@ -729,6 +750,102 @@ class IngestUnitTest(unittest.TestCase):
                     0
                 ].args[1],
                 {"name": "setup1"},
+            )
+
+    def test_usesTheJSONFormatServiceToCreateACalculationDataStringFromTheGivenDatasetWhenSavingNapytauCalculationDataToAFile(
+        self,
+    ):
+        """Uses the JSON format service to create a calculation data string from the given dataset when saving Napytau calculation data to a file."""
+        (
+            legacy_factory_module_mock,
+            file_crawler_module_mock,
+            file_reader_module_mock,
+            regex_module_mock,
+            napytau_format_json_service_module_mock,
+            napytau_factory_module_mock,
+            file_writer_module_mock,
+        ) = set_up_mocks()
+        napytau_format_json_service_module_mock.NapytauFormatJsonService.create_calculation_data_json_string.return_value = "test_calculation_data_string"
+
+        with patch.dict(
+            "sys.modules",
+            {
+                "napytau.import_export.factory.legacy.legacy_factory": legacy_factory_module_mock,
+                "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
+                "napytau.import_export.reader.file_reader": file_reader_module_mock,
+                "re": regex_module_mock,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": napytau_format_json_service_module_mock,
+                "napytau.import_export.factory.napytau.napytau_factory": napytau_factory_module_mock,
+                "napytau.import_export.writer.file_writer": file_writer_module_mock,
+            },
+        ):
+            from napytau.import_export.import_export import (
+                save_napytau_calculation_data_to_file,
+            )
+
+            dataset = DataSet(
+                ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0.1)),
+                DatapointCollection([]),
+            )
+
+            save_napytau_calculation_data_to_file(
+                dataset,
+                PurePath("test_file"),
+            )
+
+            self.assertEqual(
+                napytau_format_json_service_module_mock.NapytauFormatJsonService.create_calculation_data_json_string.mock_calls[
+                    0
+                ].args[0],
+                dataset,
+            )
+
+    def test_usesTheFileWriterToWriteTheCalculationDataStringToTheFile(self):
+        """Uses the file writer to write the calculation data string to the file."""
+        (
+            legacy_factory_module_mock,
+            file_crawler_module_mock,
+            file_reader_module_mock,
+            regex_module_mock,
+            napytau_format_json_service_module_mock,
+            napytau_factory_module_mock,
+            file_writer_module_mock,
+        ) = set_up_mocks()
+        napytau_format_json_service_module_mock.NapytauFormatJsonService.create_calculation_data_json_string.return_value = "test_calculation_data_string"
+
+        with patch.dict(
+            "sys.modules",
+            {
+                "napytau.import_export.factory.legacy.legacy_factory": legacy_factory_module_mock,
+                "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
+                "napytau.import_export.reader.file_reader": file_reader_module_mock,
+                "re": regex_module_mock,
+                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": napytau_format_json_service_module_mock,
+                "napytau.import_export.factory.napytau.napytau_factory": napytau_factory_module_mock,
+                "napytau.import_export.writer.file_writer": file_writer_module_mock,
+            },
+        ):
+            from napytau.import_export.import_export import (
+                save_napytau_calculation_data_to_file,
+            )
+
+            dataset = DataSet(
+                ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0.1)),
+                DatapointCollection([]),
+            )
+
+            save_napytau_calculation_data_to_file(
+                dataset,
+                PurePath("test_file"),
+            )
+
+            self.assertEqual(
+                file_writer_module_mock.FileWriter.write_text.mock_calls[0].args[0],
+                PurePath("test_file"),
+            )
+            self.assertEqual(
+                file_writer_module_mock.FileWriter.write_text.mock_calls[0].args[1],
+                "test_calculation_data_string",
             )
 
 
