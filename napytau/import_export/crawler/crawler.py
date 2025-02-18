@@ -1,5 +1,4 @@
 from abc import abstractmethod
-from typing import List
 
 
 class Crawler[T, U]:
@@ -12,7 +11,7 @@ class Crawler[T, U]:
     """
 
     @abstractmethod
-    def crawl(self, resource_identifier: T) -> List[U]:
+    def crawl(self, resource_identifier: T) -> U:
         """
         Crawls from a base resource identifier and returns a list of lists of resources.
         This is intended to allow the user to specify a base resource identifier

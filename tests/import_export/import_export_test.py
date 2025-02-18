@@ -167,14 +167,12 @@ class IngestUnitTest(unittest.TestCase):
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
         )
-        file_crawler_module_mock.FileCrawler.crawl.return_value = [
-            LegacySetupFiles(
-                PurePath("test_distances.dat"),
-                PurePath("test_v_c"),
-                PurePath("test_fit"),
-                PurePath("test_norm.fac"),
-            )
-        ]
+        file_crawler_module_mock.FileCrawler.crawl.return_value = LegacySetupFiles(
+            PurePath("test_distances.dat"),
+            PurePath("test_v_c"),
+            PurePath("test_fit"),
+            PurePath("test_norm.fac"),
+        )
 
         with patch.dict(
             "sys.modules",
@@ -223,14 +221,12 @@ class IngestUnitTest(unittest.TestCase):
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
         )
-        file_crawler_module_mock.FileCrawler.crawl.return_value = [
-            LegacySetupFiles(
-                PurePath("test_distances.dat"),
-                PurePath("test_v_c"),
-                PurePath("test_fit"),
-                PurePath("test_norm.fac"),
-            )
-        ]
+        file_crawler_module_mock.FileCrawler.crawl.return_value = LegacySetupFiles(
+            PurePath("test_distances.dat"),
+            PurePath("test_v_c"),
+            PurePath("test_fit"),
+            PurePath("test_norm.fac"),
+        )
         file_reader_module_mock.FileReader.read_rows.side_effect = [
             ["v_c_row"],
             ["distances.dat_row"],
@@ -293,14 +289,12 @@ class IngestUnitTest(unittest.TestCase):
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
         )
-        file_crawler_module_mock.FileCrawler.crawl.return_value = [
-            LegacySetupFiles(
-                PurePath("test_distances.dat"),
-                PurePath("test_v_c"),
-                PurePath("test_fit"),
-                PurePath("test_norm.fac"),
-            )
-        ]
+        file_crawler_module_mock.FileCrawler.crawl.return_value = LegacySetupFiles(
+            PurePath("test_distances.dat"),
+            PurePath("test_v_c"),
+            PurePath("test_fit"),
+            PurePath("test_norm.fac"),
+        )
         file_reader_module_mock.FileReader.read_rows.side_effect = [
             ["v_c_row"],
             ["distances.dat_row"],
@@ -496,9 +490,7 @@ class IngestUnitTest(unittest.TestCase):
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
         )
-        file_crawler_module_mock.FileCrawler.crawl.return_value = [
-            PurePath("test.napytau.json")
-        ]
+        file_crawler_module_mock.FileCrawler.crawl.return_value = PurePath("test.napytau.json")
 
         with patch.dict(
             "sys.modules",
@@ -624,15 +616,15 @@ class IngestUnitTest(unittest.TestCase):
             )
 
             self.assertEqual(
-                result[0][0].relative_velocity.value.velocity,
+                result[0].relative_velocity.value.velocity,
                 1,
             )
             self.assertEqual(
-                result[0][0].relative_velocity.error.velocity,
+                result[0].relative_velocity.error.velocity,
                 0.1,
             )
             self.assertEqual(
-                result[0][1],
+                result[1],
                 ["setup1", "setup2"],
             )
 
