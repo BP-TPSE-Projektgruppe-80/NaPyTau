@@ -12,10 +12,8 @@ This is where the Napytau documentation is maintained. It is built with the `mkd
     ├── index.md (Landing Page)
     └── <module name>
         ├── ressources (should be maintained per module, if necessary)
-        ├── <any ressources (images, etc.) you want to include
-        ├── index.md (Module Landing Page)
-        └── <module related sub page name>/
-            └── index.md (Module Related Sub Page)
+        │   └── <any ressources (images, etc.) you want to include
+        └── <module related sub page name> (Module Related Sub Page)
 ```
 
 ## Local Development

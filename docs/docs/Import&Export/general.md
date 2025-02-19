@@ -1,0 +1,3 @@
+# General
+
+The Import&Export-module is a service module. Its responsibility is to handle all reading (import) of stored experiment-data, as well as the saving (export) of results and their related datasets. The module is designed to promote modularity, it seeks to define a common internal representation of relevant information to which imported data can be converted. This is important, since it ensures that the other modules of the system can operate on a common set of datastructures, defined by the Import&Export-module. This should also be considered when refactoring the datastructures defined here, as this may impact all parts of the system.
