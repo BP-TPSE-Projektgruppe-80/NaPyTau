@@ -128,7 +128,7 @@ def calculate_polynomial_coefficients_for_fit(
     polynomial_coefficients: np.ndarray = (
         np.polynomial.Polynomial.fit(
             calculate_times_from_distances_and_relative_velocity(dataset),
-            dataset.get_datapoints().get_shifted_intensities().get_values(),
+            dataset.get_datapoints().get_unshifted_intensities().get_values(),
             degree - 1,
         )
         .convert()

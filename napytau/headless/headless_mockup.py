@@ -53,14 +53,14 @@ def init(cli_arguments: CLIArguments) -> None:
                 print(f"    Active:  {datapoint.is_active()} ")
                 print("-" * 80)
             
-            (lifetime, err) = calculate_lifetime_for_fit(dataset, 5)
+            (lifetime, err) = calculate_lifetime_for_fit(dataset, 3)
             print(f"  Lifetime: {lifetime} Error: {err}")
             
             optimal_tau_factor = calculate_optimal_tau_factor(
                 dataset=dataset,
                 t_hyp_range=(0.0, 100.0),
                 weight_factor=1,
-                polynomial_degree=1,
+                polynomial_degree=3,
             )
             
             (opt_lifetime, opt_err) = calculate_lifetime_for_custom_tau_factor(dataset, optimal_tau_factor, 1)

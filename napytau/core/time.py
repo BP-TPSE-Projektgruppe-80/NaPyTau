@@ -11,6 +11,7 @@ def calculate_times_from_distances_and_relative_velocity(
         / (
             dataset.get_relative_velocity().value.get_velocity()
             * sp.constants.speed_of_light
+            * 1e6
         )
     )
 
