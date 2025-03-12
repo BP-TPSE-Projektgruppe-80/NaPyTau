@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from napytau.gui.model.CustomToolbar import CustomToolbar
+from napytau.gui.model.custom_toolbar import CustomToolbar
 
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.

@@ -12,7 +12,7 @@ from napytau.gui.components.control_panel import ControlPanel
 from napytau.gui.components.graph import Graph
 from napytau.gui.components.logger import Logger, LogMessageType
 from napytau.gui.components.menu_bar import MenuBar
-from napytau.gui.components.Toolbar import Toolbar
+from napytau.gui.components.toolbar import Toolbar
 
 from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection

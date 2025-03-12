@@ -7,7 +7,7 @@ import customtkinter
 from typing import TYPE_CHECKING
 import numpy as np
 
-from napytau.gui.components.Toolbar import Toolbar
+from napytau.gui.components.toolbar import Toolbar
 from napytau.gui.model.color import Color
 from napytau.gui.model.marker_factory import generate_marker
 from napytau.gui.model.marker_factory import generate_error_marker_path
