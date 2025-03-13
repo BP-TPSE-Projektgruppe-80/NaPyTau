@@ -13,7 +13,7 @@ The `Logger` class provides a scrolling text box for displaying log messages wit
 
 ## Methods
 
-### `__init__(self, parent: "App")`
+### `__init__`
 
 Initializes the `Logger` widget.
 
