@@ -134,9 +134,11 @@ class App(customtkinter.CTk):
             )
 
             if directory_path:
-                self.datasets = import_napytau_format_from_files(
-                    PurePath(directory_path)
-                )
+                self.datasets = [
+                        import_napytau_format_from_files(
+                        PurePath(directory_path)
+                    )
+                ]
                 print(self.datasets)
                 self.logger.log_message(
                     f"chosen directory: {directory_path}", LogMessageType.INFO

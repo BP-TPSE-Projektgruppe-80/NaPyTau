@@ -105,7 +105,7 @@ class ControlPanel(customtkinter.CTkFrame):
 
         #connects slider value to lifetime Entry results
 
-        def sync_slider(value):
+        def sync_slider(value) -> None:
             tau_factor.set(f"{value:.2f}")
 
             lifetime = calculate_lifetime_for_custom_tau_factor(
@@ -304,7 +304,7 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         self.timescale.set(round(float(value), 2))
 
-    def _tau_button_event(self, value, error) -> None:
+    def _tau_button_event(self, value: float, error: float) -> None:
         """
         Event if the tau button is clicked.
         """

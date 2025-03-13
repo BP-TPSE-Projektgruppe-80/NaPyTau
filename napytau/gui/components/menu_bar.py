@@ -226,7 +226,7 @@ class MenuBar(customtkinter.CTkFrame):
             value=IMPORT_FORMAT_NAPYTAU,
         )
 
-    def on_mode_change(self, name: str, index: str, mode_value: str):
+    def on_mode_change(self, name: str, index: str, mode_value: str) -> None:
 
         self.parent.logger.log_message(
             f"Mode changed! New mode: {self.mode.get()}", LogMessageType.INFO
