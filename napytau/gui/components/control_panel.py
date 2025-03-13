@@ -105,7 +105,7 @@ class ControlPanel(customtkinter.CTkFrame):
 
         #connects slider value to lifetime Entry results
 
-        def sync_slider(value) -> None:
+        def sync_slider(value: float) -> None:
             tau_factor.set(f"{value:.2f}")
 
             lifetime = calculate_lifetime_for_custom_tau_factor(
