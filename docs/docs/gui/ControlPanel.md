@@ -1,4 +1,4 @@
-# ControlPanel Class Documentation
+# ControlPanel
 
 ## Overview
 The `ControlPanel` class is a GUI component designed to provide various controls such as timescale input, buttons for minimizing chi-squared, calculating tau and absolute tau, and displaying results. It is implemented using `customtkinter` and is embedded in a parent GUI application.
