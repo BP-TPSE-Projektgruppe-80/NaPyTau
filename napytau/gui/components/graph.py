@@ -120,8 +120,11 @@ class Graph:
         :param axes: the axes on which to draw the markers
         :return: nothing
         """
+        # Extracting distance values / intensities of checked datapoints
+        checked_datapoints: DatapointCollection = datapoints.get_active_datapoints()
+
         index: int = 0
-        for datapoint in datapoints:
+        for datapoint in checked_datapoints:
             # Generate marker and compute dynamic markersize
             marker_shifted = generate_marker(
                 generate_error_marker_path(datapoint.get_intensity()[0].error)
