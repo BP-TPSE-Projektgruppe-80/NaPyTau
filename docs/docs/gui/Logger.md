@@ -48,7 +48,7 @@ Logs a new message in the logger frame and scrolls to the most recent message.
 Updates the text colors of log messages when the appearance mode (light/dark) changes.
 
 #### Parameters
-- **`appearance_mode`** (`str`): The new appearance mode ("light" or "dark").
+- **`appearance_mode`**: The new appearance mode ("light" or "dark").
 
 #### Description
 - Updates the logger's color scheme based on the selected mode.
