@@ -1,5 +1,5 @@
 
-# CheckboxPanel
+# Checkbox Panel
 
 ## Overview
 The `CheckboxPanel` class is responsible for 
@@ -8,32 +8,27 @@ data points for fitting and calculations. It is
 implemented using `customtkinter` and is embedded 
 in a parent GUI application.
 
-## Class Definition
-```python
-class CheckboxPanel:
-```
 
 ## Initialization
-### `__init__(self, parent: "App") -> None`
 Initializes the `CheckboxPanel` by creating a scrollable frame to host the checkboxes.
 
 #### Parameters:
-- `parent` (`App`): The parent application where the panel is hosted.
+- `parent`: The parent application where the panel is hosted.
 
 ## Methods
 
-### `update_data_checkboxes_fitting(self) -> None`
+### `update_data_checkboxes_fitting`
 Updates the checkboxes corresponding to data 
 points available for fitting. This method 
 clears any existing checkboxes and repopulates 
 them with the latest data points.
 
 
-### `_data_checkbox_fitting_event(self, index: int) -> None`
+### `_data_checkbox_fitting_event (private) `
 Handles checkbox state changes for fitting data points. 
 
 #### Parameters:
-- `index` (`int`): The index of the selected data checkbox.
+- `index` : The index of the selected data checkbox.
 
 #### Discription
 When pressing a checkbox:
@@ -43,7 +38,7 @@ When pressing a checkbox:
 
 ---
 
-### `update_data_checkboxes_calculation(self) -> None`
+### `update_data_checkboxes_calculation `
 Updates the checkboxes corresponding to data 
 points used for calculating **tau** and **delta-tau**. 
 This method clears old checkboxes and adds new ones. 
@@ -58,7 +53,7 @@ checkboxes for datapoint calculations are not currently implemented.
 
 ---
 
-### `_data_checkbox_calculation_event(self, index: int) -> None`
+### `_data_checkbox_calculation_event (private)`
 Handles checkbox state changes for data points used in tau calculations.
 
 #### Parameters:
@@ -70,13 +65,8 @@ When pressed:
 - Toggles the active state of the corresponding data point.
 - Logs activation or deactivation of the checkbox.
 
-## Dependencies
-- `customtkinter`: Used for creating UI elements.
-- `napytau.gui.model.log_message_type.LogMessageType`: Used for logging messages.
-- `napytau.gui.app.App`: The parent application where the checkbox panel is embedded.
 
 ## Notes
-- The `_data_checkbox_fitting_event` and `_data_checkbox_calculation_event` methods should not be called externally.
 - This class dynamically updates its UI elements based on the data points available in `self.parent.datapoints`.
 
 ## Example Usage

@@ -1,6 +1,10 @@
 # Logger
 
+## Overview
+
 The `Logger` class provides a scrolling text box for displaying log messages with different message types, including informational, error, and success messages. It is designed to store and display up to 50 messages at a time.
+
+
 
 ## Attributes
 

@@ -1,6 +1,8 @@
 # Marker Factory
 
-This module contains methods for generating error markers for matplotlib.
+## Overview
+
+This module contains methods for generating error markers for `matplotlib`.
 
 ## Methods
 

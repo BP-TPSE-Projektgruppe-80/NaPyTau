@@ -1,24 +1,20 @@
-# ControlPanel
+# Control Panel
 
 ## Overview
 The `ControlPanel` class is a GUI component designed to provide various controls such as timescale input, buttons for minimizing chi-squared, calculating tau and absolute tau, and displaying results. It is implemented using `customtkinter` and is embedded in a parent GUI application.
 
-## Class Definition
-```python
-class ControlPanel(customtkinter.CTkFrame):
-```
+
 
 ## Initialization
-### `__init__(self, parent: "App")`
 Initializes the `ControlPanel` by creating a structured control interface with various widgets.
 
 #### Parameters:
-- `parent` (`App`): The parent application where the control panel is hosted.
+- `parent`: The parent application where the control panel is hosted.
 
 ## Methods
 
 
-### `_create_timescale_widget()`
+### `_create_timescale_widget (private)`
 
 #### Description
 The `_create_timescale_widget` method creates a timescale control widget that allows users to adjust the timescale value using a slider, an entry field, and buttons for fine adjustments. The widget also updates the calculated lifetime values based on the selected timescale.
@@ -45,18 +41,18 @@ The method creates a `CTkFrame` containing:
 ---
 
 #### **Internal Functions**
-##### `update_timescale()`
+##### `update_timescale`
 - Reads the value from the entry field and validates it.
 - Updates the `timescale` variable if the value is within the allowed range (`0.01 - 100.0` ps).
 - Calls `calculate_lifetime_for_custom_tau_factor` to compute the lifetime (`τ`) and its error (`Δτ`).
 - Updates the displayed `τ` and `Δτ` values.
 - Logs success or error messages.
 
-##### `sync_slider(value)`
+##### `sync_slider`
 - Syncs the slider position with the entry field.
 - Recalculates and updates the lifetime (`τ`) and error (`Δτ`).
 
-##### `add_on_tau_factor(value)`
+##### `add_on_tau_factor`
 - Increases or decreases the timescale by `0.1` ps, ensuring it does not go below `0.0`.
 
 ---
@@ -80,10 +76,8 @@ This widget allows users to:
 ---
 
 
-### `_create_chi_squared_widget()
-```python
-def _create_chi_squared_widget(self) -> customtkinter.CTkFrame:
-```
+### `_create_chi_squared_widget (private)
+
 #### Description
 Creates a widget displaying the chi-squared value and a button to minimize chi-squared.
 
@@ -96,7 +90,7 @@ Creates a widget displaying the chi-squared value and a button to minimize chi-s
 
 ---
 
-### `_create_tau_widget`
+### `_create_tau_widget (private)`
 
 #### **Description**
 The `_create_tau_widget` method creates a graphical widget for displaying the calculated lifetime (`τ`) and its associated error (`Δτ`). The widget also includes an absolute time difference (`|τ - t|`) display and a button for recalculating these values.
@@ -143,10 +137,8 @@ This method constructs a **main frame** with a **secondary frame** inside it:
 ---
 
 
-### `_create_absolute_tau_t_widget()`
-```python
-def _create_absolute_tau_t_widget(self) -> customtkinter.CTkFrame:
-```
+### `_create_absolute_tau_t_widget (private)`
+
 #### Description
 Creates a widget for displaying the absolute difference between tau and t.
 
@@ -160,71 +152,62 @@ Creates a widget for displaying the absolute difference between tau and t.
 ---
 
 
-### `_create_absolute_tau_t_widget(self) -> customtkinter.CTkFrame`
-Creates a widget for displaying the absolute tau difference (`|τ - t|`).
-
-#### Functionality:
-- Displays `|τ - t|` value.
-- Includes a button to trigger absolute tau calculation.
-
----
-
-### `_timescale_button_event(self) -> None`
+### `_timescale_button_event (private)`
 Handles events when the timescale button is clicked, printing the selected timescale value.
 
 ---
 
-### `_timescale_slider_event(self, value: str) -> None`
+### `_timescale_slider_event (private)`
 Handles events when the timescale slider is moved. Set timescale value
 to given value.
 
 #### Parameters:
-- `value` (`str`): The current value of the slider.
+- `value` : The current value of the slider.
 
 ---
 
-### `_tau_button_event(self) -> None`
+### `_tau_button_event (private)`
 Handles events when the tau calculation button is clicked.
 Sets tau value to given value.
 
 
-### `_chi_squared_button_event(self) -> None`
+### `_chi_squared_button_event (private)`
 Handles events when the chi-squared button is clicked.
 Sets chi-squared value to calculated value.
 
-### `_absolute_tau_button_event(self) -> None`
+### `_absolute_tau_button_event (private)`
 Handles events when the absolute tau calculation button is clicked.
 Sets the absolute tau value to calculated value.
 
-### `set_result_chi_squared(self, chi_squared: float) -> None`
+### `set_result_chi_squared (private)`
 Sets the chi-squared result value.
 
 #### Parameters:
-- `chi_squared` (`float`): The new value for chi-squared.
+- `chi_squared`: The new value for chi-squared.
 
 ---
 
-### `set_result_tau(self, tau: float) -> None`
+### `set_result_tau`
 Sets the tau result value.
 
 #### Parameters:
-- `tau` (`float`): The new value for tau.
+- `tau` : The new value for tau.
 
 ---
 
-### `set_result_tau_error(self, tau_error: float) -> None`
+### `set_result_tau_error`
 Sets the tau error result value.
 
 #### Parameters:
-- `tau_error` (`float`): The new value for tau error.
+- `tau_error` : The new value for tau error.
 
 ---
 
-### `set_result_absolute_tau_t(self, absolute_tau_t: float) -> None`
+### `set_result_absolute_tau_t`
 Sets the absolute tau result value.
 
 #### Parameters:
-- `absolute_tau_t` (`float`): The new value for absolute tau.
+- `absolute_tau_t` : The new value for absolute tau.
 
 ## Dependencies
 - `customtkinter`: Used for creating UI elements.

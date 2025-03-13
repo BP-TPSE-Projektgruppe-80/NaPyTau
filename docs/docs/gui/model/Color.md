@@ -1,6 +1,6 @@
 # Class: Color
 
-A enumeration of hexcodes which represent certain colors used in the Napytau GUI.
+A enumeration of hexcodes which represent certain colors used in the Napytau design.
 
 
 

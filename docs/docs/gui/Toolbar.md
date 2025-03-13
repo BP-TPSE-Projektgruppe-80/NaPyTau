@@ -1,6 +1,10 @@
-# Class: Toolbar
+# Toolbar
+
+## Overview
 
 The 'Toolbar' class is responsible for creating and managing a toolbar widget within a `tkinter` application. It integrates the `CustomToolbar` class for custom toolbar functionality. It is primarily used in conjunction with a `matplotlib` figure, where the toolbar interacts with the figure's canvas to provide custom controls.
+
+
 
 ## Attributes
 None
@@ -8,7 +12,6 @@ None
 
 ## Methods
 
-#### `__init__(self, parent: "App", canvas: FigureCanvasTkAgg) -> None`
 
 ##### Parameters:
 - `parent: App`:

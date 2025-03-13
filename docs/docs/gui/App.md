@@ -1,43 +1,38 @@
 # App
 
-## General
+## Overview
+
 The "App" Class is an extension of the customtkinter.Ctk class and as such represents the main window of the application, containing all GUI Components in an ordered Grid. 
 
-When Napytau is started and the [napytau/main.py] is executed in Gui-Mode, initializing an instance of the App Class is the first and only thing it will do.
+When Napytau is started and the entry point is executed in Gui-Mode, initializing an instance of the App Class is the first and only thing it will do.
 
-When initialized the App will systematically call the constructors off all needed GUI-Components and build the Application.
+When initialized the App will sequentially call the constructors off all needed GUI-Components and build the Application.
+
+
 
 ## Attributes
 
 ### Datapoint Collections (Managing Data)
 
-#### `datapoints: DatapointCollection`
+#### `datapoints`
 Stores all loaded datapoints used in the application.
 
-#### `datapoints_for_fitting: DatapointCollection`
-Stores datapoints specifically used for fitting calculations.
+#### `datapoints_for_fitting`
+Stores datapoints which should specifically be used for fitting calculations.
 
-#### `datapoints_for_calculation: DatapointCollection`
-Stores datapoints that will be used for general calculations.
+#### `datapoints_for_calculation`
+Stores datapoints that should be used when doing general calculations.
 
 ---
 
 ### Tkinter Variables
 
-##### `tau: tk.IntVar`
-A Tkinter integer variable initialized to `2`. Used to store and manage an integer value dynamically in the UI.
+##### `tau`
+
+Variable dynamically containing the latest result of the tau calculation. 
 
 ---
 
-### Window Configuration
-
-#### `title("NaPyTau")`
-Sets the application window title to "NaPyTau".
-
-#### `geometry(f"{width}x{height}")`
-Defines the application window size as `1366x768` pixels.
-
----
 
 ### Grid Layout Configuration (GUI Layout)
 
@@ -66,38 +61,39 @@ Initializes a **Menu Bar** component with callback functions for:
 
 ### Checkbox Panel (Data Selection)
 
-#### `checkbox_panel: CheckboxPanel`
+#### `checkbox_panel`
 Creates a **Checkbox Panel** for selecting data points interactively.
 
-#### `update_data_checkboxes([...])`
-Populates the checkboxes with sample (dummy) datapoints for testing purposes.
+#### `update_data_checkboxes`
+Updates the datapoint for the gui and updates both columns of the data checkboxes.
+Call this method if there are new datapoints.
 
 ---
 
 ### Graph (Plotting Data)
 
-#### `graph: Graph`
-Initializes a **Graph Component** for visualizing data through plots.
+#### `graph`
+Initializes a **Graph Component** for visualizing data in a plot.
 
 ---
 
 ### Toolbar (Graph Controls)
 
-#### `toolbar: Toolbar`
+#### `toolbar`
 Creates a **Toolbar** to allow users to interact with the graph (zoom, pan, reset, etc.).
 
 ---
 
 ### Control Panel (User Inputs)
 
-#### `control_panel: ControlPanel`
+#### `control_panel`
 Initializes a **Control Panel** for adjusting parameters and user inputs.
 
 ---
 
 ### Logger (Message Logging)
 
-#### `logger: Logger`
+#### `logger`
 Creates a **Logger Component** to display system messages, errors, and logs to the user.
 
 ---
@@ -123,37 +119,37 @@ Creates a **Logger Component** to display system messages, errors, and logs to t
 
 
 
-### `open_file() -> None`
+### `open_file`
 Opens the file explorer and allows the user to choose a file.
 Logs the chosen file path.
 
-### `save_file() -> None`
+### `save_file`
 Saves the file and logs a success message.
 
-### `read_setup() -> None`
+### `read_setup`
 Reads the setup and logs a message (currently not implemented).
 
-### `quit() -> None`
+### `quit`
 Closes the application.
 
-### `change_appearance_mode() -> None`
+### `change_appearance_mode`
 Changes the application's appearance mode and updates the logger appearance.
 
-### `select_number_of_polynomials() -> None`
+### `select_number_of_polynomials`
 Logs the selected number of polynomials (currently not implemented).
 
-### `select_polynomial_mode() -> None`
+### `select_polynomial_mode`
 Logs the selected polynomial mode (currently not implemented).
 
-### `select_alpha_calc_mode() -> None`
+### `select_alpha_calc_mode`
 Logs the selected alpha calculation mode (currently not implemented).
 
-### `update_data_checkboxes(new_datapoints: List[Datapoint]) -> None`
+### `update_data_checkboxes`
 Updates the datapoint collection for the GUI and refreshes the checkbox panels.
 
 ---
 
-## **Table of Main Functions Areas**
+## **Table of Main Functions**
 
 | **Method** | **Purpose** |
 |----------------------|------------|
