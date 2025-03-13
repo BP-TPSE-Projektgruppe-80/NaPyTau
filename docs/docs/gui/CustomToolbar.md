@@ -1,4 +1,4 @@
-#  Class: Toolbar
+#  CustomToolbar
 
 `CustomToolbar` extends the `NavigationToolbar2Tk` class from `matplotlib`, providing a customized toolbar with specific functionality for Napytau. This includes altering button styles, adjusting background colors, and removing unnecessary toolbar elements.
 
