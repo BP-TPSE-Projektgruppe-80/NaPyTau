@@ -1,4 +1,4 @@
-# Class: App
+# App
 
 ## General
 The "App" Class is an extension of the customtkinter.Ctk class and as such represents the main window of the application, containing all GUI Components in an ordered Grid. 
