@@ -1,7 +1,16 @@
 import tkinter as tk
 import customtkinter
 from tkinter import Menu
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
+
+from napytau.gui.components.logger import LogMessageType
+
+
+from napytau.import_export.import_export import (
+    IMPORT_FORMAT_NAPYTAU,
+    IMPORT_FORMAT_LEGACY,
+)
+
 
 from napytau.import_export.import_export import (
     IMPORT_FORMAT_NAPYTAU,
@@ -33,6 +42,8 @@ class MenuBar(customtkinter.CTkFrame):
         super().__init__(parent)
         self.callbacks = callbacks
 
+        self.parent = parent
+
         self.grid(row=0, column=0, columnspan=2, sticky="nsew")
         self.pack_propagate(False)
 
@@ -41,12 +52,14 @@ class MenuBar(customtkinter.CTkFrame):
         self.number_of_polynomials = tk.StringVar(value="3")
         self.alpha_calc_mode = tk.StringVar(value="sum ratio")
         self.polynomial_mode = tk.StringVar(value="Exponential")
+        self.mode = tk.StringVar(value=IMPORT_FORMAT_NAPYTAU)
+        self.mode.trace_add("write", self.on_mode_change)
 
         self._create_file_button()
         self._create_view_button()
         self._create_polynomial_button()
         self._create_alpha_calc_button()
-        self._init_mode_menu()
+        self._create_mode_menu_button()
 
     def _create_file_button(self) -> None:
         """
@@ -55,7 +68,7 @@ class MenuBar(customtkinter.CTkFrame):
         self.file_menu = tk.Menu(self, tearoff=0)
 
         # Declare file_button in advance for type checking
-        self.file_button: customtkinter.CTkButton | None = None
+        self.file_button: Union[customtkinter.CTkButton, None] = None
 
         self.file_button = customtkinter.CTkButton(
             self,
@@ -64,7 +77,10 @@ class MenuBar(customtkinter.CTkFrame):
         )
         self.file_button.grid(row=0, column=0, padx=5, pady=5)
 
-        self.file_menu.add_command(label="Open", command=self.callbacks["open_file"])
+        self.file_menu.add_command(
+            label="Open",
+            command=lambda: self.callbacks["open_directory"](self.mode.get()),
+        )
         self.file_menu.add_command(label="Save", command=self.callbacks["save_file"])
         self.file_menu.add_command(
             label="Read Setup", command=self.callbacks["read_setup"]
@@ -79,7 +95,7 @@ class MenuBar(customtkinter.CTkFrame):
         self.view_menu = tk.Menu(self, tearoff=0)
 
         # Declare view_button in advance for type checking
-        self.view_button: customtkinter.CTkButton | None = None
+        self.view_button: Union[customtkinter.CTkButton, None] = None
 
         self.view_button = customtkinter.CTkButton(
             self,
@@ -114,7 +130,7 @@ class MenuBar(customtkinter.CTkFrame):
         self.polynomial_menu = tk.Menu(self, tearoff=0)
 
         # Declare polynomial_button in advance for type checking
-        self.polynomial_button: customtkinter.CTkButton | None = None
+        self.polynomial_button: Union[customtkinter.CTkButton, None] = None
 
         self.polynomial_button = customtkinter.CTkButton(
             self,
@@ -159,7 +175,7 @@ class MenuBar(customtkinter.CTkFrame):
         self.alpha_calc_menu = tk.Menu(self, tearoff=0)
 
         # Declare alpha_calc_button in advance for type checking
-        self.alpha_calc_button: customtkinter.CTkButton | None = None
+        self.alpha_calc_button: Union[customtkinter.CTkButton, None] = None
 
         self.alpha_calc_button = customtkinter.CTkButton(
             self,
@@ -183,23 +199,36 @@ class MenuBar(customtkinter.CTkFrame):
             command=self.callbacks["select_alpha_calc_mode"],
         )
 
-    def _init_mode_menu(self) -> None:
+    def _create_mode_menu_button(self) -> None:
         """
         Create the Mode menu. Allowing the user to switch the import/export mode
         between `legacy` and `napytau`.
         """
 
-        mode_menu = Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label="Mode", menu=mode_menu)
+        self.mode_menu = tk.Menu(self, tearoff=0)
 
-        self.mode = tk.StringVar(value=IMPORT_FORMAT_NAPYTAU)
-        mode_menu.add_radiobutton(
+        self.mode_button: Union[customtkinter.CTkButton, None] = None
+
+        self.mode_button = customtkinter.CTkButton(
+            self,
+            text="Mode",
+            command=lambda: open_dropdown_menu(self.mode_menu, self.mode_button),
+        )
+
+        self.mode_button.grid(row=0, column=4, padx=5, pady=5)
+
+        self.mode_menu.add_radiobutton(
             label="Legacy",
             variable=self.mode,
             value=IMPORT_FORMAT_LEGACY,
         )
-        mode_menu.add_radiobutton(
+        self.mode_menu.add_radiobutton(
             label="Napytau",
             variable=self.mode,
             value=IMPORT_FORMAT_NAPYTAU,
+        )
+
+    def on_mode_change(self, name: str, index: str, mode_value: str) -> None:
+        self.parent.logger.log_message(
+            f"Mode changed! New mode: {self.mode.get()}", LogMessageType.INFO
         )
