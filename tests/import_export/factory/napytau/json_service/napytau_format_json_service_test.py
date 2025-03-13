@@ -26,11 +26,11 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         json_module_mock.loads.side_effect = BaseException("error")
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
@@ -46,11 +46,11 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         json_module_mock.loads.return_value = {}
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
@@ -68,11 +68,11 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         json_module_mock.loads.return_value = {}
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
@@ -88,11 +88,11 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         jsonschema_module_mock.validate.side_effect = BaseException("error")
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
@@ -109,11 +109,11 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         jsonschema_module_mock.validate.return_value = None
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
@@ -125,21 +125,24 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
                 schema={},
             )
 
-    def test_raisesAnImportExportErrorWhenTheProvidedDatasetCanNotBeConvertedToJSON(self):
+    def test_raisesAnImportExportErrorWhenTheProvidedDatasetCanNotBeConvertedToJSON(
+        self,
+    ):
         """Raises an ImportExportError when the provided dataset can not be converted to JSON."""
         json_module_mock, jsonschema_module_mock = set_up_mocks()
         json_module_mock.dumps.side_effect = ValueError("error")
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
             )
+
             dataset = DataSet(
                 ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0.1)),
                 DatapointCollection([]),
@@ -154,23 +157,26 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         json_module_mock.dumps.return_value = ""
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
             )
+
             dataset = DataSet(
-                relative_velocity = ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0.1)),
-                datapoints = DatapointCollection([]),
-                tau_factor = 1.0,
-                weighted_mean_tau = ValueErrorPair(2.0, 1.1),
-                sampling_points = [],
-                polynomial_count = 2,
-                polynomials = [],
+                relative_velocity=ValueErrorPair(
+                    RelativeVelocity(1), RelativeVelocity(0.1)
+                ),
+                datapoints=DatapointCollection([]),
+                tau_factor=1.0,
+                weighted_mean_tau=ValueErrorPair(2.0, 1.1),
+                sampling_points=[],
+                polynomial_count=2,
+                polynomials=[],
             )
 
             NapytauFormatJsonService.create_calculation_data_json_string(dataset)
@@ -184,8 +190,7 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
                     "samplingPoints": [],
                     "polynomials": [],
                 },
-                indent=
-                2,
+                indent=2,
             )
 
 

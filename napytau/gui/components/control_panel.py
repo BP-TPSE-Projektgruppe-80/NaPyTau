@@ -7,6 +7,7 @@ from napytau.core.core import (
     calculate_optimal_tau_factor,
     calculate_lifetime_for_custom_tau_factor,
 )
+from napytau.util.coalesce import coalesce
 
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
@@ -85,7 +86,7 @@ class ControlPanel(customtkinter.CTkFrame):
                         f"Timescale set to: {value}", LogMessageType.INFO
                     )
                     lifetime = calculate_lifetime_for_custom_tau_factor(
-                        self.parent.datasets[0][0],
+                        self.parent.datasets[0],
                         value,
                         int(self.parent.menu_bar.number_of_polynomials.get()),
                     )
@@ -109,16 +110,16 @@ class ControlPanel(customtkinter.CTkFrame):
         # connects slider value to lifetime Entry results
 
         def sync_slider(value: float) -> None:
-            tau_factor.set(f"{value:.2f}")
+            if self._check_dataset_set():
+                tau_factor.set(f"{value:.2f}")
+                lifetime = calculate_lifetime_for_custom_tau_factor(
+                    coalesce(self.parent.dataset[0]),
+                    value,
+                    int(self.parent.menu_bar.number_of_polynomials.get()),
+                )
 
-            lifetime = calculate_lifetime_for_custom_tau_factor(
-                self.parent.datasets[0][0],
-                value,
-                int(self.parent.menu_bar.number_of_polynomials.get()),
-            )
-
-            self.result_tau.set(str(lifetime[0]))
-            self.result_tau_error.set(str(lifetime[1]))
+                self.result_tau.set(str(lifetime[0]))
+                self.result_tau_error.set(str(lifetime[1]))
 
         update_timescale_button = customtkinter.CTkButton(
             frame,
@@ -283,7 +284,6 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         Event if the timescale button is clicked.
         """
-        print(f"Timescale set to {self.timescale.get():.2f} ps")
 
     def _timescale_slider_event(self, value: str) -> None:
         """
@@ -303,14 +303,15 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         Event if the chi2 button is clicked.
         """
-        self.set_result_chi_squared(
-            calculate_optimal_tau_factor(
-                self.parent.datasets[0][0],
-                (5, 100),
-                1.0,
-                int(self.parent.menu_bar.number_of_polynomials.get()),
+        if self._check_dataset_set():
+            self.set_result_chi_squared(
+                calculate_optimal_tau_factor(
+                    coalesce(self.parent.dataset[0]),
+                    (5, 100),
+                    1.0,
+                    int(self.parent.menu_bar.number_of_polynomials.get()),
+                )
             )
-        )
 
     def _absolute_tau_button_event(self) -> None:
         """
@@ -349,3 +350,16 @@ class ControlPanel(customtkinter.CTkFrame):
         :param absolute_tau_t: The new value for the absolute tau value.
         """
         self.result_absolute_tau_t.set(absolute_tau_t)
+
+    def _check_dataset_set(self) -> bool:
+        """
+        Check if a dataset is set.
+        :return: True if a dataset is set, False otherwise.
+        """
+        if self.parent.dataset is None:
+            self.parent.logger.log_message(
+                "No dataset loaded yet. Please load a dataset first.",
+                LogMessageType.ERROR,
+            )
+            return False
+        return True

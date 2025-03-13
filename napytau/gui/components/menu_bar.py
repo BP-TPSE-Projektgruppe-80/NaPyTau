@@ -12,11 +12,6 @@ from napytau.import_export.import_export import (
 )
 
 
-from napytau.import_export.import_export import (
-    IMPORT_FORMAT_NAPYTAU,
-    IMPORT_FORMAT_LEGACY,
-)
-
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
@@ -83,7 +78,8 @@ class MenuBar(customtkinter.CTkFrame):
         )
         self.file_menu.add_command(label="Save", command=self.callbacks["save_file"])
         self.file_menu.add_command(
-            label="Read Setup", command=self.callbacks["read_setup"]
+            label="Read Setup",
+            command=lambda: self.callbacks["read_setup"](self.mode.get()),
         )
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.callbacks["quit"])

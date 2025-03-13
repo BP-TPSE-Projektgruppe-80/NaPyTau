@@ -95,8 +95,8 @@ def read_legacy_setup_data_into_data_set(
     return LegacyFactory.enrich_dataset(dataset, RawLegacySetupData(setup_data))
 
 
-def import_napytau_format_from_files(
-    directory_path: PurePath,
+def import_napytau_format_from_file(
+    file_path: PurePath,
 ) -> Tuple[DataSet, List[dict]]:
     """
     Ingests a dataset from the NapyTau format. The directory path will be
@@ -107,22 +107,9 @@ def import_napytau_format_from_files(
 
     :return: A list of datasets and their corresponding raw setup data
     """
-
-    file_crawler = FileCrawler(
-        [compile_regex(".*.napytau.json")],
-        lambda files: files[0],
-    )
-
-    napytau_file_path = file_crawler.crawl(directory_path)
-
-    return _map_raw_napytau_data(napytau_file_path)
-
-
-def _map_raw_napytau_data(napytau_file_path: PurePath) -> Tuple[DataSet, List[dict]]:
     json_data = NapytauFormatJsonService.parse_json_data(
-        FileReader.read_text(napytau_file_path)
+        FileReader.read_text(file_path)
     )
-
     return (
         NapyTauFactory.create_dataset(json_data),
         json_data["setups"],

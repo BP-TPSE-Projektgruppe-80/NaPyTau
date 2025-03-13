@@ -454,45 +454,6 @@ class IngestUnitTest(unittest.TestCase):
                 RawLegacySetupData(["row1", "row2"]),
             )
 
-    def test_configuresAndUsesTheFileCrawlerToSearchNapytauFormatFiles(self):
-        """Configures and uses the file crawler to search Napytau format files."""
-        (
-            legacy_factory_module_mock,
-            file_crawler_module_mock,
-            file_reader_module_mock,
-            regex_module_mock,
-            naptau_format_json_service_module_mock,
-            napytau_factory_module_mock,
-            _,
-        ) = set_up_mocks()
-        regex_module_mock.compile = lambda x: x
-        with patch.dict(
-            "sys.modules",
-            {
-                "napytau.import_export.factory.legacy.legacy_factory": legacy_factory_module_mock,
-                "napytau.import_export.crawler.file_crawler": file_crawler_module_mock,
-                "napytau.import_export.reader.file_reader": file_reader_module_mock,
-                "re": regex_module_mock,
-                "napytau.import_export.factory.napytau.json_service.napytau_format_json_service": naptau_format_json_service_module_mock,
-                "napytau.import_export.factory.napytau.napytau_factory": napytau_factory_module_mock,
-            },
-        ):
-            from napytau.import_export.import_export import (
-                import_napytau_format_from_files,
-            )
-
-            import_napytau_format_from_files(PurePath("test_directory"))
-
-            self.assertEqual(
-                file_crawler_module_mock.FileCrawler.mock_calls[0].args[0],
-                [".*.napytau.json"],
-            )
-
-            self.assertEqual(
-                file_crawler_module_mock.FileCrawler.crawl.mock_calls[0].args[0],
-                PurePath("test_directory"),
-            )
-
     def test_usesTheFileReaderToReadTheTextOfTheCrawledFiles(self):
         """Uses the file reader to read the text of the crawled files."""
         (
@@ -504,10 +465,6 @@ class IngestUnitTest(unittest.TestCase):
             napytau_factory_module_mock,
             _,
         ) = set_up_mocks()
-        file_crawler_module_mock.FileCrawler.return_value = (
-            file_crawler_module_mock.FileCrawler
-        )
-        file_crawler_module_mock.FileCrawler.crawl.return_value = PurePath("test.napytau.json")
 
         with patch.dict(
             "sys.modules",
@@ -521,10 +478,10 @@ class IngestUnitTest(unittest.TestCase):
             },
         ):
             from napytau.import_export.import_export import (
-                import_napytau_format_from_files,
+                import_napytau_format_from_file,
             )
 
-            import_napytau_format_from_files(PurePath("test_directory"))
+            import_napytau_format_from_file(PurePath("test.napytau.json"))
 
             self.assertEqual(
                 file_reader_module_mock.FileReader.read_text.mock_calls[0].args[0],
@@ -562,10 +519,10 @@ class IngestUnitTest(unittest.TestCase):
             },
         ):
             from napytau.import_export.import_export import (
-                import_napytau_format_from_files,
+                import_napytau_format_from_file,
             )
 
-            import_napytau_format_from_files(PurePath("test_directory"))
+            import_napytau_format_from_file(PurePath("test_directory"))
 
             self.assertEqual(
                 naptau_format_json_service_module_mock.NapytauFormatJsonService.parse_json_data.mock_calls[
@@ -617,10 +574,10 @@ class IngestUnitTest(unittest.TestCase):
             },
         ):
             from napytau.import_export.import_export import (
-                import_napytau_format_from_files,
+                import_napytau_format_from_file,
             )
 
-            result = import_napytau_format_from_files(PurePath("test_directory"))
+            result = import_napytau_format_from_file(PurePath("test_directory"))
 
             self.assertEqual(
                 napytau_factory_module_mock.NapyTauFactory.create_dataset.mock_calls[
