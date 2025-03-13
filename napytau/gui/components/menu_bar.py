@@ -3,6 +3,9 @@ import customtkinter
 from tkinter import Menu
 from typing import TYPE_CHECKING, Union
 
+from napytau.gui.components.logger import Logger, LogMessageType
+
+
 from napytau.import_export.import_export import (
     IMPORT_FORMAT_NAPYTAU,
     IMPORT_FORMAT_LEGACY,
@@ -34,7 +37,7 @@ class MenuBar(customtkinter.CTkFrame):
         super().__init__(parent)
         self.callbacks = callbacks
 
-
+        self.parent = parent
 
         self.grid(row=0, column=0, columnspan=2, sticky="nsew")
         self.pack_propagate(False)
@@ -45,6 +48,7 @@ class MenuBar(customtkinter.CTkFrame):
         self.alpha_calc_mode = tk.StringVar(value="sum ratio")
         self.polynomial_mode = tk.StringVar(value="Exponential")
         self.mode = tk.StringVar(value=IMPORT_FORMAT_NAPYTAU)
+        self.mode.trace_add("write", self.on_mode_change)
 
         self._create_file_button()
         self._create_view_button()
@@ -220,4 +224,10 @@ class MenuBar(customtkinter.CTkFrame):
             label="Napytau",
             variable=self.mode,
             value=IMPORT_FORMAT_NAPYTAU,
+        )
+
+    def on_mode_change(self, name: str, index: str, mode_value: str):
+
+        self.parent.logger.log_message(
+            f"Mode changed! New mode: {self.mode.get()}", LogMessageType.INFO
         )
