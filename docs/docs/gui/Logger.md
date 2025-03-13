@@ -27,13 +27,13 @@ Initializes the `Logger` widget.
 
 ---
 
-### `log_message(self, message: str, message_type: LogMessageType) -> None`
+### `log_message`
 
 Logs a new message in the logger frame and scrolls to the most recent message.
 
 #### Parameters
-- **`message`** (`str`): The text message to be logged.
-- **`message_type`** (`LogMessageType`): The type of message (INFO, ERROR, SUCCESS).
+- **`message`**: The text message to be logged.
+- **`message_type`**: The type of message (INFO, ERROR, SUCCESS).
 
 #### Description
 - Determines the text color based on the message type.
