@@ -43,7 +43,7 @@ Logs a new message in the logger frame and scrolls to the most recent message.
 
 ---
 
-### `switch_logger_appearance(self, appearance_mode: str) -> None`
+### `switch_logger_appearance`
 
 Updates the text colors of log messages when the appearance mode (light/dark) changes.
 
