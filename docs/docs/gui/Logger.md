@@ -18,7 +18,7 @@ The `Logger` class provides a scrolling text box for displaying log messages wit
 Initializes the `Logger` widget.
 
 #### Parameters
-- **`parent`** (`App`): The parent widget where the logger will be placed.
+- **`parent`**: The parent widget where the logger will be placed.
 
 #### Description
 - Creates a frame with a scrollable area for log messages.
