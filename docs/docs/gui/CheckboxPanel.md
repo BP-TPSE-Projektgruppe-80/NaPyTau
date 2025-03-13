@@ -1,5 +1,5 @@
 
-# CheckboxPanel Class Documentation
+# CheckboxPanel
 
 ## Overview
 The `CheckboxPanel` class is responsible for 
