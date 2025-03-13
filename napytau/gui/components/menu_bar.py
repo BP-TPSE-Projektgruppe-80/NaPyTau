@@ -3,7 +3,7 @@ import customtkinter
 from tkinter import Menu
 from typing import TYPE_CHECKING, Union
 
-from napytau.gui.components.logger import Logger, LogMessageType
+from napytau.gui.components.logger import LogMessageType
 
 
 from napytau.import_export.import_export import (
@@ -56,7 +56,6 @@ class MenuBar(customtkinter.CTkFrame):
         self._create_alpha_calc_button()
         self._create_mode_menu_button()
 
-
     def _create_file_button(self) -> None:
         """
         Creates the button in the menubar for all file operations.
@@ -75,7 +74,7 @@ class MenuBar(customtkinter.CTkFrame):
 
         self.file_menu.add_command(
             label="Open",
-            command=lambda: self.callbacks["open_directory"](self.mode.get())
+            command=lambda: self.callbacks["open_directory"](self.mode.get()),
         )
         self.file_menu.add_command(label="Save", command=self.callbacks["save_file"])
         self.file_menu.add_command(
@@ -208,9 +207,7 @@ class MenuBar(customtkinter.CTkFrame):
         self.mode_button = customtkinter.CTkButton(
             self,
             text="Mode",
-            command=lambda: open_dropdown_menu(
-                self.mode_menu, self.mode_button
-            ),
+            command=lambda: open_dropdown_menu(self.mode_menu, self.mode_button),
         )
 
         self.mode_button.grid(row=0, column=4, padx=5, pady=5)
@@ -227,7 +224,6 @@ class MenuBar(customtkinter.CTkFrame):
         )
 
     def on_mode_change(self, name: str, index: str, mode_value: str) -> None:
-
         self.parent.logger.log_message(
             f"Mode changed! New mode: {self.mode.get()}", LogMessageType.INFO
         )

@@ -490,7 +490,9 @@ class IngestUnitTest(unittest.TestCase):
         file_crawler_module_mock.FileCrawler.return_value = (
             file_crawler_module_mock.FileCrawler
         )
-        file_crawler_module_mock.FileCrawler.crawl.return_value = PurePath("test.napytau.json")
+        file_crawler_module_mock.FileCrawler.crawl.return_value = PurePath(
+            "test.napytau.json"
+        )
 
         with patch.dict(
             "sys.modules",

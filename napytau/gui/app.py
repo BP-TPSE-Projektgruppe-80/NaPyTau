@@ -18,7 +18,8 @@ from napytau.import_export.import_export import (
     IMPORT_FORMAT_LEGACY,
     import_napytau_format_from_files,
     import_legacy_format_from_files,
-    read_legacy_setup_data_into_data_set, read_napytau_setup_data_into_data_set,
+    read_legacy_setup_data_into_data_set,
+    read_napytau_setup_data_into_data_set,
 )
 
 from napytau.import_export.model.datapoint_collection import DatapointCollection
@@ -120,9 +121,9 @@ class App(customtkinter.CTk):
             )
 
             if directory_path:
-
-
-                self.datasets = [(import_legacy_format_from_files(PurePath(directory_path)), [])]
+                self.datasets = [
+                    (import_legacy_format_from_files(PurePath(directory_path)), [])
+                ]
                 self.logger.log_message(
                     f"chosen directory: {directory_path}", LogMessageType.INFO
                 )
@@ -135,9 +136,7 @@ class App(customtkinter.CTk):
 
             if directory_path:
                 self.datasets = [
-                        import_napytau_format_from_files(
-                        PurePath(directory_path)
-                    )
+                    import_napytau_format_from_files(PurePath(directory_path))
                 ]
                 print(self.datasets)
                 self.logger.log_message(
@@ -193,7 +192,7 @@ class App(customtkinter.CTk):
                     self.datasets[0][0],
                     self.datasets[0][1],
                     value,
-                )
+                ),
             )
             optionmenu.set("Choose setup")
             optionmenu.grid(row=0, column=0)
