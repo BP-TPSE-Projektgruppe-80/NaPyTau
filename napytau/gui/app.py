@@ -56,19 +56,21 @@ class App(customtkinter.CTk):
 
         """
         Configure grid. Current Layout:
-        Three rows, two columns with
-        - Graph from row 0 to 1, column 0
-        - Checkbox panel in row 0, column 1
-        - Control panel from row 1 to 2, column 1
-        - Logger in row 2, column 0
+        Four rows, two columns with
+        - Menu bar in row 0
+        - Graph from row 1 to 2, column 0
+        - Checkbox panel in row 1, column 1
+        - Control panel from row 2 to 3, column 1
+        - Logger in row 3, column 0
         """
         # Row ratio: 3/8, 3/8, 1/4
         total_height = 8  # 3+3+2 = 8 parts
-        self.grid_rowconfigure(0, weight=3, minsize=3 * height // total_height)
+        self.grid_rowconfigure(0, weight=0)  # Menubar, weight=0 means minimal size
+        self.grid_rowconfigure(1, weight=3, minsize=3 * height // total_height)
         # Reduce graph height by 30 to asure all components and their
         # separators are inside the window.
-        self.grid_rowconfigure(1, weight=3, minsize=3 * height // total_height - 30)
-        self.grid_rowconfigure(2, weight=2, minsize=2 * height // total_height)
+        self.grid_rowconfigure(2, weight=3, minsize=3 * height // total_height - 30)
+        self.grid_rowconfigure(3, weight=2, minsize=2 * height // total_height)
 
         # column ratio: 2/3, 1/3
         total_width = 4  # 2+1 = 3 parts
@@ -211,7 +213,6 @@ class App(customtkinter.CTk):
         """
         customtkinter.set_appearance_mode(self.menu_bar.appearance_mode.get())
         self.logger.switch_logger_appearance(self.menu_bar.appearance_mode.get())
-
         self.graph.update_plot()
 
     def select_number_of_polynomials(self) -> None:

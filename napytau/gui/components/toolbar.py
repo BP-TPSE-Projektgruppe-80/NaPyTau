@@ -19,7 +19,7 @@ class Toolbar:
 
         toolbar_frame = tk.Frame(parent)
         toolbar_frame.config(bg=self.parent.graph.main_color)
-        toolbar_frame.grid(row=0, column=0, padx=10, pady=10, sticky="new")
+        toolbar_frame.grid(row=1, column=0, padx=10, pady=10, sticky="new")
 
         # Create Toolbar
 
