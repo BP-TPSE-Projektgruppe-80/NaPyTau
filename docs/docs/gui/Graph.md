@@ -1,4 +1,4 @@
-# Class: Graph
+# Graph
 
 The `Graph` class is responsible for rendering and updating a graphical representation of `datapoints` in the NaPyTau application. It utilizes `matplotlib` to create plots and integrates with `tkinter` via `FigureCanvasTkAgg`.
 
