@@ -26,11 +26,11 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         json_module_mock.loads.side_effect = BaseException("error")
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
@@ -46,11 +46,11 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         json_module_mock.loads.return_value = {}
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
@@ -68,11 +68,11 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         json_module_mock.loads.return_value = {}
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
@@ -88,11 +88,11 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         jsonschema_module_mock.validate.side_effect = BaseException("error")
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,
@@ -109,11 +109,11 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
         jsonschema_module_mock.validate.return_value = None
 
         with patch.dict(
-                "sys.modules",
-                {
-                    "json": json_module_mock,
-                    "jsonschema": jsonschema_module_mock,
-                },
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
         ):
             from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
                 NapytauFormatJsonService,

@@ -1,6 +1,6 @@
 import argparse
 from napytau.cli.cli_arguments import CLIArguments
-from napytau.import_export.import_export import IMPORT_FORMATS, IMPORT_FORMAT_LEGACY
+from napytau.import_export.import_export import IMPORT_FORMATS, IMPORT_FORMAT_NAPYTAU
 
 
 def parse_cli_arguments() -> CLIArguments:
@@ -11,8 +11,8 @@ def parse_cli_arguments() -> CLIArguments:
     parser.add_argument(
         "--dataset_format",
         type=str,
-        default=IMPORT_FORMAT_LEGACY,
-        const=IMPORT_FORMAT_LEGACY,
+        default=IMPORT_FORMAT_NAPYTAU,
+        const=IMPORT_FORMAT_NAPYTAU,
         nargs="?",
         choices=IMPORT_FORMATS,
         help="Format of the dataset to ingest",
@@ -35,6 +35,12 @@ def parse_cli_arguments() -> CLIArguments:
         type=str,
         help="""Identifier of the setup to use with the dataset, file path for legacy
         format, or setup name for NaPyTau format""",
+    )
+
+    parser.add_argument(
+        "--t_hyp_estimate",
+        type=float,
+        help="""Custom t_hyp estimate to use for the calculations""",
     )
 
     return CLIArguments(parser.parse_args())

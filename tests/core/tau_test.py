@@ -15,6 +15,7 @@ def set_up_mocks() -> MagicMock:
 
     return polynomials_mock
 
+
 def _get_dataset_stub(datapoints: DatapointCollection) -> DataSet:
     return DataSet(
         ValueErrorPair(RelativeVelocity(random()), RelativeVelocity(random())),
