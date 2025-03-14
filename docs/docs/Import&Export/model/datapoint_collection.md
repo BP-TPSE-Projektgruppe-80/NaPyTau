@@ -1,0 +1,3 @@
+# Datapoint Collection
+
+The `DatapointCollection` class is a collection of [`Datapoint`](datapoint.md) objects. It is a wrapper around a list of datapoints. It provides convenience methods for working with datapoints. It is indexed by the distance of the datapoints, as this uniquely identifies a datapoint. It also provides functionality one would expect from a collection, such as iteration, length, and indexing.

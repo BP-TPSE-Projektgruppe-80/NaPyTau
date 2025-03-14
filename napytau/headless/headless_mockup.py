@@ -6,7 +6,7 @@ from napytau.import_export.import_export import (
     IMPORT_FORMAT_NAPYTAU,
     import_legacy_format_from_files,
     read_legacy_setup_data_into_data_set,
-    import_napytau_format_from_files,
+    import_napytau_format_from_file,
     read_napytau_setup_data_into_data_set,
 )
 from napytau.import_export.model.dataset import DataSet
@@ -80,7 +80,7 @@ def init(cli_arguments: CLIArguments) -> None:
         setup_files_directory_path = cli_arguments.get_data_files_directory_path()
         setup_identifier = cli_arguments.get_setup_identifier()
 
-        (dataset, raw_setups) = import_napytau_format_from_files(
+        (dataset, raw_setups) = import_napytau_format_from_file(
             PurePath(setup_files_directory_path)
         )
         if setup_identifier is not None:

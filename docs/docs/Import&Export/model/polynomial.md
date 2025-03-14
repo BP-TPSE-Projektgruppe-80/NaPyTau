@@ -1,0 +1,3 @@
+# Polynomial
+
+The `Polynomial` class represents a polynomial function. It is used to store the coefficients of a polynomial function and to evaluate the function at a given point. Coefficients are stored as a list of floating point numbers. These are ordered from the highest degree to the lowest degree. The degree of the polynomial is determined by the length of the coefficient list minus one, we currently expect it to be 2.

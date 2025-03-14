@@ -76,7 +76,9 @@ class FileCrawlerUnitTest(unittest.TestCase):
         ):
             from napytau.import_export.crawler.file_crawler import FileCrawler
 
-            file_crawler = FileCrawler([compile("pattern1"), compile("pattern2")], lambda x: x)
+            file_crawler = FileCrawler(
+                [compile("pattern1"), compile("pattern2")], lambda x: x
+            )
             with self.assertRaises(ImportExportError):
                 file_crawler.crawl(PurePath("some/directory"))
 
