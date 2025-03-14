@@ -1,4 +1,5 @@
-from typing import List
+from pathlib import PurePath
+from typing import List, Tuple
 
 import tkinter as tk
 from tkinter import filedialog
@@ -13,11 +14,18 @@ from napytau.gui.components.graph import Graph
 from napytau.gui.components.logger import Logger, LogMessageType
 from napytau.gui.components.menu_bar import MenuBar
 from napytau.gui.components.toolbar import Toolbar
+from napytau.import_export.import_export import (
+    IMPORT_FORMAT_LEGACY,
+    import_napytau_format_from_file,
+    import_legacy_format_from_files,
+    read_legacy_setup_data_into_data_set,
+    read_napytau_setup_data_into_data_set,
+)
 
-from napytau.import_export.model.datapoint import Datapoint
 from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 from napytau.util.model.value_error_pair import ValueErrorPair
-
 
 # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_appearance_mode("System")
@@ -33,8 +41,14 @@ class App(customtkinter.CTk):
         """
         super().__init__()
 
+        self.dataset: Tuple[DataSet, List[dict]] = (
+            DataSet(
+                ValueErrorPair(RelativeVelocity(0), RelativeVelocity(0)),
+                DatapointCollection([]),
+            ),
+            [],
+        )
         # Datapoints
-        self.datapoints: DatapointCollection = DatapointCollection([])
         self.datapoints_for_fitting: DatapointCollection = DatapointCollection([])
         self.datapoints_for_calculation: DatapointCollection = DatapointCollection([])
 
@@ -75,7 +89,7 @@ class App(customtkinter.CTk):
 
         # Define menu bar callback functions
         menu_bar_callbacks = {
-            "open_file": self.open_file,
+            "open_directory": self.open_directory,
             "save_file": self.save_file,
             "read_setup": self.read_setup,
             "quit": self.quit,
@@ -91,63 +105,6 @@ class App(customtkinter.CTk):
         # Initialize the checkbox panel
         self.checkbox_panel = CheckboxPanel(self)
 
-        # Update data checkboxes with some data to create them.
-        # TODO: Remove dummy points later on.
-        self.update_data_checkboxes(
-            [
-                create_dummy_datapoint(
-                    ValueErrorPair(1.0, 0.3),
-                    ValueErrorPair(5.0, 1.0),
-                    ValueErrorPair(3.0, 1.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(10.0, 0.3),
-                    ValueErrorPair(1.0, 2.0),
-                    ValueErrorPair(5.0, 2.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(100.0, 0.3),
-                    ValueErrorPair(3.0, 3.0),
-                    ValueErrorPair(7.0, 3.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(400.0, 0.3),
-                    ValueErrorPair(9.0, 4.0),
-                    ValueErrorPair(1.0, 4.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(10000.0, 0.3),
-                    ValueErrorPair(7.0, 5.0),
-                    ValueErrorPair(2.0, 5.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(600000.0, 0.3),
-                    ValueErrorPair(2.0, 6.0),
-                    ValueErrorPair(6.0, 6.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(7000000.0, 0.3),
-                    ValueErrorPair(1.0, 7.0),
-                    ValueErrorPair(5.0, 7.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(80000000.0, 0.3),
-                    ValueErrorPair(10.0, 8.0),
-                    ValueErrorPair(2.0, 8.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(900000000.0, 0.3),
-                    ValueErrorPair(5.0, 9.0),
-                    ValueErrorPair(1.0, 9.0),
-                ),
-                create_dummy_datapoint(
-                    ValueErrorPair(1000000000.0, 0.3),
-                    ValueErrorPair(4.0, 10.0),
-                    ValueErrorPair(8.0, 10.0),
-                ),
-            ]
-        )
-
         # Initialize the graph
         self.graph: Graph = Graph(self)
 
@@ -159,21 +116,41 @@ class App(customtkinter.CTk):
         # Initialize the logger
         self.logger: Logger = Logger(self)
 
-    def open_file(self) -> None:
+    def open_directory(self, mode: str) -> None:
         """
         Opens the file explorer and lets the user choose a file to open.
         """
-        file_path = filedialog.askopenfilename(
-            title="Choose file",
-            filetypes=[
-                ("ALl files", "*.*"),
-                ("Text files", "*.txt"),
-                ("Python files", "*.py"),
-            ],
-        )
 
-        if file_path:
-            self.logger.log_message(f"chosen file: {file_path}", LogMessageType.INFO)
+        if mode == IMPORT_FORMAT_LEGACY:
+            directory_path = filedialog.askdirectory(
+                title="Choose directory",
+                initialdir=".",
+            )
+
+            if directory_path:
+                self.dataset = (
+                    import_legacy_format_from_files(PurePath(directory_path)),
+                    [],
+                )
+                self.logger.log_message(
+                    f"chosen directory: {directory_path}", LogMessageType.INFO
+                )
+
+        else:
+            file_path = filedialog.askopenfilename(
+                title="Choose directory",
+                filetypes=[("NaPyTau files", "*.json")],
+            )
+
+            if file_path:
+                self.dataset = import_napytau_format_from_file(PurePath(file_path))
+                self.logger.log_message(
+                    f"chosen directory: {file_path}", LogMessageType.INFO
+                )
+
+        if len(self.dataset) > 0:
+            self.update_data_checkboxes()
+            self.graph.update_plot()
 
     def save_file(self) -> None:
         """
@@ -181,11 +158,77 @@ class App(customtkinter.CTk):
         """
         self.logger.log_message("Saved file", LogMessageType.SUCCESS)
 
-    def read_setup(self) -> None:
+    def read_setup(self, mode: str) -> None:
         """
         Reads the setup.
         """
-        self.logger.log_message("read setup not implemented yet.", LogMessageType.INFO)
+
+        if mode == IMPORT_FORMAT_LEGACY:
+            file_path = filedialog.askopenfilename(
+                title="Choose setup file",
+                filetypes=[("Legacy setup files", "*.napset")],
+                initialdir=".",
+            )
+
+            self.dataset = (
+                read_legacy_setup_data_into_data_set(
+                    self.dataset[0], PurePath(file_path)
+                ),
+                self.dataset[1],
+            )
+
+        else:
+            if len(self.dataset) == 0 or len(self.dataset[1]) == 0:
+                self.logger.log_message(
+                    "No dataset loaded yet. Please load a dataset first.",
+                    LogMessageType.ERROR,
+                )
+                return
+
+            popup = customtkinter.CTkToplevel(self)
+            popup.title("Select Setup")
+            popup.geometry("300x150")
+
+            self.update_idletasks()
+            x = self.winfo_x() + (self.winfo_width() // 2) - (300 // 2)
+            y = self.winfo_y() + (self.winfo_height() // 2) - (150 // 2)
+            popup.geometry(f"+{x}+{y}")
+
+            selected_setup = tk.StringVar(value="Choose setup")
+
+            setup_names = list(map(lambda setup: setup["name"], self.dataset[1]))
+            optionmenu = customtkinter.CTkOptionMenu(
+                popup,
+                values=setup_names,
+                variable=selected_setup,
+            )
+            optionmenu.pack(pady=20)
+
+            confirm_btn = customtkinter.CTkButton(
+                popup,
+                text="Confirm",
+                command=lambda: self.confirm_selection(popup, selected_setup),
+            )
+            confirm_btn.pack(pady=10)
+
+    def confirm_selection(
+        self, popup: tk.Toplevel, selected_setup: tk.StringVar
+    ) -> None:
+        """
+        Confirms the selected setup and closes the popup.
+        """
+        if selected_setup.get() == "Choose setup":
+            self.logger.log_message("Please choose a setup.", LogMessageType.ERROR)
+            return
+
+        value = selected_setup.get()
+        read_napytau_setup_data_into_data_set(
+            self.dataset[0],
+            self.dataset[1],
+            value,
+        )
+        popup.destroy()
+        self.logger.log_message(f"Setup '{value}' loaded.", LogMessageType.SUCCESS)
 
     def quit(self) -> None:
         """
@@ -234,35 +277,25 @@ class App(customtkinter.CTk):
             LogMessageType.ERROR,
         )
 
-    def update_data_checkboxes(self, new_datapoints: List[Datapoint]) -> None:
+    def update_data_checkboxes(self) -> None:
         """
         Updates the datapoint for the gui and updates both columns of the
         data checkboxes.
         Call this method if there are new datapoints.
-        :param new_datapoints: The new list of datapoints.
         """
-        self.datapoints = DatapointCollection(new_datapoints)
-
-        for point in new_datapoints:
+        for point in self.dataset[0].get_datapoints():
             self.datapoints_for_fitting.add_datapoint(point)
             self.datapoints_for_calculation.add_datapoint(point)
 
         self.checkbox_panel.update_data_checkboxes_fitting()
         self.checkbox_panel.update_data_checkboxes_calculation()
 
+    def get_datapoints(self) -> DatapointCollection:
+        """
+        Returns the datapoints for fitting and calculation.
+        """
 
-def create_dummy_datapoint(
-    distance: ValueErrorPair,
-    shifted_intensity: ValueErrorPair,
-    unshifted_intensity: ValueErrorPair,
-) -> Datapoint:
-    """
-    Function for testing purposes only!
-    """
-    datapoint = Datapoint(distance)
-    datapoint.shifted_intensity = shifted_intensity
-    datapoint.unshifted_intensity = unshifted_intensity
-    return datapoint
+        return self.dataset[0].get_datapoints()
 
 
 def init(cli_arguments: CLIArguments) -> None:

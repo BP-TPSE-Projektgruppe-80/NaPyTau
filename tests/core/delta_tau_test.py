@@ -69,7 +69,9 @@ class DeltaTauUnitTests(unittest.TestCase):
                 ]
             )
 
-            jacobian_matrix = np.array([[3e8, 1e8], [3e8, 1e8], [3e8, 1e8]])
+            jacobian_matrix = np.array(
+                [[3000000, 1000000], [3000000, 1000000], [3000000, 1000000]]
+            )
 
             np.testing.assert_array_equal(
                 calculate_jacobian_matrix(_get_dataset_stub(datapoints), coefficients),

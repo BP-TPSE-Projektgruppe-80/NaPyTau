@@ -83,7 +83,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             expected_result: np.ndarray = np.array([9, 24, 47])
             np.testing.assert_array_equal(
                 evaluate_polynomial_at_measuring_times(
-                    _get_dataset_stub(datapoints), coefficients
+                    _get_dataset_stub(datapoints),
+                    coefficients,
                 ),
                 expected_result,
             )
@@ -134,7 +135,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             expected_result: np.ndarray = np.array([])
             np.testing.assert_array_equal(
                 evaluate_polynomial_at_measuring_times(
-                    _get_dataset_stub(datapoints), coefficients
+                    _get_dataset_stub(datapoints),
+                    coefficients,
                 ),
                 expected_result,
             )
@@ -178,7 +180,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             expected_result: np.ndarray = np.array([5])
             np.testing.assert_array_equal(
                 evaluate_polynomial_at_measuring_times(
-                    _get_dataset_stub(datapoints), coefficients
+                    _get_dataset_stub(datapoints),
+                    coefficients,
                 ),
                 expected_result,
             )
@@ -234,7 +237,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             expected_result: np.ndarray = np.array([5, 5, 5])
             np.testing.assert_array_equal(
                 evaluate_polynomial_at_measuring_times(
-                    _get_dataset_stub(datapoints), coefficients
+                    _get_dataset_stub(datapoints),
+                    coefficients,
                 ),
                 expected_result,
             )
@@ -266,8 +270,11 @@ class PolynomialsUnitTest(unittest.TestCase):
         # With an empty coefficients array, the function should throw a polynomial
         # coefficient error.
         with self.assertRaises(PolynomialCoefficientError):
-            evaluate_polynomial_at_measuring_times(
-                _get_dataset_stub(datapoints), coefficients
+            (
+                evaluate_polynomial_at_measuring_times(
+                    _get_dataset_stub(datapoints),
+                    coefficients,
+                ),
             )
 
     @staticmethod

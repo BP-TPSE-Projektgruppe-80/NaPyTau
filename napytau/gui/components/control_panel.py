@@ -3,6 +3,12 @@ from typing import TYPE_CHECKING
 
 from napytau.gui.model.log_message_type import LogMessageType
 
+from napytau.core.core import (
+    calculate_optimal_tau_factor,
+    calculate_lifetime_for_custom_tau_factor,
+)
+from napytau.util.coalesce import coalesce
+
 if TYPE_CHECKING:
     from napytau.gui.app import App  # Import only for the type checking.
 
@@ -52,10 +58,6 @@ class ControlPanel(customtkinter.CTkFrame):
         tau_widget = self._create_tau_widget()
         tau_widget.pack(fill="x", padx=5, pady=5)
 
-        # Row 4: Abs(Tau - T) display
-        absolute_tau_t_widget = self._create_absolute_tau_t_widget()
-        absolute_tau_t_widget.pack(fill="x", padx=5, pady=5)
-
     def _create_timescale_widget(self) -> customtkinter.CTkFrame:
         """
         Create the timescale widget.
@@ -65,18 +67,35 @@ class ControlPanel(customtkinter.CTkFrame):
         timescale_max = 100.0
 
         frame = customtkinter.CTkFrame(self)
+        frame.columnconfigure(0, weight=1)  # Button "t [ps]"
+        frame.columnconfigure(1, weight=1)  # Button "+0.1[ps]"
+        frame.columnconfigure(2, weight=1)  # Button "-0.1[ps]"
+        frame.columnconfigure(
+            3, weight=2
+        )  # Entry field (More weight to make it bigger)
 
-        timescale_entry = customtkinter.StringVar(value=str(self.timescale.get()))
+        tau_factor = customtkinter.StringVar(value=str(self.timescale.get()))
 
         def update_timescale() -> None:
             try:
-                value = float(timescale_entry.get())
+                value = float(tau_factor.get())
 
                 if timescale_min <= value <= timescale_max:
                     self.timescale.set(value)
                     self.parent.logger.log_message(
                         f"Timescale set to: {value}", LogMessageType.INFO
                     )
+                    lifetime = calculate_lifetime_for_custom_tau_factor(
+                        self.parent.datasets[0],
+                        value,
+                        int(self.parent.menu_bar.number_of_polynomials.get()),
+                    )
+
+                    self.result_tau.set(str(lifetime[0]))
+                    self.result_tau_error.set(str(lifetime[1]))
+
+                    self._tau_button_event(lifetime[0], lifetime[1])
+
                 else:
                     self.parent.logger.log_message(
                         f"Error: Value out of valid range ({timescale_min:.2f}"
@@ -88,24 +107,69 @@ class ControlPanel(customtkinter.CTkFrame):
                     "Invalid input value, please enter a number.", LogMessageType.ERROR
                 )
 
-        sync_entry_with_slider = lambda value: timescale_entry.set(f"{value:.2f}")
+        # connects slider value to lifetime Entry results
 
-        button = customtkinter.CTkButton(frame, text="t [ps]", command=update_timescale)
-        button.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        def sync_slider(value: float) -> None:
+            if self._check_dataset_set():
+                tau_factor.set(f"{value:.2f}")
+                lifetime = calculate_lifetime_for_custom_tau_factor(
+                    coalesce(self.parent.dataset[0]),
+                    value,
+                    int(self.parent.menu_bar.number_of_polynomials.get()),
+                )
 
-        entry = customtkinter.CTkEntry(
-            frame, textvariable=timescale_entry, justify="right", width=80
+                self.result_tau.set(str(lifetime[0]))
+                self.result_tau_error.set(str(lifetime[1]))
+
+        update_timescale_button = customtkinter.CTkButton(
+            frame,
+            text="t [ps]",
+            command=update_timescale,
+            width=10,
         )
-        entry.grid(row=0, column=1, padx=5, pady=5, sticky="e")
+        update_timescale_button.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
+
+        # Function for adding and subtracting from tau factor in 0.1ps steps
+
+        add_on_tau_factor = (
+            lambda value: tau_factor.set(f"{float(tau_factor.get()) + value:.2f}")
+            if float(tau_factor.get()) + value >= 0.0
+            else None
+        )
+
+        # Create buttons for adding and subtracting
+        add_taufactor_button = customtkinter.CTkButton(
+            frame,
+            text="+0.1[ps]",
+            command=lambda: add_on_tau_factor(0.1),
+            width=10,
+        )
+
+        subtract_taufactor_button = customtkinter.CTkButton(
+            frame,
+            text="-0.1[ps]",
+            command=lambda: add_on_tau_factor(-0.1),
+            width=10,
+        )
+
+        # Create Entry and Slider
+        entry = customtkinter.CTkEntry(
+            frame, textvariable=tau_factor, justify="right", width=80
+        )
 
         slider = customtkinter.CTkSlider(
             frame,
             from_=timescale_min,
             to=timescale_max,
             variable=self.timescale,
-            command=sync_entry_with_slider,
+            command=sync_slider,
         )
-        slider.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+
+        # Layout:
+        add_taufactor_button.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+        subtract_taufactor_button.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
+        entry.grid(row=0, column=3, padx=5, pady=5, sticky="ew")
+        slider.grid(row=1, column=0, columnspan=4, padx=5, pady=5, sticky="ew")
 
         frame.columnconfigure(0, weight=1)
         frame.columnconfigure(1, weight=1)
@@ -117,18 +181,26 @@ class ControlPanel(customtkinter.CTkFrame):
         Create the chi squared widget.
         """
         frame = customtkinter.CTkFrame(self)
+        frame.columnconfigure(2, weight=1)
+
         button = customtkinter.CTkButton(
             frame, text="Minimize", command=self._chi_squared_button_event
         )
 
-        button.pack(side="left", padx=5)
+        button.grid(row=0, column=0, padx=5, pady=5)
 
         label = customtkinter.CTkLabel(frame, text="χ²:")
-        label.pack(side="left", padx=15)
+        label.grid(row=0, column=1, padx=5, pady=5)
 
-        result = customtkinter.CTkLabel(frame, textvariable=self.result_chi_squared)
+        result = customtkinter.CTkEntry(
+            frame,
+            textvariable=self.result_chi_squared,
+            state="readonly",
+            justify="right",
+            width=0,
+        )
 
-        result.pack(side="left", padx=5)
+        result.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
 
         return frame
 
@@ -138,19 +210,49 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         frame = customtkinter.CTkFrame(self)
 
+        # Make all columns expand equally
+
+        frame.columnconfigure(2, weight=1)
+
         button = customtkinter.CTkButton(
-            frame, text="τ ± Δτ [ps]:", command=self._tau_button_event
+            frame, text="τ ± Δτ [ps]:", command=lambda: self._tau_button_event(0.0, 0.0)
         )
-        button.pack(side="left", padx=5)
 
-        result = customtkinter.CTkLabel(frame, textvariable=self.result_tau)
-        result.pack(side="left", padx=5)
+        label = customtkinter.CTkLabel(frame, text="|τ - t| [ps]:")
 
-        separator = customtkinter.CTkLabel(frame, text="±")
-        separator.pack(side="left", padx=5)
+        result_tau_time_difference = customtkinter.CTkEntry(
+            frame, textvariable=self.result_absolute_tau_t, state="readonly", width=150
+        )
 
-        error = customtkinter.CTkLabel(frame, textvariable=self.result_tau_error)
-        error.pack(side="left", padx=5)
+        # Secondary frame
+        frame_secondary = customtkinter.CTkFrame(frame)
+        frame_secondary.grid(
+            row=1, column=0, columnspan=4, padx=0, pady=0, sticky="nsew"
+        )
+
+        # Make sure secondary frame columns expand as well
+        frame_secondary.columnconfigure(0, weight=1)
+        frame_secondary.columnconfigure(2, weight=1)
+
+        result = customtkinter.CTkEntry(
+            frame_secondary, textvariable=self.result_tau, state="readonly", width=100
+        )
+        separator = customtkinter.CTkLabel(frame_secondary, text="±")
+        error = customtkinter.CTkEntry(
+            frame_secondary,
+            textvariable=self.result_tau_error,
+            state="readonly",
+            width=100,
+        )
+
+        # Layout adjustments
+        button.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+        label.grid(row=0, column=1, padx=0, pady=5, sticky="nsew")
+        result_tau_time_difference.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
+
+        result.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+        separator.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
+        error.grid(row=1, column=2, padx=5, pady=5, sticky="nsew")
 
         return frame
 
@@ -160,18 +262,21 @@ class ControlPanel(customtkinter.CTkFrame):
 
         """
         frame = customtkinter.CTkFrame(self)
+        frame.columnconfigure(2, weight=1)
 
         button = customtkinter.CTkButton(
             frame, text="Absolute τ", command=self._absolute_tau_button_event
         )
-        button.pack(side="left", padx=5)
+        button.grid(row=0, column=0, padx=5, pady=5)
 
         label = customtkinter.CTkLabel(frame, text="|τ - t| [ps]:")
-        label.pack(side="left", padx=15)
+        label.grid(row=0, column=1, padx=5, pady=5)
 
-        result = customtkinter.CTkLabel(frame, textvariable=self.result_absolute_tau_t)
+        result = customtkinter.CTkEntry(
+            frame, textvariable=self.result_absolute_tau_t, state="readonly", width=100
+        )
 
-        result.pack(side="left", padx=5)
+        result.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
 
         return frame
 
@@ -179,7 +284,6 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         Event if the timescale button is clicked.
         """
-        print(f"Timescale set to {self.timescale.get():.2f} ps")
 
     def _timescale_slider_event(self, value: str) -> None:
         """
@@ -188,18 +292,26 @@ class ControlPanel(customtkinter.CTkFrame):
         """
         self.timescale.set(round(float(value), 2))
 
-    def _tau_button_event(self) -> None:
+    def _tau_button_event(self, value: float, error: float) -> None:
         """
         Event if the tau button is clicked.
         """
-        self.set_result_tau(0.0)
-        self.set_result_tau_error(0.0)
+        self.set_result_tau(value)
+        self.set_result_tau_error(error)
 
     def _chi_squared_button_event(self) -> None:
         """
         Event if the chi2 button is clicked.
         """
-        self.set_result_chi_squared(0.0)
+        if self._check_dataset_set():
+            self.set_result_chi_squared(
+                calculate_optimal_tau_factor(
+                    coalesce(self.parent.dataset[0]),
+                    (5, 100),
+                    1.0,
+                    int(self.parent.menu_bar.number_of_polynomials.get()),
+                )
+            )
 
     def _absolute_tau_button_event(self) -> None:
         """
@@ -238,3 +350,16 @@ class ControlPanel(customtkinter.CTkFrame):
         :param absolute_tau_t: The new value for the absolute tau value.
         """
         self.result_absolute_tau_t.set(absolute_tau_t)
+
+    def _check_dataset_set(self) -> bool:
+        """
+        Check if a dataset is set.
+        :return: True if a dataset is set, False otherwise.
+        """
+        if self.parent.dataset is None:
+            self.parent.logger.log_message(
+                "No dataset loaded yet. Please load a dataset first.",
+                LogMessageType.ERROR,
+            )
+            return False
+        return True

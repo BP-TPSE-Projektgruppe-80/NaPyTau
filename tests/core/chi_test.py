@@ -59,7 +59,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
             datapoints = DatapointCollection(
@@ -90,7 +90,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = 628.3486168
 
             self.assertAlmostEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -196,7 +196,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([])
             datapoints = DatapointCollection([])
@@ -206,7 +206,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = 0
 
             self.assertEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -315,7 +315,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
             datapoints = DatapointCollection(
@@ -334,7 +334,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = 1608.69444444
 
             self.assertAlmostEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -443,7 +443,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
             datapoints = DatapointCollection(
@@ -468,7 +468,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = float("inf")
 
             self.assertAlmostEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -577,7 +577,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([-5, -4, 3, 2, -1])
             datapoints = DatapointCollection(
@@ -602,7 +602,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = 22.02777778
 
             self.assertAlmostEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -711,7 +711,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import chi_squared_fixed_t
+            from napytau.core.chi import calculate_chi_squared
 
             coefficients: np.ndarray = np.array([5, 4, 3, 2, 1])
             datapoints = DatapointCollection(
@@ -742,7 +742,7 @@ class ChiUnitTest(unittest.TestCase):
             expected_result: float = 205.02777778
 
             self.assertAlmostEqual(
-                chi_squared_fixed_t(
+                calculate_chi_squared(
                     _get_dataset_stub(datapoints),
                     coefficients,
                     t_hyp,
@@ -826,76 +826,6 @@ class ChiUnitTest(unittest.TestCase):
                 2,
             )
 
-    def test_CanOptimizePolynomialCoefficients(self):
-        """Can optimize polynomial coefficients"""
-        polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
-
-        # Mocked return value of called function
-        scipy_optimize_module_mock.optimize.minimize.return_value = (
-            sp.optimize.OptimizeResult(x=[2, 3, 1], fun=0.0)
-        )
-
-        with patch.dict(
-            "sys.modules",
-            {
-                "scipy": scipy_optimize_module_mock,
-            },
-        ):
-            from napytau.core.chi import optimize_coefficients
-
-            initial_coefficients: np.ndarray = np.array([1, 1, 1])
-            datapoints = DatapointCollection(
-                [
-                    Datapoint(
-                        ValueErrorPair(0.0, 0.16),
-                        None,
-                        ValueErrorPair(2, 1),
-                        ValueErrorPair(6, 1),
-                    ),
-                    Datapoint(
-                        ValueErrorPair(1.0, 0.16),
-                        None,
-                        ValueErrorPair(6, 1),
-                        ValueErrorPair(10, 1),
-                    ),
-                ]
-            )
-            t_hyp: float = 2.0
-            weight_factor: float = 1.0
-
-            expected_chi: float = 0.0
-            expected_coefficients: np.ndarray = np.array([2, 3, 1])
-
-            actual_coefficients: np.ndarray
-            actual_chi: float
-            actual_coefficients, actual_chi = optimize_coefficients(
-                _get_dataset_stub(datapoints),
-                initial_coefficients,
-                t_hyp,
-                weight_factor,
-            )
-
-            self.assertAlmostEqual(actual_chi, expected_chi)
-            np.testing.assert_array_almost_equal(
-                actual_coefficients, expected_coefficients
-            )
-
-            self.assertEqual(
-                len(scipy_optimize_module_mock.optimize.minimize.mock_calls), 1
-            )
-
-            np.testing.assert_array_equal(
-                scipy_optimize_module_mock.optimize.minimize.mock_calls[0].args[1],
-                np.array([1, 1, 1]),
-            )
-
-            self.assertEqual(
-                scipy_optimize_module_mock.optimize.minimize.mock_calls[0].kwargs[
-                    "method"
-                ],
-                "L-BFGS-B",
-            )
-
     def test_CanOptimizeTHypValue(self):
         """Can optimize t_hyp value"""
         polynomials_mock, numpy_module_mock, scipy_optimize_module_mock = set_up_mocks()
@@ -914,7 +844,7 @@ class ChiUnitTest(unittest.TestCase):
                 "numpy": numpy_module_mock,
             },
         ):
-            from napytau.core.chi import optimize_t_hyp
+            from napytau.core.chi import optimize_tau_factor
 
             initial_coefficients: np.ndarray = np.array([1, 1, 1])
             datapoints = DatapointCollection(
@@ -938,11 +868,11 @@ class ChiUnitTest(unittest.TestCase):
 
             expected_t_hyp: float = 2.0
 
-            actual_t_hyp: float = optimize_t_hyp(
+            actual_t_hyp: float = optimize_tau_factor(
                 _get_dataset_stub(datapoints),
+                weight_factor,
                 initial_coefficients,
                 t_hyp_range,
-                weight_factor,
             )
 
             self.assertEqual(actual_t_hyp, expected_t_hyp)
@@ -958,9 +888,9 @@ class ChiUnitTest(unittest.TestCase):
                 """The first argument to minimize should be a callable function""",
             )
 
-            self.assertEqual(
+            np.testing.assert_array_equal(
                 scipy_optimize_module_mock.optimize.minimize.mock_calls[0].kwargs["x0"],
-                0.0,
+                np.ndarray([0]),
             )
 
             self.assertEqual(

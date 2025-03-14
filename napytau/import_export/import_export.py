@@ -28,10 +28,10 @@ IMPORT_FORMATS = [IMPORT_FORMAT_LEGACY, IMPORT_FORMAT_NAPYTAU]
 
 def import_legacy_format_from_files(
     directory_path: PurePath, fit_file_path: Optional[PurePath] = None
-) -> List[DataSet]:
+) -> DataSet:
     """
     Ingests a dataset from the Legacy format. The directory path will be
-    recursively searched for the following files:
+    searched for the following files:
     - v_c
     - distances.dat
     - norm.fac
@@ -43,19 +43,14 @@ def import_legacy_format_from_files(
 
     file_crawler = _configure_file_crawler_for_legacy_format(fit_file_path)
 
-    setup_file_bundles: List[LegacySetupFiles] = file_crawler.crawl(directory_path)
+    setup_files: LegacySetupFiles = file_crawler.crawl(directory_path)
 
-    return list(
-        map(
-            lambda setup_files: LegacyFactory.create_dataset(
-                RawLegacyData(
-                    FileReader.read_rows(setup_files.velocity_file),
-                    FileReader.read_rows(setup_files.distances_file),
-                    FileReader.read_rows(setup_files.fit_file),
-                    FileReader.read_rows(setup_files.calibration_file),
-                )
-            ),
-            setup_file_bundles,
+    return LegacyFactory.create_dataset(
+        RawLegacyData(
+            FileReader.read_rows(setup_files.velocity_file),
+            FileReader.read_rows(setup_files.distances_file),
+            FileReader.read_rows(setup_files.fit_file),
+            FileReader.read_rows(setup_files.calibration_file),
         )
     )
 
@@ -100,9 +95,9 @@ def read_legacy_setup_data_into_data_set(
     return LegacyFactory.enrich_dataset(dataset, RawLegacySetupData(setup_data))
 
 
-def import_napytau_format_from_files(
-    directory_path: PurePath,
-) -> List[Tuple[DataSet, List[dict]]]:
+def import_napytau_format_from_file(
+    file_path: PurePath,
+) -> Tuple[DataSet, List[dict]]:
     """
     Ingests a dataset from the NapyTau format. The directory path will be
     recursively searched for the following files:
@@ -112,27 +107,9 @@ def import_napytau_format_from_files(
 
     :return: A list of datasets and their corresponding raw setup data
     """
-
-    file_crawler = FileCrawler(
-        [compile_regex(".*.napytau.json")],
-        lambda files: files[0],
-    )
-
-    napytau_file_paths = file_crawler.crawl(directory_path)
-
-    return list(
-        map(
-            lambda napytau_file_path: _map_raw_napytau_data(napytau_file_path),
-            napytau_file_paths,
-        )
-    )
-
-
-def _map_raw_napytau_data(napytau_file_path: PurePath) -> Tuple[DataSet, List[dict]]:
     json_data = NapytauFormatJsonService.parse_json_data(
-        FileReader.read_text(napytau_file_path)
+        FileReader.read_text(file_path)
     )
-
     return (
         NapyTauFactory.create_dataset(json_data),
         json_data["setups"],
