@@ -2,6 +2,7 @@ from napytau.gui.app import init as init_gui
 from napytau.headless.headless_kernel import init as init_headless
 from napytau.cli.parser import parse_cli_arguments
 
+
 def main() -> None:
     args = parse_cli_arguments()
 

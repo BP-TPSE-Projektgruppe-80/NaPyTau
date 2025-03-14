@@ -1,9 +1,7 @@
 from pathlib import PurePath
 
-import numpy as np
 
 from napytau.cli.cli_arguments import CLIArguments
-from napytau.core.chi import optimize_tau_factor
 from napytau.core.core import (
     calculate_lifetime_for_fit,
     calculate_lifetime_for_custom_tau_factor,
@@ -85,4 +83,6 @@ def init(cli_arguments: CLIArguments) -> None:
             custom_tau_factor=t_hyp,
             polynomial_degree=2,
         )
-    print(f"Calculated lifetime with custom tau factor: {tau_custom} ± {tau_custom_error}")
+    print(
+        f"Calculated lifetime with custom tau factor: {tau_custom} ± {tau_custom_error}"
+    )

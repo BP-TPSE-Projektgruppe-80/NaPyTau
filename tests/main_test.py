@@ -18,7 +18,7 @@ class MainUnitTest(unittest.TestCase):
             "sys.modules",
             {
                 "napytau.gui.app": gui_mock,
-                "napytau.headless.headless_mockup": headless_mock,
+                "napytau.headless.headless_kernel": headless_mock,
                 "napytau.cli.parser": parser_mock,
             },
         ):
@@ -39,7 +39,7 @@ class MainUnitTest(unittest.TestCase):
             "sys.modules",
             {
                 "napytau.gui.app": gui_mock,
-                "napytau.headless.headless_mockup": headless_mock,
+                "napytau.headless.headless_kernel": headless_mock,
                 "napytau.cli.parser": parser_mock,
             },
         ):

@@ -29,7 +29,7 @@ class ParserUnitTest(unittest.TestCase):
             from napytau.cli.parser import parse_cli_arguments
 
             parse_cli_arguments()
-            self.assertEqual(len(argument_parser_mock.add_argument.mock_calls), 5)
+            self.assertEqual(len(argument_parser_mock.add_argument.mock_calls), 6)
             self.assertEqual(
                 argument_parser_mock.add_argument.mock_calls[0],
                 (
@@ -43,8 +43,8 @@ class ParserUnitTest(unittest.TestCase):
                     ("--dataset_format",),
                     {
                         "type": str,
-                        "default": "legacy",
-                        "const": "legacy",
+                        "default": "napytau",
+                        "const": "napytau",
                         "nargs": "?",
                         "choices": ["legacy", "napytau"],
                         "help": "Format of the dataset to ingest",
@@ -84,6 +84,17 @@ class ParserUnitTest(unittest.TestCase):
                         "type": str,
                         "help": """Identifier of the setup to use with the dataset, file path for legacy
         format, or setup name for NaPyTau format""",
+                    },
+                ),
+            )
+
+            self.assertEqual(
+                argument_parser_mock.add_argument.mock_calls[5],
+                (
+                    ("--t_hyp_estimate",),
+                    {
+                        "type": float,
+                        "help": """Custom t_hyp estimate to use for the calculations""",
                     },
                 ),
             )
