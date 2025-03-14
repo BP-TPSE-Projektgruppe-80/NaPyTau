@@ -6,6 +6,7 @@ from re import match as regex_match
 from re import Pattern
 
 from napytau.import_export.crawler.crawler import Crawler
+from napytau.import_export.import_export_error import ImportExportError
 
 
 class FileCrawler[T](Crawler[PurePath, T]):
@@ -33,14 +34,16 @@ class FileCrawler[T](Crawler[PurePath, T]):
         self.file_name_patterns = file_name_patterns
         self.return_type_factory = return_type_factory
 
-    def crawl(self, directory_path: PurePath) -> List[T]:
+    def crawl(self, directory_path: PurePath) -> T:
         if not isdir(directory_path):
             raise ValueError(f"Directory path {directory_path} is not a directory.")
 
-        crawled_files = []
+        crawled_files = None
 
-        directory_tree = walk(directory_path)
+        directory_tree = walk(directory_path, topdown=True)
         for root_path, _, files in directory_tree:
+            if PurePath(root_path) != directory_path:
+                break
             crawled_files_in_directory = []
             for file in files:
                 if any(
@@ -50,8 +53,12 @@ class FileCrawler[T](Crawler[PurePath, T]):
                     crawled_files_in_directory.append(PurePath(f"{root_path}/{file}"))
 
             if len(crawled_files_in_directory) > 0:
-                crawled_files.append(
-                    self.return_type_factory(crawled_files_in_directory)
-                )
+                crawled_files = self.return_type_factory(crawled_files_in_directory)
+
+        if crawled_files is None:
+            raise ImportExportError(
+                f"Some files could not be found in the directory {directory_path}."
+                + f"Expected files with names matching {self.file_name_patterns}."
+            )
 
         return crawled_files

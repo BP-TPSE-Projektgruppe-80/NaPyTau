@@ -2,6 +2,10 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 from napytau.import_export.import_export_error import ImportExportError
+from napytau.import_export.model.datapoint_collection import DatapointCollection
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.relative_velocity import RelativeVelocity
+from napytau.util.model.value_error_pair import ValueErrorPair
 
 
 def set_up_mocks() -> (MagicMock, MagicMock):
@@ -119,6 +123,74 @@ class NapytauFormatJsonServiceUnitTest(unittest.TestCase):
             jsonschema_module_mock.validate.assert_called_once_with(
                 instance={},
                 schema={},
+            )
+
+    def test_raisesAnImportExportErrorWhenTheProvidedDatasetCanNotBeConvertedToJSON(
+        self,
+    ):
+        """Raises an ImportExportError when the provided dataset can not be converted to JSON."""
+        json_module_mock, jsonschema_module_mock = set_up_mocks()
+        json_module_mock.dumps.side_effect = ValueError("error")
+
+        with patch.dict(
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
+        ):
+            from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
+                NapytauFormatJsonService,
+            )
+
+            dataset = DataSet(
+                ValueErrorPair(RelativeVelocity(1), RelativeVelocity(0.1)),
+                DatapointCollection([]),
+            )
+
+            with self.assertRaises(ImportExportError):
+                NapytauFormatJsonService.create_calculation_data_json_string(dataset)
+
+    def test_usesTheJsonModuleToDumpTheProvidedDataset(self):
+        """Uses the json module to dump the provided dataset."""
+        json_module_mock, jsonschema_module_mock = set_up_mocks()
+        json_module_mock.dumps.return_value = ""
+
+        with patch.dict(
+            "sys.modules",
+            {
+                "json": json_module_mock,
+                "jsonschema": jsonschema_module_mock,
+            },
+        ):
+            from napytau.import_export.factory.napytau.json_service.napytau_format_json_service import (
+                NapytauFormatJsonService,
+            )
+
+            dataset = DataSet(
+                relative_velocity=ValueErrorPair(
+                    RelativeVelocity(1), RelativeVelocity(0.1)
+                ),
+                datapoints=DatapointCollection([]),
+                tau_factor=1.0,
+                weighted_mean_tau=ValueErrorPair(2.0, 1.1),
+                sampling_points=[],
+                polynomial_count=2,
+                polynomials=[],
+            )
+
+            NapytauFormatJsonService.create_calculation_data_json_string(dataset)
+            print(json_module_mock.dumps.call_args_list)
+            json_module_mock.dumps.assert_called_once_with(
+                obj={
+                    "tauFactor": 1.0,
+                    "weightedMeanTau": 2.0,
+                    "weightedMeanTauError": 1.1,
+                    "datapoints": [],
+                    "samplingPoints": [],
+                    "polynomials": [],
+                },
+                indent=2,
             )
 
 

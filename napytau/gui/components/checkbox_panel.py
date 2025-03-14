@@ -37,11 +37,11 @@ class CheckboxPanel:
         header_label.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         # Update all checkboxes for the fitting
-        for i in range(len(self.parent.datapoints)):
-            shifted_intensity, unshifted_intensity = self.parent.datapoints[
+        for i in range(len(self.parent.get_datapoints())):
+            shifted_intensity, unshifted_intensity = self.parent.get_datapoints()[
                 i
             ].get_intensity()
-            distance = self.parent.datapoints[i].get_distance()
+            distance = self.parent.get_datapoints()[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
@@ -62,14 +62,12 @@ class CheckboxPanel:
             index
         ].active = not self.parent.datapoints_for_fitting[index].active
         if self.parent.datapoints_for_fitting[index].active:
-            print("[fitting] checkbox with index " + str(index) + " activated.")
             self.parent.logger.log_message(
                 "[fitting] checkbox with index " + str(index) + " activated.",
                 LogMessageType.INFO,
             )
 
         else:
-            print("[fitting] checkbox with index " + str(index) + " deactivated.")
             self.parent.logger.log_message(
                 "[fitting] checkbox with index " + str(index) + " deactivated.",
                 LogMessageType.INFO,
@@ -94,11 +92,11 @@ class CheckboxPanel:
         header_label.grid(row=0, column=1, padx=30, pady=5, sticky="nsew")
 
         # Update all checkboxes for the calculation
-        for i in range(len(self.parent.datapoints)):
-            shifted_intensity, unshifted_intensity = self.parent.datapoints[
+        for i in range(len(self.parent.get_datapoints())):
+            shifted_intensity, unshifted_intensity = self.parent.get_datapoints()[
                 i
             ].get_intensity()
-            distance = self.parent.datapoints[i].get_distance()
+            distance = self.parent.get_datapoints()[i].get_distance()
 
             checkbox = customtkinter.CTkCheckBox(
                 self.frame_datapoint_checkboxes,
@@ -118,7 +116,3 @@ class CheckboxPanel:
         self.parent.datapoints_for_calculation[
             index
         ].active = not self.parent.datapoints_for_calculation[index].active
-        if self.parent.datapoints_for_calculation[index].active:
-            print("[calculation] checkbox with index " + str(index) + " activated.")
-        else:
-            print("[calculation] checkbox with index " + str(index) + " deactivated.")
