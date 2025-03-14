@@ -7,7 +7,7 @@ import customtkinter
 from typing import TYPE_CHECKING
 import numpy as np
 
-from napytau.gui.components.Toolbar import Toolbar
+from napytau.gui.components.toolbar import Toolbar
 from napytau.gui.model.color import Color
 from napytau.gui.model.marker_factory import generate_marker
 from napytau.gui.model.marker_factory import generate_error_marker_path
@@ -24,7 +24,7 @@ class Graph:
         self.parent = parent
         self.graph_frame = self.plot(customtkinter.get_appearance_mode())
         self.graph_frame.grid(
-            row=0, column=0, rowspan=2, padx=(10, 10), pady=(10, 0), sticky="nsew"
+            row=1, column=0, rowspan=2, padx=(10, 10), pady=(10, 0), sticky="nsew"
         )
         self.graph_frame.grid_propagate(False)
 
@@ -53,11 +53,15 @@ class Graph:
             linewidth=0.3,
         )
 
+        axes_1.set_xscale("log")
+
         # draw the markers on the axes
         self.plot_markers(self.parent.datapoints_for_fitting, axes_1)
 
         # draw the fitting curve on the axes
         self.plot_fitting_curve(self.parent.datapoints_for_fitting, axes_1)
+
+        self.plot_derivative_curve(self.parent.datapoints_for_fitting, axes_1)
 
         # creating the Tkinter canvas
         # containing the Matplotlib figure
@@ -72,7 +76,7 @@ class Graph:
         """
         self.graph_frame = self.plot(customtkinter.get_appearance_mode())
         self.graph_frame.grid(
-            row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew"
+            row=1, column=0, rowspan=2, padx=(10, 10), pady=(10, 0), sticky="nsew"
         )
         self.graph_frame.grid_propagate(False)
         self.parent.toolbar = Toolbar(self.parent, self.canvas)
@@ -82,11 +86,13 @@ class Graph:
             self.main_color = Color.WHITE
             self.secondary_color = Color.BLACK
             self.main_marker_color = Color.DARK_GREEN
+            self.secondary_marker_color = Color.DARK_RED
 
         else:
             self.main_color = Color.DARK_GRAY
             self.secondary_color = Color.WHITE
             self.main_marker_color = Color.LIGHT_GREEN
+            self.secondary_marker_color = Color.Light_RED
 
     def apply_coloring(self, figure: Figure, axes: Axes) -> None:
         """
@@ -117,20 +123,35 @@ class Graph:
         index: int = 0
         for datapoint in datapoints:
             # Generate marker and compute dynamic markersize
-            marker = generate_marker(
+            marker_shifted = generate_marker(
                 generate_error_marker_path(datapoint.get_intensity()[0].error)
             )
 
+            marker_unshifted = generate_marker(
+                generate_error_marker_path(datapoint.get_intensity()[1].error)
+            )
+
             # Scale markersize based on distance
-            size = datapoint.get_intensity()[0].error * 5
+            size_shifted = datapoint.get_intensity()[0].error * 5
             axes.plot(
                 datapoint.get_distance().value,
                 datapoint.get_intensity()[0].value,
-                marker=marker,
+                marker=marker_shifted,
                 linestyle="None",
-                markersize=size,
+                markersize=size_shifted,
                 label=f"Point {index + 1}",
                 color=self.main_marker_color,
+            )
+
+            size_unshifted = datapoint.get_intensity()[1].error * 5
+            axes.plot(
+                datapoint.get_distance().value,
+                datapoint.get_intensity()[1].value,
+                marker=marker_unshifted,
+                linestyle="None",
+                markersize=size_unshifted,
+                label=f"Point {index + 1}",
+                color=self.secondary_marker_color,
             )
             index = index + 1
 
@@ -168,3 +189,36 @@ class Graph:
 
         # plot the curve
         axes.plot(x_fit, y_fit, color="red", linestyle="--", linewidth="0.6")
+
+    def plot_derivative_curve(
+        self, datapoints: DatapointCollection, axes: Axes
+    ) -> None:
+        """
+         plotting derivative curve of datapoints
+        :param x_data: x coordinates
+        :param y_data: y coordinates
+        :param axes: the axes on which to draw the fitting curve
+        :return: nothing
+        """
+
+        # Extracting distance values / intensities of checked datapoints
+        checked_datapoints: DatapointCollection = datapoints.get_active_datapoints()
+
+        checked_distances = checked_datapoints.get_distances().get_values()
+
+        checked_unshifted_intensities = (
+            checked_datapoints.get_unshifted_intensities().get_values()
+        )
+
+        # Calculating coefficients
+        coeffs = np.polyfit(
+            checked_distances, checked_unshifted_intensities, len(checked_datapoints)
+        )
+
+        poly = np.poly1d(coeffs)  # Creating polynomial with given coefficients
+
+        x_fit = np.linspace(min(checked_distances), max(checked_distances), 100)
+        y_fit = poly(x_fit)
+
+        # plot the curve
+        axes.plot(x_fit, y_fit, color="blue", linestyle="-", linewidth="0.6")

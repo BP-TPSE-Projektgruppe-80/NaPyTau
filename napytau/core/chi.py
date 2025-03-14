@@ -1,6 +1,6 @@
-from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
+from napytau.core.polynomials import evaluate_polynomial_at_measuring_times
 from napytau.core.polynomials import (
-    evaluate_differentiated_polynomial_at_measuring_distances,
+    evaluate_differentiated_polynomial_at_measuring_times,
 )
 import numpy as np
 import scipy as sp
@@ -35,7 +35,7 @@ def chi_squared_fixed_t(
     # Compute the difference between Doppler-shifted intensities and polynomial model
     shifted_intensity_difference: np.ndarray = (
         datapoints.get_shifted_intensities().get_values()
-        - evaluate_polynomial_at_measuring_distances(dataset, coefficients)
+        - evaluate_polynomial_at_measuring_times(dataset, coefficients)
     ) / datapoints.get_shifted_intensities().get_errors()
 
     # Compute the difference between unshifted intensities and
@@ -44,7 +44,7 @@ def chi_squared_fixed_t(
         datapoints.get_unshifted_intensities().get_values()
         - (
             t_hyp
-            * evaluate_differentiated_polynomial_at_measuring_distances(
+            * evaluate_differentiated_polynomial_at_measuring_times(
                 dataset, coefficients
             )
         )

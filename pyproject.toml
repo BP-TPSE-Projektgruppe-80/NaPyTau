@@ -8,6 +8,7 @@ dependencies = [
     "customtkinter>=5.2.2",
     "jsonschema>=4.23.0",
     "matplotlib>=3.10.0",
+    "mkdocs-material>=9.5.49",
     "numpy>=2.2.0",
     "scipy>=1.14.1",
 ]

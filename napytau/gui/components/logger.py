@@ -19,7 +19,7 @@ class Logger(customtkinter.CTkFrame):
         self.parent = parent
 
         self.grid(
-            row=2, column=0, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="ew"
+            row=3, column=0, columnspan=1, padx=(10, 10), pady=(10, 10), sticky="ew"
         )
         self.grid_propagate(False)
 

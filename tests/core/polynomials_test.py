@@ -9,6 +9,8 @@ import numpy as np
 from napytau.import_export.model.datapoint_collection import DatapointCollection
 from napytau.util.model.value_error_pair import ValueErrorPair
 from napytau.import_export.model.datapoint import Datapoint
+from napytau.import_export.model.dataset import DataSet
+from napytau.import_export.model.relative_velocity import RelativeVelocity
 
 
 def set_up_mocks() -> MagicMock:
@@ -17,6 +19,13 @@ def set_up_mocks() -> MagicMock:
     numpy_module_mock.zeros_like = MagicMock()
 
     return numpy_module_mock
+
+
+def _get_dataset_stub(datapoints: DatapointCollection) -> DataSet:
+    return DataSet(
+        ValueErrorPair(RelativeVelocity(1 / 299792458), RelativeVelocity(0)),
+        datapoints,
+    )
 
 
 class PolynomialsUnitTest(unittest.TestCase):
@@ -40,7 +49,7 @@ class PolynomialsUnitTest(unittest.TestCase):
             },
         ):
             from napytau.core.polynomials import (
-                evaluate_polynomial_at_measuring_distances,
+                evaluate_polynomial_at_measuring_times,
             )
 
             # Test for a simple quadratic polynomial: 2 + 3x + 4x^2
@@ -66,13 +75,16 @@ class PolynomialsUnitTest(unittest.TestCase):
                     ),
                 ]
             )
+
             coefficients: np.ndarray = np.array([2, 3, 4])
             # At x = 1: 2 + 3(1) + 4(1^2) = 9
             # At x = 2: 2 + 3(2) + 4(2^2) = 2 + 6 + 16 = 24
             # At x = 3: 2 + 3(3) + 4(3^2) = 2 + 9 + 36 = 47
             expected_result: np.ndarray = np.array([9, 24, 47])
             np.testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(datapoints, coefficients),
+                evaluate_polynomial_at_measuring_times(
+                    _get_dataset_stub(datapoints), coefficients
+                ),
                 expected_result,
             )
 
@@ -92,7 +104,7 @@ class PolynomialsUnitTest(unittest.TestCase):
             },
         ):
             from napytau.core.polynomials import (
-                evaluate_polynomial_at_measuring_distances,
+                evaluate_polynomial_at_measuring_times,
             )
 
             datapoints = DatapointCollection(
@@ -121,7 +133,9 @@ class PolynomialsUnitTest(unittest.TestCase):
             # With an empty input array, the result should also be an empty array
             expected_result: np.ndarray = np.array([])
             np.testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(datapoints, coefficients),
+                evaluate_polynomial_at_measuring_times(
+                    _get_dataset_stub(datapoints), coefficients
+                ),
                 expected_result,
             )
 
@@ -145,7 +159,7 @@ class PolynomialsUnitTest(unittest.TestCase):
             },
         ):
             from napytau.core.polynomials import (
-                evaluate_polynomial_at_measuring_distances,
+                evaluate_polynomial_at_measuring_times,
             )
 
             datapoints = DatapointCollection(
@@ -163,7 +177,9 @@ class PolynomialsUnitTest(unittest.TestCase):
             # At x = 2: 1 + 2(2) = 5
             expected_result: np.ndarray = np.array([5])
             np.testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(datapoints, coefficients),
+                evaluate_polynomial_at_measuring_times(
+                    _get_dataset_stub(datapoints), coefficients
+                ),
                 expected_result,
             )
 
@@ -187,7 +203,7 @@ class PolynomialsUnitTest(unittest.TestCase):
             },
         ):
             from napytau.core.polynomials import (
-                evaluate_polynomial_at_measuring_distances,
+                evaluate_polynomial_at_measuring_times,
             )
 
             datapoints = DatapointCollection(
@@ -217,7 +233,9 @@ class PolynomialsUnitTest(unittest.TestCase):
             # All values should be 5
             expected_result: np.ndarray = np.array([5, 5, 5])
             np.testing.assert_array_equal(
-                evaluate_polynomial_at_measuring_distances(datapoints, coefficients),
+                evaluate_polynomial_at_measuring_times(
+                    _get_dataset_stub(datapoints), coefficients
+                ),
                 expected_result,
             )
 
@@ -226,7 +244,7 @@ class PolynomialsUnitTest(unittest.TestCase):
     ):
         """Evaluate polynomial raises a polynomial coefficient error for an empty coefficient array."""
 
-        from napytau.core.polynomials import evaluate_polynomial_at_measuring_distances
+        from napytau.core.polynomials import evaluate_polynomial_at_measuring_times
 
         datapoints = DatapointCollection(
             [
@@ -248,7 +266,9 @@ class PolynomialsUnitTest(unittest.TestCase):
         # With an empty coefficients array, the function should throw a polynomial
         # coefficient error.
         with self.assertRaises(PolynomialCoefficientError):
-            evaluate_polynomial_at_measuring_distances(datapoints, coefficients)
+            evaluate_polynomial_at_measuring_times(
+                _get_dataset_stub(datapoints), coefficients
+            )
 
     @staticmethod
     def test_CanEvaluateAValidDifferentiatedPolynomialAtMeasuringDistances():
@@ -266,7 +286,7 @@ class PolynomialsUnitTest(unittest.TestCase):
             },
         ):
             from napytau.core.polynomials import (
-                evaluate_differentiated_polynomial_at_measuring_distances,
+                evaluate_differentiated_polynomial_at_measuring_times,
             )
 
             # Test for a simple quadratic polynomial: 2 + 3x + 4x^2
@@ -299,8 +319,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             # At x = 3: 3 + 8(3) = 3 + 24 = 27
             expected_result: np.ndarray = np.array([11, 19, 27])
             np.testing.assert_array_equal(
-                evaluate_differentiated_polynomial_at_measuring_distances(
-                    datapoints, coefficients
+                evaluate_differentiated_polynomial_at_measuring_times(
+                    _get_dataset_stub(datapoints), coefficients
                 ),
                 expected_result,
             )
@@ -321,7 +341,7 @@ class PolynomialsUnitTest(unittest.TestCase):
             },
         ):
             from napytau.core.polynomials import (
-                evaluate_differentiated_polynomial_at_measuring_distances,
+                evaluate_differentiated_polynomial_at_measuring_times,
             )
 
             datapoints = DatapointCollection(
@@ -350,8 +370,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             # With an empty input array, the result should also be an empty array
             expected_result: np.ndarray = np.array([])
             np.testing.assert_array_equal(
-                evaluate_differentiated_polynomial_at_measuring_distances(
-                    datapoints, coefficients
+                evaluate_differentiated_polynomial_at_measuring_times(
+                    _get_dataset_stub(datapoints), coefficients
                 ),
                 expected_result,
             )
@@ -372,7 +392,7 @@ class PolynomialsUnitTest(unittest.TestCase):
             },
         ):
             from napytau.core.polynomials import (
-                evaluate_differentiated_polynomial_at_measuring_distances,
+                evaluate_differentiated_polynomial_at_measuring_times,
             )
 
             datapoints = DatapointCollection(
@@ -390,8 +410,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             # At x = 2: 2
             expected_result: np.ndarray = np.array([2])
             np.testing.assert_array_equal(
-                evaluate_differentiated_polynomial_at_measuring_distances(
-                    datapoints, coefficients
+                evaluate_differentiated_polynomial_at_measuring_times(
+                    _get_dataset_stub(datapoints), coefficients
                 ),
                 expected_result,
             )
@@ -412,7 +432,7 @@ class PolynomialsUnitTest(unittest.TestCase):
             },
         ):
             from napytau.core.polynomials import (
-                evaluate_differentiated_polynomial_at_measuring_distances,
+                evaluate_differentiated_polynomial_at_measuring_times,
             )
 
             datapoints = DatapointCollection(
@@ -442,8 +462,8 @@ class PolynomialsUnitTest(unittest.TestCase):
             # All values should therefore be 0
             expected_result: np.ndarray = np.array([0, 0, 0])
             np.testing.assert_array_equal(
-                evaluate_differentiated_polynomial_at_measuring_distances(
-                    datapoints, coefficients
+                evaluate_differentiated_polynomial_at_measuring_times(
+                    _get_dataset_stub(datapoints), coefficients
                 ),
                 expected_result,
             )
@@ -453,7 +473,7 @@ class PolynomialsUnitTest(unittest.TestCase):
     ):
         """Evaluate differentiated polynomial raises a polynomial coefficient error for an empty coefficient array."""
         from napytau.core.polynomials import (
-            evaluate_differentiated_polynomial_at_measuring_distances,
+            evaluate_differentiated_polynomial_at_measuring_times,
         )
 
         datapoints = DatapointCollection(
@@ -476,8 +496,8 @@ class PolynomialsUnitTest(unittest.TestCase):
         # With an empty coefficients array, the function should throw a polynomial
         # coefficient error.
         with self.assertRaises(PolynomialCoefficientError):
-            evaluate_differentiated_polynomial_at_measuring_distances(
-                datapoints, coefficients
+            evaluate_differentiated_polynomial_at_measuring_times(
+                _get_dataset_stub(datapoints), coefficients
             )
 
 
